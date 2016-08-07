@@ -5,6 +5,11 @@ Deploying, updating and managing SharePoint customizations takes effort. Not onl
 
 MetaPack introduces a complete solution for packaging, versioning, deploying and updating SPMeta2 based customizations. It is built on top of NuGet platform and offers a smooth API for developers, a CLI for better CI/CD scenarios and a handy GUI app for IT-pros.
 
+Here is how we see it working - develop model in Visual Studio, package and push to NuGet, consume via API later on
+![MetaPack Vision](https://subpointsolutions-dev.netlify.com/content/img/products/metapack/metapack-vision.png)
+
+[Link to the full image](https://subpointsolutions-dev.netlify.com/content/img/products/metapack/metapack-vision.png)
+
 ### Build status
 ... getting there, stay tuned
 
