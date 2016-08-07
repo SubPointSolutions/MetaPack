@@ -15,6 +15,7 @@ namespace MetaPack.SPMeta2.Services
         #region constructors
         public SPMeta2SolutionPackageManager(IPackageRepository sourceRepository, ClientContext context) : base(sourceRepository, context)
         {
+            InitProvisionEvents();
         }
 
         public SPMeta2SolutionPackageManager(IPackageRepository sourceRepository, IPackagePathResolver pathResolver, IFileSystem fileSystem) : base(sourceRepository, pathResolver, fileSystem)
