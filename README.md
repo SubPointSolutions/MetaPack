@@ -11,7 +11,7 @@ Here is how we see it working - develop model in Visual Studio, package and push
 [Link to the full image](https://subpointsolutions-dev.netlify.com/content/img/products/metapack/metapack-vision.png)
 
 ### Build status
-... getting there, stay tuned
+[![Build status](https://ci.appveyor.com/api/projects/status/1weq7g33dfp3xi6i?svg=true)](https://ci.appveyor.com/project/SubPointSupport/metapack)
 
 ### MetaPack in details
 
