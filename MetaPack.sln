@@ -8,7 +8,6 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_3rdparty", "_3rdparty", "{1CB33485-2130-4560-9B0E-73A2DB07F650}"
 	ProjectSection(SolutionItems) = preProject
 		.gitignore = .gitignore
-		__appveyor.yml = __appveyor.yml
 		README.md = README.md
 	EndProjectSection
 EndProject
