@@ -10,7 +10,15 @@ namespace MetaPack.Tests.Utils
     {
         public static string GetEnvironmentVariable(string varName)
         {
-            return Environment.GetEnvironmentVariable(varName, EnvironmentVariableTarget.Machine);
+            var variable = Environment.GetEnvironmentVariable(varName, EnvironmentVariableTarget.Machine);
+
+            if (string.IsNullOrEmpty(variable))
+                variable = Environment.GetEnvironmentVariable(varName, EnvironmentVariableTarget.User);
+
+            if (string.IsNullOrEmpty(variable))
+                variable = Environment.GetEnvironmentVariable(varName, EnvironmentVariableTarget.Process);
+
+            return variable;
         }
 
         public static IEnumerable<string> GetEnvironmentVariables(string varName)
