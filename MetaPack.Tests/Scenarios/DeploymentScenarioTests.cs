@@ -68,6 +68,21 @@ namespace MetaPack.Tests.Scenarios
             Can_Deploy_SPMeta2_Package_Internal(false, 2, false);
         }
 
+
+        [TestMethod]
+        [TestCategory("Metapack.Deployment.SPMeta2")]
+        public void Can_Deploy_SPMeta2_Package_To_Sub_Web_With_Dependencies()
+        {
+            Can_Deploy_SPMeta2_Package_Internal(false, 1, true);
+        }
+
+        [TestMethod]
+        [TestCategory("Metapack.Deployment.SPMeta2")]
+        public void Can_Deploy_SPMeta2_Package_To_Sub_Web_With_Dependencies_Twice()
+        {
+            Can_Deploy_SPMeta2_Package_Internal(false, 2, true);
+        }
+
         private void Can_Deploy_SPMeta2_Package_Internal(bool isRootUrl, int provisionCount, bool? useDependencies)
         {
             var type = SolutionPackageType.SPMeta2;
@@ -81,7 +96,7 @@ namespace MetaPack.Tests.Scenarios
             if (useDependencies.HasValue && useDependencies.Value == true)
             {
                 // adding a few dependencies
-                for (var i = 1; i < 2; i++)
+                for (var i = 1; i < 3; i++)
                 {
                     var solutionDep = CreateNewSolutionPackage(type, solution =>
                     {
@@ -166,7 +181,7 @@ namespace MetaPack.Tests.Scenarios
                         };
 
                         // install package
-                        packageManager.InstallPackage(ciPackage, true, false);
+                        packageManager.InstallPackage(ciPackage, false, false);
                     }
                 };
 
