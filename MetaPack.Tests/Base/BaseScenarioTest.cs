@@ -92,15 +92,33 @@ namespace MetaPack.Tests.Base
 
         protected SolutionPackageBase CreateNewSolutionPackage(SolutionPackageType type)
         {
+            return CreateNewSolutionPackage(type, null);
+        }
+
+        protected SolutionPackageBase CreateNewSolutionPackage(SolutionPackageType type, Action<SolutionPackageBase> action)
+        {
             if (type == SolutionPackageType.SPMeta2)
             {
                 var solutionPackage = new SPMeta2SolutionPackage();
 
+                solutionPackage.Name = "SPMeta2 CI Ppackage Name";
                 solutionPackage.Title = "SPMeta2 CI Package";
+
+                solutionPackage.Description = "SPMeta2 CI Package description";
                 solutionPackage.Id = "SPMeta2.CI";
+                solutionPackage.Authors = "SubPoint Solutions Authors";
+                solutionPackage.Company = "SubPoint Solutions Company";
                 solutionPackage.Version = "1.0.0.0";
-                solutionPackage.Authors = "SubPoint Solutions";
-                solutionPackage.Description = "A test package for SPMeta1 models.";
+                solutionPackage.Owners = "SubPoint Solutions Owners";
+
+                solutionPackage.ReleaseNotes = "ReleaseNotes";
+                solutionPackage.Summary = "Summary";
+                solutionPackage.ProjectUrl = "https://github.com/SubPointSolutions/metapack";
+                solutionPackage.IconUrl = "https://github.com/SubPointSolutions/metapack/metapack.png";
+                solutionPackage.LicenseUrl = "https://opensource.org/licenses/MIT";
+
+                solutionPackage.Copyright = "Some stuff here";
+                solutionPackage.Tags = "CI SPMeta2 MetaPack";
 
                 var models = new ModelNode[]
                 {
@@ -113,8 +131,12 @@ namespace MetaPack.Tests.Base
                     solutionPackage.Models.Add(model);
                 }
 
+                if (action != null)
+                    action(solutionPackage);
+
                 return solutionPackage;
             }
+
 
             throw new NotImplementedException("type");
         }

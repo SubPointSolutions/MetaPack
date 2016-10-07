@@ -45,7 +45,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Consts\MetaPackConsts.cs" />
-    <Compile Include="ServiceContainer.cs" />
+    <Compile Include="Packaging\SolutionPackageDependency.cs" />
+    <Compile Include="MetaPackServiceContainer.cs" />
     <Compile Include="Services\ISolutionPackageSerializationService.cs" />
     <Compile Include="Services\DefaultXMLSerializationService.cs" />
     <Compile Include="Services\SerializationServiceBase.cs" />

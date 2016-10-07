@@ -588,10 +588,12 @@ namespace MetaPack.NuGet.Services
 
         #endregion
 
-        #region MyRegion
+        #region gallery model
 
-        protected void EnsureMetapackLibrary()
+        protected virtual void EnsureMetapackLibrary()
         {
+            // we may consider using SPMeta2 model provision later on
+
             LogUtils.Log("Ensuring MetaPack list");
 
             var web = _context.Web;

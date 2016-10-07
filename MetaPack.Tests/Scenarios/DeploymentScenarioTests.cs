@@ -17,6 +17,7 @@ using NuGet;
 using SPMeta2.CSOM.Services;
 using SPMeta2.CSOM.Standard.Services;
 using SPMeta2.Services;
+using MetaPack.Core.Packaging;
 
 namespace MetaPack.Tests.Scenarios
 {
@@ -29,41 +30,90 @@ namespace MetaPack.Tests.Scenarios
         [TestCategory("Metapack.Deployment.SPMeta2")]
         public void Can_Deploy_SPMeta2_Package_To_Root_Web()
         {
-            Can_Deploy_SPMeta2_Package_Internal(true, 1);
+            Can_Deploy_SPMeta2_Package_Internal(true, 1, false);
         }
 
         [TestMethod]
         [TestCategory("Metapack.Deployment.SPMeta2")]
         public void Can_Deploy_SPMeta2_Package_To_Root_Web_Twice()
         {
-            Can_Deploy_SPMeta2_Package_Internal(true, 2);
+            Can_Deploy_SPMeta2_Package_Internal(true, 2, false);
+        }
+
+        [TestMethod]
+        [TestCategory("Metapack.Deployment.SPMeta2")]
+        public void Can_Deploy_SPMeta2_Package_To_Root_Web_With_Dependencies()
+        {
+            Can_Deploy_SPMeta2_Package_Internal(true, 1, true);
+        }
+
+        [TestMethod]
+        [TestCategory("Metapack.Deployment.SPMeta2")]
+        public void Can_Deploy_SPMeta2_Package_To_Root_Web_With_Dependencies_Twice()
+        {
+            Can_Deploy_SPMeta2_Package_Internal(true, 2, true);
         }
 
         [TestMethod]
         [TestCategory("Metapack.Deployment.SPMeta2")]
         public void Can_Deploy_SPMeta2_Package_To_Sub_Web()
         {
-            Can_Deploy_SPMeta2_Package_Internal(false, 1);
+            Can_Deploy_SPMeta2_Package_Internal(false, 1, false);
         }
 
         [TestMethod]
         [TestCategory("Metapack.Deployment.SPMeta2")]
         public void Can_Deploy_SPMeta2_Package_To_Sub_Web_Twice()
         {
-            Can_Deploy_SPMeta2_Package_Internal(false, 2);
+            Can_Deploy_SPMeta2_Package_Internal(false, 2, false);
         }
 
-        private void Can_Deploy_SPMeta2_Package_Internal(bool isRootUrl, int provisionCount)
+        private void Can_Deploy_SPMeta2_Package_Internal(bool isRootUrl, int provisionCount, bool? useDependencies)
         {
             var type = SolutionPackageType.SPMeta2;
             var packagingService = new SPMeta2SolutionPackageService();
 
             // push
             var solutionPackage = CreateNewSolutionPackage(type);
+
+            var solutionDependencies = new List<SolutionPackageBase>();
+
+            if (useDependencies.HasValue && useDependencies.Value == true)
+            {
+                // adding a few dependencies
+                for (var i = 1; i < 2; i++)
+                {
+                    var solutionDep = CreateNewSolutionPackage(type, solution =>
+                    {
+                        solution.Id = solution.Id + "dep" + i;
+
+                    });
+
+                    UpdatePackageVersion(solutionDep);
+                    solutionDependencies.Add(solutionDep);
+
+                    solutionPackage.Dependencies.Add(new SolutionPackageDependency
+                    {
+                        Id = solutionDep.Id,
+                        Version = solutionDep.Version
+                    });
+                }
+            }
+
+
             UpdatePackageVersion(solutionPackage);
 
             var packageId = solutionPackage.Id;
             var packageVersion = solutionPackage.Version;
+
+            var nuGetPackageDependencies = new List<Stream>();
+
+            foreach (var soutionDependency in solutionDependencies)
+            {
+                var nuGetPackageDependency = packagingService.Pack(soutionDependency, null);
+
+                nuGetPackageDependencies.Add(nuGetPackageDependency);
+            }
 
             var nuGetPackage = packagingService.Pack(solutionPackage, null);
             var canFind = false;
@@ -71,6 +121,11 @@ namespace MetaPack.Tests.Scenarios
             WithNuGetContext((apiUrl, apiKey, repoUrl) =>
             {
                 var repo = PackageRepositoryFactory.Default.CreateRepository(repoUrl);
+
+                foreach (var soutionDependency in solutionDependencies)
+                {
+                    packagingService.Push(soutionDependency, apiUrl, apiKey);
+                }
 
                 packagingService.Push(solutionPackage, apiUrl, apiKey);
 
@@ -88,7 +143,7 @@ namespace MetaPack.Tests.Scenarios
                     {
                         Trace.WriteLine(string.Format("Installing:[{0}/{1}]", index, provisionCount));
 
-                        // create numage package manager within current SharePoint context
+                        // create nuget package manager within current SharePoint context
                         var packageManager = new SPMeta2SolutionPackageManager(repo, context);
 
                         // setup provision services
