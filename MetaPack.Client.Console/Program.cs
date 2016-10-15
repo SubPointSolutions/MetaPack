@@ -18,10 +18,12 @@ namespace MetaPack.Client.Console
         static void Main(string[] args)
         {
             var currentFilePath = typeof(Program).Assembly.Location;
-            var currentFolderPath = new DirectoryInfo(currentFilePath).FullName;
+            var currentFolderPath = new DirectoryInfo(currentFilePath).Parent.FullName;
 
             Log(string.Format("Loading metapack v{0}", FileVersionInfo.GetVersionInfo(currentFilePath).FileVersion));
             Log(string.Format("Working directory: [{0}]", currentFolderPath));
+
+            Directory.SetCurrentDirectory(currentFolderPath);
 
             ParseAppConfig();
 

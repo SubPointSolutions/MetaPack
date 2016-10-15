@@ -194,6 +194,8 @@ var metaPackCLIFiles = new string[] {
     "MetaPack.NuGet.dll",
     "MetaPack.SPMeta2.dll",
 
+    "MetaPack.Client.Common.dll",
+
     "SPMeta2.dll",
     "SPMeta2.Standard.dll",
 
