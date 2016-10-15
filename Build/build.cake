@@ -227,6 +227,8 @@ var chocolateySpecs = new [] {
             LicenseUrl = new Uri("http://docs.subpointsolutions.com/metapack/license"),
             ProjectUrl = new Uri("https://github.com/SubPointSolutions/metapack"),
             
+            IconUrl = new Uri("https://raw.githubusercontent.com/SubPointSolutions/spmeta2/dev/SPMeta2/SPMeta2.Dependencies/Images/SPMeta2_64_64.png"),
+
             Description = "MetaPack CLI. Provides a command line interface to deploy SPMeta2 models to SharePoint web sites.",
             Copyright = "Copyright 2016",
             Tags = new [] { "SPMeta2", "Provision", "SharePoint", "Office365Dev", "Office365", "metapack", "nuget" },
