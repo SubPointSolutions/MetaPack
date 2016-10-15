@@ -10,12 +10,12 @@ using SPMeta2.CSOM.Standard.Services;
 
 namespace MetaPack.Client.Common.Commands
 {
-    public class DefaultInstallCommand : CommandBase
+    public class DefaultUpdateCommand : CommandBase
     {
         #region properties
         public override string Name
         {
-            get { return "install"; }
+            get { return "update"; }
             set
             {
 
@@ -79,11 +79,44 @@ namespace MetaPack.Client.Common.Commands
                         throw new ArgumentException("package");
                     }
 
-                    Console.WriteLine("Found package [{0} - {1}]. Installing package to SharePoint web site...",
-                            package.Id,
-                            package.Version);
+                    Console.WriteLine("Checking local package [{0}]", Id);
                     // create manager with repo and current web site
                     var packageManager = new SPMeta2SolutionPackageManager(repo, context);
+
+                    //var localPackage = packageManager.LocalRepository.FindPackage(package.Id, package.Version, true, true);
+                    var localPackages = packageManager.LocalRepository.FindPackagesById(package.Id);
+                    var localPackage = localPackages.OrderByDescending(p => p.Version)
+                        .FirstOrDefault();
+
+                    if (localPackage != null)
+                    {
+                        Console.WriteLine("Found local package [{0}] with version [{1}]",
+                            localPackage.Id,
+                            localPackage.Version);
+                    }
+
+                    if (localPackage == null)
+                    {
+                        Console.WriteLine("Cannot find local package. Performing install...");
+                    }
+                    else
+                    {
+                        if (localPackage.Version < package.Version)
+                        {
+                            Console.WriteLine("Local package version is behind remote one: [{0}] < [{1}]",
+                                    localPackage.Version, package.Version);
+                        }
+                        else
+                        {
+                            Console.WriteLine("Local package version greater or equal remote one: [{0}] >= [{1}]. No update is required.",
+                                    localPackage.Version, package.Version);
+                            return;
+                        }
+                    }
+
+                    Console.WriteLine("Installing package to SharePoint web site...",
+                            package.Id,
+                            package.Version);
 
                     Console.WriteLine("Using StandardCSOMProvisionService...");
                     // setup provision services
@@ -106,8 +139,6 @@ namespace MetaPack.Client.Common.Commands
                         Trace.WriteLine(msg);
                         Console.WriteLine(msg);
                     };
-
-
 
                     // install package
                     packageManager.InstallPackage(package, false, PreRelease);

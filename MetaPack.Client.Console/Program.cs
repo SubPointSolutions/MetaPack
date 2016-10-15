@@ -73,7 +73,31 @@ namespace MetaPack.Client.Console
                 }
                 else if (options.Update != null)
                 {
-                    Log("upate");
+                    var op = options.Update;
+
+                    var command = new DefaultUpdateCommand
+                    {
+                        Source = op.Source,
+                        Url = op.Url,
+
+                        Id = op.Id,
+                        Version = op.Version,
+
+                        PreRelease = op.PreRelease,
+
+                        UserName = op.UserName,
+                        UserPassword = op.UserPassword
+                    };
+
+                    if (!string.IsNullOrEmpty(op.SharePointVersion))
+                    {
+                        if ("o365" == op.SharePointVersion.ToLower())
+                        {
+                            command.IsSharePointOnline = true;
+                        }
+                    }
+
+                    command.Execute();
                 }
                 else
                 {

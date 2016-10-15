@@ -399,7 +399,7 @@ namespace MetaPack.NuGet.Services
         }
         public IEnumerable<string> GetFiles(string path, string filter, bool recursive)
         {
-            var hasFolderMatch = Regex.IsMatch(path.ToLower(), WildCardToRegular(filter.ToLower().Replace(".nupkg", string.Empty)));
+            var hasFolderMatch = Regex.IsMatch(path.ToLower(), WildCardToRegular(filter.ToLower().Replace(".nupkg", string.Empty)).ToLower());
 
             if (!hasFolderMatch)
             {
@@ -479,7 +479,7 @@ namespace MetaPack.NuGet.Services
                 else
                 {
                     var fileName = file.Path;
-                    var fileMatch = Regex.IsMatch(fileName.ToLower(), WildCardToRegular(filter));
+                    var fileMatch = Regex.IsMatch(fileName.ToLower(), WildCardToRegular(filter).ToLower());
 
                     if (fileMatch)
                         result.Add(fileName);
@@ -507,7 +507,7 @@ namespace MetaPack.NuGet.Services
 
         private static String WildCardToRegular(String value)
         {
-            return "^" + Regex.Escape(value).Replace("\\*", ".*") + "$";
+            return ("^" + Regex.Escape(value).Replace("\\*", ".*") + "$");
         }
 
         public string GetFullPath(string path)

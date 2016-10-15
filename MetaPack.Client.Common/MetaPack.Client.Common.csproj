@@ -68,6 +68,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Commands\Base\CommandBase.cs" />
+    <Compile Include="Commands\DefaultUpdateCommand.cs" />
     <Compile Include="Commands\DefaultInstallCommand.cs" />
     <Compile Include="Commands\DefaultListCommand.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
