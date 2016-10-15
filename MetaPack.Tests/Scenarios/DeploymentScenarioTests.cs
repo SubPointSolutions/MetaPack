@@ -28,6 +28,7 @@ namespace MetaPack.Tests.Scenarios
 
         [TestMethod]
         [TestCategory("Metapack.Deployment.SPMeta2")]
+        [TestCategory("CI.Core")]
         public void Can_Deploy_SPMeta2_Package_To_Root_Web()
         {
             Can_Deploy_SPMeta2_Package_Internal(true, 1, false);
@@ -35,6 +36,7 @@ namespace MetaPack.Tests.Scenarios
 
         [TestMethod]
         [TestCategory("Metapack.Deployment.SPMeta2")]
+        [TestCategory("CI.Core")]
         public void Can_Deploy_SPMeta2_Package_To_Root_Web_Twice()
         {
             Can_Deploy_SPMeta2_Package_Internal(true, 2, false);
@@ -42,6 +44,7 @@ namespace MetaPack.Tests.Scenarios
 
         [TestMethod]
         [TestCategory("Metapack.Deployment.SPMeta2")]
+        [TestCategory("CI.Core")]
         public void Can_Deploy_SPMeta2_Package_To_Root_Web_With_Dependencies()
         {
             Can_Deploy_SPMeta2_Package_Internal(true, 1, true);
@@ -49,6 +52,7 @@ namespace MetaPack.Tests.Scenarios
 
         [TestMethod]
         [TestCategory("Metapack.Deployment.SPMeta2")]
+        [TestCategory("CI.Core")]
         public void Can_Deploy_SPMeta2_Package_To_Root_Web_With_Dependencies_Twice()
         {
             Can_Deploy_SPMeta2_Package_Internal(true, 2, true);
@@ -56,6 +60,7 @@ namespace MetaPack.Tests.Scenarios
 
         [TestMethod]
         [TestCategory("Metapack.Deployment.SPMeta2")]
+        [TestCategory("CI.Core")]
         public void Can_Deploy_SPMeta2_Package_To_Sub_Web()
         {
             Can_Deploy_SPMeta2_Package_Internal(false, 1, false);
@@ -63,6 +68,7 @@ namespace MetaPack.Tests.Scenarios
 
         [TestMethod]
         [TestCategory("Metapack.Deployment.SPMeta2")]
+        [TestCategory("CI.Core")]
         public void Can_Deploy_SPMeta2_Package_To_Sub_Web_Twice()
         {
             Can_Deploy_SPMeta2_Package_Internal(false, 2, false);
@@ -71,6 +77,7 @@ namespace MetaPack.Tests.Scenarios
 
         [TestMethod]
         [TestCategory("Metapack.Deployment.SPMeta2")]
+        [TestCategory("CI.Core")]
         public void Can_Deploy_SPMeta2_Package_To_Sub_Web_With_Dependencies()
         {
             Can_Deploy_SPMeta2_Package_Internal(false, 1, true);
@@ -78,6 +85,7 @@ namespace MetaPack.Tests.Scenarios
 
         [TestMethod]
         [TestCategory("Metapack.Deployment.SPMeta2")]
+        [TestCategory("CI.Core")]
         public void Can_Deploy_SPMeta2_Package_To_Sub_Web_With_Dependencies_Twice()
         {
             Can_Deploy_SPMeta2_Package_Internal(false, 2, true);

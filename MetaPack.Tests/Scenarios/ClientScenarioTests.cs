@@ -31,6 +31,7 @@ namespace MetaPack.Tests.Scenarios
 
         [TestMethod]
         [TestCategory("Metapack.Client.Commands")]
+        [TestCategory("CI.Core")]
         public void Can_Call_List_Command()
         {
             var webSiteUrl = EnvironmentUtils.GetEnvironmentVariable(RegConsts.SharePoint.RootWebUrl);
@@ -45,6 +46,7 @@ namespace MetaPack.Tests.Scenarios
 
         [TestMethod]
         [TestCategory("Metapack.Client.Commands")]
+        [TestCategory("CI.Core")]
         public void Can_Call_Install_Command()
         {
             var webSiteUrl = EnvironmentUtils.GetEnvironmentVariable(RegConsts.SharePoint.RootWebUrl);

@@ -32,6 +32,7 @@ namespace MetaPack.Tests.Scenarios
 
         [TestMethod]
         [TestCategory("Metapack.Packaging.SPMeta2")]
+        [TestCategory("CI.Core")]
         public void Can_Pack_SPMeta2_Package()
         {
             Can_Pack_Internal(SolutionPackageType.SPMeta2, new SPMeta2SolutionPackageService());
@@ -39,6 +40,7 @@ namespace MetaPack.Tests.Scenarios
 
         [TestMethod]
         [TestCategory("Metapack.Packaging.SPMeta2")]
+        [TestCategory("CI.Core")]
         public void Can_Unpack_SPMeta2_Package()
         {
             Can_Unpack_Internal(SolutionPackageType.SPMeta2, new SPMeta2SolutionPackageService(),
@@ -85,6 +87,7 @@ namespace MetaPack.Tests.Scenarios
 
         [TestMethod]
         [TestCategory("Metapack.Packaging.SPMeta2")]
+        [TestCategory("CI.Core")]
         public void Can_Push_SPMeta2_Package()
         {
             Can_Push_Internal(SolutionPackageType.SPMeta2, new SPMeta2SolutionPackageService());
