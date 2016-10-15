@@ -8,7 +8,7 @@ namespace MetaPack.NuGet.Utils
     {
         public static void Log(string message)
         {
-            var logService = ServiceContainer.Instance.GetService<TraceServiceBase>();
+            var logService = MetaPackServiceContainer.Instance.GetService<TraceServiceBase>();
 
             logService.Information(0, message);
         }

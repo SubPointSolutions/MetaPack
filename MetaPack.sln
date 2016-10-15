@@ -1,13 +1,14 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 2013
+VisualStudioVersion = 12.0.31101.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dependencies", "Dependencies\Dependencies.csproj", "{6DF9ACA5-56E2-4B03-A783-C24B939A1152}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_3rdparty", "_3rdparty", "{1CB33485-2130-4560-9B0E-73A2DB07F650}"
 	ProjectSection(SolutionItems) = preProject
 		.gitignore = .gitignore
+		appveyor.yml = appveyor.yml
 		README.md = README.md
 	EndProjectSection
 EndProject
@@ -24,6 +25,14 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MetaPack.Core", "MetaPack.Core\MetaPack.Core.csproj", "{262728CF-54E6-44CE-ADA9-8AB6934FC4CE}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MetaPack.NuGet", "MetaPack.NuGet\MetaPack.NuGet.csproj", "{A15F8430-15F3-4E25-AA60-221D244EA2FD}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Clients", "Clients", "{D963C6F2-6072-4996-828A-438CD4EE1D04}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MetaPack.Client.Console", "MetaPack.Client.Console\MetaPack.Client.Console.csproj", "{03F3D2A9-4BD8-4E76-8042-F617721222CA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MetaPack.Client.Common", "MetaPack.Client.Common\MetaPack.Client.Common.csproj", "{9D4CEB39-5B75-46ED-989B-BFA648A9469E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Build", "Build\Build.csproj", "{9A9AD32D-8364-4D57-8115-26178CB1EB3C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -50,6 +59,18 @@ Global
 		{A15F8430-15F3-4E25-AA60-221D244EA2FD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A15F8430-15F3-4E25-AA60-221D244EA2FD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A15F8430-15F3-4E25-AA60-221D244EA2FD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{03F3D2A9-4BD8-4E76-8042-F617721222CA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{03F3D2A9-4BD8-4E76-8042-F617721222CA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{03F3D2A9-4BD8-4E76-8042-F617721222CA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{03F3D2A9-4BD8-4E76-8042-F617721222CA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9D4CEB39-5B75-46ED-989B-BFA648A9469E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9D4CEB39-5B75-46ED-989B-BFA648A9469E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9D4CEB39-5B75-46ED-989B-BFA648A9469E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9D4CEB39-5B75-46ED-989B-BFA648A9469E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9A9AD32D-8364-4D57-8115-26178CB1EB3C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9A9AD32D-8364-4D57-8115-26178CB1EB3C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9A9AD32D-8364-4D57-8115-26178CB1EB3C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9A9AD32D-8364-4D57-8115-26178CB1EB3C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -60,5 +81,8 @@ Global
 		{C7E76DE7-4CA9-43B6-8DDD-78928F4267BB} = {15EE186F-5B31-4CA2-B4C3-15D41D5B0935}
 		{262728CF-54E6-44CE-ADA9-8AB6934FC4CE} = {B44FA3AA-C450-4770-B78A-FCD8ADE81237}
 		{A15F8430-15F3-4E25-AA60-221D244EA2FD} = {B44FA3AA-C450-4770-B78A-FCD8ADE81237}
+		{03F3D2A9-4BD8-4E76-8042-F617721222CA} = {D963C6F2-6072-4996-828A-438CD4EE1D04}
+		{9D4CEB39-5B75-46ED-989B-BFA648A9469E} = {D963C6F2-6072-4996-828A-438CD4EE1D04}
+		{9A9AD32D-8364-4D57-8115-26178CB1EB3C} = {1CB33485-2130-4560-9B0E-73A2DB07F650}
 	EndGlobalSection
 EndGlobal

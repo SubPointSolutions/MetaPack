@@ -18,6 +18,7 @@ namespace MetaPack.SPMeta2.Services
         {
 
         }
+
         #endregion
 
         #region methods
@@ -29,11 +30,45 @@ namespace MetaPack.SPMeta2.Services
 
             var metadata = new ManifestMetadata()
             {
-                Authors = package.Authors,
-                Version = package.Version,
-                Id = package.Id,
+                Title = package.Title,
                 Description = package.Description,
+                Id = package.Id,
+                Authors = package.Authors,
+
+                Version = package.Version,
+                Owners = package.Owners,
+
+                ReleaseNotes = package.ReleaseNotes,
+                Summary = package.Summary,
+
+                ProjectUrl = package.ProjectUrl,
+                IconUrl = package.IconUrl,
+                LicenseUrl = package.LicenseUrl,
+                Copyright = package.Copyright,
+                Tags = package.Tags
             };
+
+            if (package.Dependencies.Any())
+            {
+                if (metadata.DependencySets == null)
+                    metadata.DependencySets = new List<ManifestDependencySet>();
+
+                var dependencySet = new ManifestDependencySet
+                {
+                    Dependencies = new List<ManifestDependency>()
+                };
+
+                foreach (var dependency in package.Dependencies)
+                {
+                    dependencySet.Dependencies.Add(new ManifestDependency
+                    {
+                        Id = dependency.Id,
+                        Version = dependency.Version
+                    });
+                }
+
+                metadata.DependencySets.Add(dependencySet);
+            }
 
             var builder = new PackageBuilder();
 

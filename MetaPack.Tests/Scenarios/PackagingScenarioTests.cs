@@ -32,6 +32,7 @@ namespace MetaPack.Tests.Scenarios
 
         [TestMethod]
         [TestCategory("Metapack.Packaging.SPMeta2")]
+        [TestCategory("CI.Core")]
         public void Can_Pack_SPMeta2_Package()
         {
             Can_Pack_Internal(SolutionPackageType.SPMeta2, new SPMeta2SolutionPackageService());
@@ -39,6 +40,7 @@ namespace MetaPack.Tests.Scenarios
 
         [TestMethod]
         [TestCategory("Metapack.Packaging.SPMeta2")]
+        [TestCategory("CI.Core")]
         public void Can_Unpack_SPMeta2_Package()
         {
             Can_Unpack_Internal(SolutionPackageType.SPMeta2, new SPMeta2SolutionPackageService(),
@@ -50,11 +52,33 @@ namespace MetaPack.Tests.Scenarios
                     Assert.IsNotNull(solutionPackage);
                     Assert.IsNotNull(unpackedSolutionPackage);
 
+                    Assert.AreEqual(solutionPackage.Name, unpackedSolutionPackage.Name);
                     Assert.AreEqual(solutionPackage.Title, unpackedSolutionPackage.Title);
-                    Assert.AreEqual(solutionPackage.Id, unpackedSolutionPackage.Id);
-                    Assert.AreEqual(solutionPackage.Version, unpackedSolutionPackage.Version);
-                    Assert.AreEqual(solutionPackage.Authors, unpackedSolutionPackage.Authors);
                     Assert.AreEqual(solutionPackage.Description, unpackedSolutionPackage.Description);
+                    Assert.AreEqual(solutionPackage.Id, unpackedSolutionPackage.Id);
+                    Assert.AreEqual(solutionPackage.Authors, unpackedSolutionPackage.Authors);
+                    Assert.AreEqual(solutionPackage.Company, unpackedSolutionPackage.Company);
+                    Assert.AreEqual(solutionPackage.Version, unpackedSolutionPackage.Version);
+                    Assert.AreEqual(solutionPackage.Owners, unpackedSolutionPackage.Owners);
+
+                    Assert.AreEqual(solutionPackage.ReleaseNotes, unpackedSolutionPackage.ReleaseNotes);
+                    Assert.AreEqual(solutionPackage.Summary, unpackedSolutionPackage.Summary);
+
+                    Assert.AreEqual(solutionPackage.ProjectUrl, unpackedSolutionPackage.ProjectUrl);
+                    Assert.AreEqual(solutionPackage.IconUrl, unpackedSolutionPackage.IconUrl);
+                    Assert.AreEqual(solutionPackage.LicenseUrl, unpackedSolutionPackage.LicenseUrl);
+                    Assert.AreEqual(solutionPackage.Copyright, unpackedSolutionPackage.Copyright);
+                    Assert.AreEqual(solutionPackage.Tags, unpackedSolutionPackage.Tags);
+
+                    Assert.AreEqual(solutionPackage.Dependencies.Count, unpackedSolutionPackage.Dependencies.Count);
+
+                    foreach (var dependency in solutionPackage.Dependencies)
+                    {
+                        var unpackedDependency = unpackedSolutionPackage.Dependencies.FirstOrDefault(d => d.Id == dependency.Id);
+
+                        Assert.AreEqual(dependency.Id, unpackedDependency.Id);
+                        Assert.AreEqual(dependency.Version, unpackedDependency.Version);
+                    }
 
                     Assert.AreEqual(solutionPackage.Models.Count, unpackedSolutionPackage.Models.Count);
                 });
@@ -63,6 +87,7 @@ namespace MetaPack.Tests.Scenarios
 
         [TestMethod]
         [TestCategory("Metapack.Packaging.SPMeta2")]
+        [TestCategory("CI.Core")]
         public void Can_Push_SPMeta2_Package()
         {
             Can_Push_Internal(SolutionPackageType.SPMeta2, new SPMeta2SolutionPackageService());

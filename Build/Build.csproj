@@ -4,17 +4,13 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{262728CF-54E6-44CE-ADA9-8AB6934FC4CE}</ProjectGuid>
+    <ProjectGuid>{9A9AD32D-8364-4D57-8115-26178CB1EB3C}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>MetaPack.Core</RootNamespace>
-    <AssemblyName>MetaPack.Core</AssemblyName>
+    <RootNamespace>Build</RootNamespace>
+    <AssemblyName>Build</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <SccProjectName>SAK</SccProjectName>
-    <SccLocalPath>SAK</SccLocalPath>
-    <SccAuxPath>SAK</SccAuxPath>
-    <SccProvider>SAK</SccProvider>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -24,7 +20,6 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Debug\MetaPack.Core.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -37,7 +32,6 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -45,23 +39,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Consts\MetaPackConsts.cs" />
-    <Compile Include="Packaging\SolutionPackageDependency.cs" />
-    <Compile Include="MetaPackServiceContainer.cs" />
-    <Compile Include="Services\ISolutionPackageSerializationService.cs" />
-    <Compile Include="Services\DefaultXMLSerializationService.cs" />
-    <Compile Include="Services\SerializationServiceBase.cs" />
-    <Compile Include="Services\SolutionPackageServiceBase.cs" />
-    <Compile Include="Services\SolutionPackageServiceBaseExtensions.cs" />
-    <Compile Include="Packaging\SolutionPackageBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Packaging\SolutionPackageOptions.cs" />
-    <Compile Include="Services\Base\TraceServiceBase.cs" />
-    <Compile Include="Services\TraceSourceService.cs" />
-    <Compile Include="Utils\ConvertUtils.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
+    <None Include="build.cake" />
+    <None Include="build.ps1" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

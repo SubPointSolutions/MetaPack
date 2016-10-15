@@ -22,6 +22,7 @@ namespace MetaPack.Tests.Scenarios
 
         [TestMethod]
         [TestCategory("Metapack.NuGet")]
+        [TestCategory("CI.Core")]
         public void Can_Push_And_Find_SPMeta2_Package()
         {
             Can_Push_And_Find_Package_Internal(SolutionPackageType.SPMeta2, new SPMeta2SolutionPackageService());

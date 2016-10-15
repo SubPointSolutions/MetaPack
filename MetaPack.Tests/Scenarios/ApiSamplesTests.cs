@@ -22,6 +22,7 @@ namespace MetaPack.Tests.Scenarios
 
         [TestMethod]
         [TestCategory("Metapack.Samples")]
+        [TestCategory("CI.Core")]
         public void Can_Package_SPMeta2_Models_To_NuGet_Package()
         {
             // create package service instance
@@ -63,6 +64,7 @@ namespace MetaPack.Tests.Scenarios
 
         [TestMethod]
         [TestCategory("Metapack.Samples")]
+        [TestCategory("CI.Core")]
         public void Can_Package_SPMeta2_Models_To_NuGet_Gallery()
         {
             WithNuGetContext((apiUrl, apiKey, repoUrl) =>
@@ -107,6 +109,7 @@ namespace MetaPack.Tests.Scenarios
 
         [TestMethod]
         [TestCategory("Metapack.Samples")]
+        [TestCategory("CI.Core")]
         public void Can_Unpack_Package_From_NuGet_Gallery()
         {
             WithNuGetContext((apiUrl, apiKey, repoUrl) =>
@@ -171,6 +174,7 @@ namespace MetaPack.Tests.Scenarios
 
         [TestMethod]
         [TestCategory("Metapack.Samples")]
+        [TestCategory("CI.Core")]
         public void Can_Unpack_Package_From_NuGet_Gallery_To_SharePoint()
         {
             // context is an instance of ClientContext
