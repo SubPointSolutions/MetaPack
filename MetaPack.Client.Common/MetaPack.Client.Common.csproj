@@ -46,17 +46,20 @@
       <HintPath>..\packages\NuGet.Core.2.11.1\lib\net40-Client\NuGet.Core.dll</HintPath>
     </Reference>
     <Reference Include="SPMeta2, Version=1.0.0.0, Culture=neutral, PublicKeyToken=d71faae3bf28531a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\SPMeta2.Core.1.2.80\lib\net45\SPMeta2.dll</HintPath>
+      <HintPath>..\packages\SPMeta2.Core.1.2.95-beta1\lib\net45\SPMeta2.dll</HintPath>
+      <Private>True</Private>
     </Reference>
-    <Reference Include="SPMeta2.CSOM">
-      <HintPath>..\packages\SPMeta2.CSOM.Foundation.1.2.80\lib\net45\SPMeta2.CSOM.dll</HintPath>
+    <Reference Include="SPMeta2.CSOM, Version=1.0.0.0, Culture=neutral, PublicKeyToken=d71faae3bf28531a, processorArchitecture=MSIL">
+      <HintPath>..\packages\SPMeta2.CSOM.Foundation.1.2.95-beta1\lib\net45\SPMeta2.CSOM.dll</HintPath>
+      <Private>True</Private>
     </Reference>
-    <Reference Include="SPMeta2.CSOM.Standard">
-      <HintPath>..\packages\SPMeta2.CSOM.Standard.1.2.80\lib\net45\SPMeta2.CSOM.Standard.dll</HintPath>
+    <Reference Include="SPMeta2.CSOM.Standard, Version=1.0.0.0, Culture=neutral, PublicKeyToken=d71faae3bf28531a, processorArchitecture=MSIL">
+      <HintPath>..\packages\SPMeta2.CSOM.Standard.1.2.95-beta1\lib\net45\SPMeta2.CSOM.Standard.dll</HintPath>
+      <Private>True</Private>
     </Reference>
-    <Reference Include="SPMeta2.Standard">
-      <HintPath>..\packages\SPMeta2.Core.Standard.1.2.80\lib\net45\SPMeta2.Standard.dll</HintPath>
+    <Reference Include="SPMeta2.Standard, Version=1.0.0.0, Culture=neutral, PublicKeyToken=d71faae3bf28531a, processorArchitecture=MSIL">
+      <HintPath>..\packages\SPMeta2.Core.Standard.1.2.95-beta1\lib\net45\SPMeta2.Standard.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />

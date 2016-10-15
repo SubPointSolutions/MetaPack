@@ -7,6 +7,7 @@ using MetaPack.SPMeta2.Services;
 using Microsoft.SharePoint.Client;
 using NuGet;
 using SPMeta2.CSOM.Standard.Services;
+using SPMeta2.Diagnostic;
 
 namespace MetaPack.Client.Common.Commands
 {
@@ -118,9 +119,11 @@ namespace MetaPack.Client.Common.Commands
                         }
                     }
 
-                    Console.WriteLine("Installing package to SharePoint web site...",
-                            package.Id,
-                            package.Version);
+                    Console.WriteLine("Installing package [{0}] to SharePoint web site...",
+                                    package.GetFullName());
+
+                    var m2runtime = SPMeta2Diagnostic.GetDiagnosticInfo();
+                    Console.WriteLine("SPMeta2 runtime:[{0}]", m2runtime);
 
                     Console.WriteLine("Using StandardCSOMProvisionService...");
                     // setup provision services

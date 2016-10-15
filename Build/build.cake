@@ -19,10 +19,10 @@ var defaultTestAssemblyPaths = new string[] {
 var useNuGetPackaging = true;
 var useNuGetPublishing = true;
 
-var useCIBuildVersion = true;
+var useCIBuildVersion = false;
 
-var g_hardcoreVersionBase = "1.2.70";
-var g_SPMeta2VersionBase = "1.2.70";
+var g_hardcoreVersionBase = "1.2.95";
+var g_SPMeta2VersionBase = "1.2.95";
 
 var g_hardcoreVersion = g_hardcoreVersionBase + "-beta1";
 
@@ -34,6 +34,7 @@ if(useCIBuildVersion) {
 }
 
 var nuGetPackagesDirectory = "./packages";
+var chocoPackagesDirectory = "./build";
 
 //////////////////////////////////////////////////////////////////////
 // PREPARATION
@@ -212,8 +213,6 @@ var metaPackCLIFiles = new string[] {
     
     "NuGet.Core.dll",
     "Microsoft.Web.XmlTransform.dll",
-
-    
 };
 
 var chocolateySpecs = new [] {
@@ -429,8 +428,6 @@ Task("Docs-Publishing")
             string.Format("git add *.md"),
             string.Format("git add *.cs"),
             string.Format("git commit -m '{0}'", commitName),
-            
-            
       };
 
       StartPowershellScript(string.Join(Environment.NewLine, mergeCmd)); 
@@ -451,7 +448,7 @@ Task("Docs-Publishing")
       Information(string.Format("Completed docs merge.")); 
 });
 
-Task("Chocolatey-Packaging")
+Task("CLI-Chocolatey-Packaging")
     .IsDependentOn("Build")
     .Does(() =>
 {
@@ -462,7 +459,39 @@ Task("Chocolatey-Packaging")
         ChocolateyPack(chocoSpec);
     }
 
-    
+    Information(string.Format("Completed creating chocolatey package"));
+});
+
+Task("CLI-Chocolatey-Publishing")
+    .IsDependentOn("CLI-Chocolatey-Packaging")
+    .Does(() =>
+{
+    Information(string.Format("Publishing Chocolatey package..."));
+
+    foreach(var chocoSpec in chocolateySpecs) {
+        
+        Information(string.Format("Publishing Chocolatey package for [{0}]", chocoSpec.Id));
+
+        var packageFileName = string.Format("{0}.{1}.nupkg", chocoSpec.Id, chocoSpec.Version);
+        var packageFilePath = string.Format("{1}", chocoPackagesDirectory, packageFileName);
+        
+		var chocoSource = EnvironmentVariable("metapack-chocolatey-source");
+		var chocoKey = EnvironmentVariable("metapack-chocolatey-key");
+
+        if(System.IO.File.Exists(packageFilePath)) {
+            
+			Information(string.Format("Publishing Chocolatey package [{0}]...", packageFileName));
+
+            ChocolateyPush(packageFilePath, new ChocolateyPushSettings {
+                Source = chocoSource,
+                ApiKey = chocoKey
+            });
+            
+        } else {
+            Information(string.Format("Chocolatey package does not exist:[{0}]", packageFilePath));
+            throw new ArgumentException(string.Format("Chocolatey package does not exist:[{0}]", packageFilePath));
+        }
+    }
 
     Information(string.Format("Completed creating chocolatey package"));
 });
@@ -484,8 +513,11 @@ Task("Default-Appveyor")
     .IsDependentOn("NuGet-Publishing")
     .IsDependentOn("Docs-Publishing");
 
-Task("Default-CLI-Chocolatey")
-    .IsDependentOn("Chocolatey-Packaging");
+Task("Default-CLI-Chocolatey-Packaging")
+    .IsDependentOn("CLI-Chocolatey-Packaging");
+
+Task("Default-CLI-Chocolatey-Publishing")
+    .IsDependentOn("CLI-Chocolatey-Publishing");
 
 //////////////////////////////////////////////////////////////////////
 // EXECUTION

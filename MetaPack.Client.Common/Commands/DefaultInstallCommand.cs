@@ -7,6 +7,7 @@ using MetaPack.SPMeta2.Services;
 using Microsoft.SharePoint.Client;
 using NuGet;
 using SPMeta2.CSOM.Standard.Services;
+using SPMeta2.Diagnostic;
 
 namespace MetaPack.Client.Common.Commands
 {
@@ -89,7 +90,11 @@ namespace MetaPack.Client.Common.Commands
                     // create manager with repo and current web site
                     var packageManager = new SPMeta2SolutionPackageManager(repo, context);
 
+                    var m2runtime = SPMeta2Diagnostic.GetDiagnosticInfo();
+                    Console.WriteLine("SPMeta2 runtime:[{0}]", m2runtime);
+
                     Console.WriteLine("Using StandardCSOMProvisionService...");
+
                     // setup provision services
                     packageManager.ProvisionService = new StandardCSOMProvisionService();
                     packageManager.ProvisionServiceHost = context;
@@ -110,8 +115,6 @@ namespace MetaPack.Client.Common.Commands
                         Trace.WriteLine(msg);
                         Console.WriteLine(msg);
                     };
-
-
 
                     // install package
                     packageManager.InstallPackage(package, false, PreRelease);
