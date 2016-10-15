@@ -20,16 +20,27 @@ namespace MetaPack.Client.Console.Options
 
         #region properties
 
-        [VerbOption("install", HelpText = "Install target package")]
+        [VerbOption("install", HelpText = "Install package to SharePoint web site. Use 'install --help' for more information.")]
         public InstallSubOptions Install { get; set; }
 
 
-        [VerbOption("update", HelpText = "Update target package")]
+        [VerbOption("update", HelpText = "Update package on SharePoint web site. Use 'update --help' for more information.")]
         public UpdateSubOptions Update { get; set; }
 
 
-        [VerbOption("list", HelpText = "List available packages")]
+        [VerbOption("list", HelpText = "List installed packaged on SharePoit web site. Use 'list --help' for more information.")]
         public ListSubOptions List { get; set; }
+
+        #endregion
+
+        #region help
+
+        [HelpOption]
+        public string GetUsage()
+        {
+            return HelpText.AutoBuild(this,
+              (HelpText current) => HelpText.DefaultParsingErrorsHandler(this, current));
+        }
 
         #endregion
     }

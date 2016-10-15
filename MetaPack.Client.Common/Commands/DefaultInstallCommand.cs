@@ -75,8 +75,12 @@ namespace MetaPack.Client.Common.Commands
 
                     if (package == null)
                     {
-                        Console.WriteLine("Cannot find package! Throwing exception.");
+                        Console.WriteLine("Cannot find package [{0}]. Throwing exception.", Id);
                         throw new ArgumentException("package");
+                    }
+                    else
+                    {
+                        Console.WriteLine("Found remote package [{0}].", package.GetFullName());
                     }
 
                     Console.WriteLine("Found package [{0} - {1}]. Installing package to SharePoint web site...",

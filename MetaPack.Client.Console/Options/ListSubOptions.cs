@@ -1,4 +1,6 @@
-﻿using MetaPack.Client.Console.Options.Base;
+﻿using CommandLine;
+using CommandLine.Text;
+using MetaPack.Client.Console.Options.Base;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace MetaPack.Client.Console.Options
 {
-    public class ListSubOptions : MetaPackSubOptionsBase
+    public class ListSubOptions : SharePointSubOptionsBase
     {
     }
 }

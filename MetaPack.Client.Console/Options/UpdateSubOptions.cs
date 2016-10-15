@@ -8,9 +8,7 @@ using System.Threading.Tasks;
 
 namespace MetaPack.Client.Console.Options
 {
-    public class UpdateSubOptions : MetaPackSubOptionsBase
+    public class UpdateSubOptions : InstallOperationSubOptionBase
     {
-        [Option("version", HelpText = "Version of the package.")]
-        public string Version { get; set; }
     }
 }

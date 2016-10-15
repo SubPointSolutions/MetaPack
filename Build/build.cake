@@ -51,6 +51,9 @@ var buildDirs = new [] {
 
     new DirectoryPath("./../MetaPack.Tests/bin/"),
 
+    new DirectoryPath("./../MetaPack.Client.Common/bin/"),
+    new DirectoryPath("./../MetaPack.Client.Console/bin/"),
+
     new DirectoryPath(nuGetPackagesDirectory)
 }; 
 
@@ -179,6 +182,65 @@ var environmentVariables = new string[] {
         }
     };  
 
+
+var metaPackCLIBinPath = "./../MetaPack.Client.Console/bin/debug/";
+var metaPackCLIFiles = new string[] {
+    "metapack.exe",
+    "metapack.exe.config",
+    
+    "CommandLine.dll",
+    
+    "MetaPack.Core.dll",
+    "MetaPack.NuGet.dll",
+    "MetaPack.SPMeta2.dll",
+
+    "SPMeta2.dll",
+    "SPMeta2.Standard.dll",
+
+    "SPMeta2.CSOM.dll",
+    "SPMeta2.CSOM.Standard.dll",
+
+    "Microsoft.SharePoint.Client.dll",
+    "Microsoft.SharePoint.Client.Publishing.dll",
+    "Microsoft.SharePoint.Client.Runtime.dll",
+    "Microsoft.SharePoint.Client.Runtime.dll",
+    "Microsoft.SharePoint.Client.Search.dll",
+    "Microsoft.SharePoint.Client.Taxonomy.dll",
+    "Microsoft.SharePoint.Client.WorkflowServices.dll",
+    
+    "NuGet.Core.dll",
+    "Microsoft.Web.XmlTransform.dll",
+
+    
+};
+
+var chocolateySpecs = new [] {
+        new ChocolateyPackSettings()
+        {
+            Id = "MetaPack",
+            Title = "MetaPack",
+            Version = g_hardcoreVersion,
+
+            Authors = new [] { "SubPoint Solutions" },
+            Owners = new [] { "SubPoint Solutions" },
+            LicenseUrl = new Uri("http://docs.subpointsolutions.com/metapack/license"),
+            ProjectUrl = new Uri("https://github.com/SubPointSolutions/metapack"),
+            
+            Description = "MetaPack CLI. Provides a command line interface to deploy SPMeta2 models to SharePoint web sites.",
+            Copyright = "Copyright 2016",
+            Tags = new [] { "SPMeta2", "Provision", "SharePoint", "Office365Dev", "Office365", "metapack", "nuget" },
+
+            RequireLicenseAcceptance = false,
+            
+            Files = metaPackCLIFiles.Select(f => new ChocolateyNuSpecContent{
+                 Source = System.IO.Path.Combine(metaPackCLIBinPath, f),
+                Target = "lib/metapack"
+            }).ToList(),
+            
+            AllowUnofficial = false
+        }
+ };
+
 //////////////////////////////////////////////////////////////////////
 // TASKS
 //////////////////////////////////////////////////////////////////////
@@ -282,8 +344,8 @@ Task("NuGet-Publishing")
         var packageFileName = string.Format("{0}.{1}.nupkg", nuspec.Id, nuspec.Version);
         var packageFilePath = string.Format("{0}/{1}", nuGetPackagesDirectory, packageFileName);
         
-		var nugetSource = EnvironmentVariable("spmeta2-reverse-nuget-source");
-		var nugetKey = EnvironmentVariable("spmeta2-reverse-nuget-key");
+		var nugetSource = EnvironmentVariable("metapack-nuget-source");
+		var nugetKey = EnvironmentVariable("metapack-nuget-key");
 
         if(System.IO.File.Exists(packageFilePath)) {
             
@@ -387,6 +449,22 @@ Task("Docs-Publishing")
       Information(string.Format("Completed docs merge.")); 
 });
 
+Task("Chocolatey-Packaging")
+    .IsDependentOn("Build")
+    .Does(() =>
+{
+    Information(string.Format("Creating Chocolatey package..."));
+
+    foreach(var chocoSpec in chocolateySpecs) {
+        Information(string.Format("Creating Chocolatey package for [{0}]", chocoSpec.Id));
+        ChocolateyPack(chocoSpec);
+    }
+
+    
+
+    Information(string.Format("Completed creating chocolatey package"));
+});
+
 //////////////////////////////////////////////////////////////////////
 // TASK TARGETS
 //////////////////////////////////////////////////////////////////////
@@ -403,6 +481,9 @@ Task("Default-Docs")
 Task("Default-Appveyor")
     .IsDependentOn("NuGet-Publishing")
     .IsDependentOn("Docs-Publishing");
+
+Task("Default-CLI-Chocolatey")
+    .IsDependentOn("Chocolatey-Packaging");
 
 //////////////////////////////////////////////////////////////////////
 // EXECUTION
