@@ -83,6 +83,11 @@ namespace MetaPack.Tests.Scenarios
             Can_Deploy_SPMeta2_Package_Internal(false, 2, true);
         }
 
+       
+        #endregion
+
+        #region utils
+
         private void Can_Deploy_SPMeta2_Package_Internal(bool isRootUrl, int provisionCount, bool? useDependencies)
         {
             var type = SolutionPackageType.SPMeta2;
@@ -193,11 +198,6 @@ namespace MetaPack.Tests.Scenarios
 
             Assert.IsTrue(canFind);
         }
-
-        #endregion
-
-        #region utils
-
 
 
         #endregion
