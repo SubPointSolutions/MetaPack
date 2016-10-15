@@ -33,14 +33,61 @@ namespace MetaPack.Tests.Scenarios
         [TestCategory("Metapack.Client.Commands")]
         public void Can_Call_List_Command()
         {
-            var url = EnvironmentUtils.GetEnvironmentVariable(RegConsts.SharePoint.RootWebUrl);
+            var webSiteUrl = EnvironmentUtils.GetEnvironmentVariable(RegConsts.SharePoint.RootWebUrl);
 
             var command = new NuGetListCommand
             {
-                Url = url
+                Url = webSiteUrl
             };
 
             command.Execute();
+        }
+
+        [TestMethod]
+        [TestCategory("Metapack.Client.Commands")]
+        public void Can_Call_Install_Command()
+        {
+            var webSiteUrl = EnvironmentUtils.GetEnvironmentVariable(RegConsts.SharePoint.RootWebUrl);
+            var hasInstallHit = false;
+
+            var solutionPackage = CreateNewSolutionPackage(SolutionPackageType.SPMeta2);
+            UpdatePackageVersion(solutionPackage);
+
+            var packageVersion = solutionPackage.Version;
+            var packageId = solutionPackage.Id;
+
+            var packagingService = new SPMeta2SolutionPackageService();
+
+            WithNuGetContext((apiUrl, apiKey, repoUrl) =>
+            {
+                // push a new version of the package
+                packagingService.Push(solutionPackage, apiUrl, apiKey);
+
+                // get the package
+                var ciRepo = PackageRepositoryFactory.Default.CreateRepository(repoUrl);
+                var ciPackage = ciRepo.FindPackageSafe(packageId, new SemanticVersion(packageVersion));
+
+                Assert.IsNotNull(ciPackage, "Solution package");
+
+                // command testing
+                var command = new DefaultInstallCommand
+                {
+                    Source = repoUrl,
+                    Url = webSiteUrl,
+
+                    Id = packageId,
+                    Version = packageVersion,
+
+                    PreRelease = true
+                };
+
+                command.Execute();
+
+                hasInstallHit = true;
+            });
+
+
+
         }
 
         #endregion

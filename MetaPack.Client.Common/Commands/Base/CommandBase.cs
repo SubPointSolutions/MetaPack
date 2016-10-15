@@ -10,6 +10,8 @@ namespace MetaPack.Client.Common.Commands.Base
     {
         #region properties
 
+        public bool PreRelease { get; set; }
+
         public abstract string Name { get; set; }
 
         public string Url { get; set; }
