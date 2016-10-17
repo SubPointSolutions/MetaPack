@@ -42,7 +42,7 @@ Modern software development blurs the boundaries between developers, IT-pros and
 MetaPack offers ultimate experience for all team: developers leverage API, IT-pros have a CLI and business have a friendly GUI based application.
 
 #### Improves CI/CD story
-Ultimately, MetaPack not only helps to ship SharePoint customizations to the client but also helps to improve continues integration and deployment story.
+Ultimately, MetaPack not only helps to ship SharePoint customizations to the client but also helps to improve continuous integration and deployment story.
 
 Create SPMeta2 models in Visual Studios, use API to create NuGet packages, ship them the way you like: API, CLI or GUI - it's all yours.
 
