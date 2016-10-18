@@ -10,11 +10,14 @@ using MetaPack.Client.Console.Options;
 using CommandLine;
 using MetaPack.Client.Common.Commands;
 using MetaPack.Client.Console.Consts;
+using System.Reflection;
 
 namespace MetaPack.Client.Console
 {
     class Program
     {
+        private static string WorkingDirectory { get; set; }
+
         static void Main(string[] args)
         {
             var currentFilePath = typeof(Program).Assembly.Location;
@@ -23,7 +26,9 @@ namespace MetaPack.Client.Console
             Log(string.Format("Loading metapack v{0}", FileVersionInfo.GetVersionInfo(currentFilePath).FileVersion));
             Log(string.Format("Working directory: [{0}]", currentFolderPath));
 
-            Directory.SetCurrentDirectory(currentFolderPath);
+            WorkingDirectory = currentFolderPath;
+            var currentDomain = AppDomain.CurrentDomain;
+            currentDomain.AssemblyResolve += LoadAssembliesFromWorkingDirectory;
 
             ParseAppConfig();
 
@@ -35,11 +40,21 @@ namespace MetaPack.Client.Console
             if (!Parser.Default.ParseArguments(args, options, (verb, subOption) =>
             {
                 if (options.List != null)
+                {
                     HandleListCommand(args, options);
+                }
                 else if (options.Install != null)
+                {
                     HandleInstallCommand(args, options);
+                }
                 else if (options.Update != null)
+                {
                     HandleUpdateCommand(args, options);
+                }
+                else if (options.Push != null)
+                {
+                    HandlePushCommand(args, options);
+                }
                 else
                     HandleMissedCommand(options);
             }))
@@ -49,6 +64,22 @@ namespace MetaPack.Client.Console
 
             Environment.Exit(0);
         }
+
+        static Assembly LoadAssembliesFromWorkingDirectory(object sender, ResolveEventArgs args)
+        {
+            var assemblyName = new AssemblyName(args.Name).Name + ".dll";
+
+            var folderPath = Path.GetDirectoryName(WorkingDirectory);
+            var assemblyPath = Path.Combine(folderPath, assemblyName);
+
+            Log(string.Format("Loading assenbly [{0}] from [{1}]", assemblyName, assemblyPath));
+
+            if (!File.Exists(assemblyPath)) return null;
+
+            var assembly = Assembly.LoadFrom(assemblyPath);
+            return assembly;
+        }
+
 
         private static void ParseAppConfig()
         {
@@ -101,6 +132,40 @@ namespace MetaPack.Client.Console
         {
             Log(options.GetUsage());
             Environment.Exit(Parser.DefaultExitCodeFail);
+        }
+
+        private static void HandlePushCommand(string[] args, DefaultOptions options)
+        {
+            var op = options.Push;
+
+            if (!Parser.Default.ParseArguments(args, op))
+                Environment.Exit(Parser.DefaultExitCodeFail);
+
+            if (string.IsNullOrWhiteSpace(op.Source))
+                op.Source = DefaultValues.DefaultNuGetRepository;
+
+            Log(string.Format("Resolving package path [{0}]", op.Package));
+            var packageFileFullPath = Path.GetFullPath(op.Package);
+            Log(string.Format("Resolved package path [{0}] into [{1}]", op.Package, packageFileFullPath));
+
+            if (!File.Exists(packageFileFullPath))
+            {
+                Log(string.Format("File does not exist:[{0}]", packageFileFullPath));
+            }
+
+            using (var stream = File.Open(packageFileFullPath, FileMode.Open))
+            {
+                var command = new DefaultNuGetPushCommand
+                {
+                    Source = op.Source,
+                    ApiKey = op.ApiKey,
+
+                    Package = stream
+
+                };
+
+                command.Execute();
+            }
         }
 
         private static void HandleUpdateCommand(string[] args, DefaultOptions options)

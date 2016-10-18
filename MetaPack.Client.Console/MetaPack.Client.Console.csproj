@@ -66,6 +66,7 @@
     <Compile Include="Options\Base\SharePointSubOptionsBase.cs" />
     <Compile Include="Options\Base\MetaPackSubOptionsBase.cs" />
     <Compile Include="Options\DefaultOptions.cs" />
+    <Compile Include="Options\PushSubOptions.cs" />
     <Compile Include="Options\ListSubOptions.cs" />
     <Compile Include="Options\UpdateSubOptions.cs" />
     <Compile Include="Options\InstallSubOptions.cs" />

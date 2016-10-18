@@ -170,6 +170,49 @@ namespace MetaPack.Tests.Scenarios
 
         }
 
+        [TestMethod]
+        [TestCategory("Metapack.Client.Commands")]
+        [TestCategory("CI.Core")]
+        public void Can_Call_Push_Command()
+        {
+            var hasInstallHit = false;
+
+            var solutionPackage = CreateNewSolutionPackage(SolutionPackageType.SPMeta2);
+            UpdatePackageVersion(solutionPackage);
+
+            var packageVersion = solutionPackage.Version;
+            var packageId = solutionPackage.Id;
+
+            var packagingService = new SPMeta2SolutionPackageService();
+            var packageStream = packagingService.Pack(solutionPackage, null);
+
+            WithNuGetContext((apiUrl, apiKey, repoUrl) =>
+            {
+                // command testing
+                var command = new DefaultNuGetPushCommand
+                {
+                    Source = repoUrl,
+                    ApiKey = apiKey,
+
+                    Package = packageStream
+                };
+
+                command.Execute();
+
+                // find package in the nuget gallery
+                var ciRepo = PackageRepositoryFactory.Default.CreateRepository(repoUrl);
+                var ciPackage = ciRepo.FindPackageSafe(packageId, new SemanticVersion(packageVersion));
+
+                Assert.IsNotNull(ciPackage, "Solution package caanot be found");
+
+                hasInstallHit = true;
+            });
+
+            Assert.IsTrue(hasInstallHit);
+
+        }
+
         #endregion
+
     }
 }

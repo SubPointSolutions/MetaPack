@@ -31,6 +31,10 @@ namespace MetaPack.Client.Console.Options
         [VerbOption("list", HelpText = "List installed packaged on SharePoit web site. Use 'list --help' for more information.")]
         public ListSubOptions List { get; set; }
 
+
+        [VerbOption("push", HelpText = "Push a packaged to NuGet gallery. Use 'push --help' for more information.")]
+        public PushSubOptions Push { get; set; }
+
         #endregion
 
         #region help

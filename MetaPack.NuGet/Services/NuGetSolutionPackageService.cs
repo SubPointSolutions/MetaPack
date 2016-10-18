@@ -26,7 +26,14 @@ namespace MetaPack.NuGet.Services
             Push(package, apiUrl, apiKey, 2 * 60 * 1000, false);
         }
 
-        public virtual void Push(SolutionPackageBase package, string apiUrl, string apiKey, int timeoutInMilliseconds, bool disableBuffering)
+        public virtual void Push(Stream package, string apiUrl, string apiKey)
+        {
+            Push(package, apiUrl, apiKey, 2 * 60 * 1000, false);
+        }
+
+        public virtual void Push(SolutionPackageBase package, string apiUrl, string apiKey,
+            int timeoutInMilliseconds,
+            bool disableBuffering)
         {
             var packageFileFolder = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString("N"));
             var packageFilePath = Path.Combine(packageFileFolder,
@@ -39,12 +46,11 @@ namespace MetaPack.NuGet.Services
                 this.PackToFile(package, packageFilePath);
 
                 var packageFile = new FileInfo(packageFilePath);
-                var size = packageFile.Length;
+                var packageSize = packageFile.Length;
 
                 var nuGetPackage = new ZipPackage(packageFilePath);
 
-                var ps = new PackageServer(apiUrl, "SPMeta2 NuGet Packaging API");
-                ps.PushPackage(apiKey, nuGetPackage, size, timeoutInMilliseconds, disableBuffering);
+                Push(nuGetPackage, packageSize, apiUrl, apiKey, timeoutInMilliseconds, disableBuffering);
 
             }
             finally
@@ -61,7 +67,25 @@ namespace MetaPack.NuGet.Services
                     }
                 }
             }
+        }
 
+        public virtual void Push(Stream package, string apiUrl, string apiKey,
+            int timeoutInMilliseconds,
+            bool disableBuffering)
+        {
+            var packageSize = package.Length;
+            var nuGetPackage = new ZipPackage(package);
+
+            Push(nuGetPackage, packageSize, apiUrl, apiKey, timeoutInMilliseconds, disableBuffering);
+        }
+
+        protected virtual void Push(ZipPackage package, long packageSize,
+            string apiUrl, string apiKey,
+            int timeoutInMilliseconds,
+            bool disableBuffering)
+        {
+            var ps = new PackageServer(apiUrl, "SPMeta2 NuGet Packaging API");
+            ps.PushPackage(apiKey, package, packageSize, timeoutInMilliseconds, disableBuffering);
         }
     }
 }
