@@ -514,7 +514,8 @@ Task("Default-Docs")
     .IsDependentOn("Docs-Publishing");
 
 Task("Default-Appveyor")
-    .IsDependentOn("NuGet-Publishing")
+	.IsDependentOn("Build") 
+    //.IsDependentOn("NuGet-Publishing")
     .IsDependentOn("Docs-Publishing");
 
 Task("Default-CLI-Chocolatey-Packaging")
