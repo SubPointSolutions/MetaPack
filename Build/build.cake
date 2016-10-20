@@ -8,6 +8,7 @@
 var target = Argument("target", "Default");
 var configuration = Argument("configuration", "Debug");
 
+
 var solutionDirectory = "./../"; 
 var solutionFilePath = "./../MetaPack.sln";
 
