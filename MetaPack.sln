@@ -38,6 +38,7 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MetaPack.Client.Console", "MetaPack.Client.Console\MetaPack.Client.Console.csproj", "{03F3D2A9-4BD8-4E76-8042-F617721222CA}"
 	ProjectSection(ProjectDependencies) = postProject
 		{A15F8430-15F3-4E25-AA60-221D244EA2FD} = {A15F8430-15F3-4E25-AA60-221D244EA2FD}
+		{9D4CEB39-5B75-46ED-989B-BFA648A9469E} = {9D4CEB39-5B75-46ED-989B-BFA648A9469E}
 		{262728CF-54E6-44CE-ADA9-8AB6934FC4CE} = {262728CF-54E6-44CE-ADA9-8AB6934FC4CE}
 		{C7E76DE7-4CA9-43B6-8DDD-78928F4267BB} = {C7E76DE7-4CA9-43B6-8DDD-78928F4267BB}
 	EndProjectSection
@@ -50,6 +51,17 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MetaPack.Client.Common", "M
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Build", "Build\Build.csproj", "{9A9AD32D-8364-4D57-8115-26178CB1EB3C}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docs", "Docs", "{4F769F89-E461-49F6-B05D-C3DBB7C773BC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SubPointSolutions.Docs", "SubPointSolutions.Docs\SubPointSolutions.Docs.csproj", "{B30F6CA8-3E96-4734-B6B1-A61F201099E4}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{393BB1FB-D249-409A-A2CC-7F83BBFA82F2}"
+	ProjectSection(SolutionItems) = preProject
+		.nuget\NuGet.Config = .nuget\NuGet.Config
+		.nuget\NuGet.exe = .nuget\NuGet.exe
+		.nuget\NuGet.targets = .nuget\NuGet.targets
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -87,6 +99,10 @@ Global
 		{9A9AD32D-8364-4D57-8115-26178CB1EB3C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{9A9AD32D-8364-4D57-8115-26178CB1EB3C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9A9AD32D-8364-4D57-8115-26178CB1EB3C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B30F6CA8-3E96-4734-B6B1-A61F201099E4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B30F6CA8-3E96-4734-B6B1-A61F201099E4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B30F6CA8-3E96-4734-B6B1-A61F201099E4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B30F6CA8-3E96-4734-B6B1-A61F201099E4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -100,5 +116,6 @@ Global
 		{03F3D2A9-4BD8-4E76-8042-F617721222CA} = {D963C6F2-6072-4996-828A-438CD4EE1D04}
 		{9D4CEB39-5B75-46ED-989B-BFA648A9469E} = {D963C6F2-6072-4996-828A-438CD4EE1D04}
 		{9A9AD32D-8364-4D57-8115-26178CB1EB3C} = {1CB33485-2130-4560-9B0E-73A2DB07F650}
+		{B30F6CA8-3E96-4734-B6B1-A61F201099E4} = {4F769F89-E461-49F6-B05D-C3DBB7C773BC}
 	EndGlobalSection
 EndGlobal

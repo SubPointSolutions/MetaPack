@@ -387,14 +387,14 @@ Task("Docs-Publishing")
      var docsRepoUserName = EnvironmentVariable("subpointsolutions-docs-username");
 	 var docsRepoUserPassword = EnvironmentVariable("subpointsolutions-docs-userpassword");
 
-     var docsRepoFolder = string.Format(@"{0}/m2-r",  "c:/__m2");
+     var docsRepoFolder = string.Format(@"{0}/m2-mp",  "c:/__m2");
      var docsRepoUrl = @"https://github.com/SubPointSolutions/subpointsolutions-docs";
      var docsRepoPushUrl = string.Format(@"https://{0}:{1}@github.com/SubPointSolutions/subpointsolutions-docs", docsRepoUserName, docsRepoUserPassword);
 
-     var srcDocsPath = System.IO.Path.GetFullPath(@"./../SubPointSolutions.Docs/Views/SPMeta2-Reverse");
+     var srcDocsPath = System.IO.Path.GetFullPath(@"./../SubPointSolutions.Docs/Views/metapack");
      var dstDocsPath = string.Format(@"{0}/subpointsolutions-docs/SubPointSolutions.Docs/Views", docsRepoFolder);
 
-     var commitName = string.Format(@"SPMeta2 Reverse - CI docs update {0}", DateTime.Now.ToString("yyyyMMdd_HHmmssfff"));
+     var commitName = string.Format(@"MetaPack - CI docs update {0}", DateTime.Now.ToString("yyyyMMdd_HHmmssfff"));
 
      Information(string.Format("Merging documentation wiht commit:[{0}]", commitName));
 
@@ -429,6 +429,7 @@ Task("Docs-Publishing")
             string.Format("copy-item  '{0}' '{1}' -Recurse -Force", srcDocsPath,  dstDocsPath),
             string.Format("git add *.md"),
             string.Format("git add *.cs"),
+			string.Format("git add *.cshtml"),
             string.Format("git commit -m '{0}'", commitName),
       };
 
