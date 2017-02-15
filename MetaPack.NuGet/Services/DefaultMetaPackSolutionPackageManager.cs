@@ -218,14 +218,21 @@ namespace MetaPack.NuGet.Services
 
         protected virtual void OnPackageInstalling(object sender, PackageOperationEventArgs e)
         {
+            MetaPackTrace.WriteLine(string.Format("Handling NuGet package OnPackageInstalling event"));
+
             // save pachage to a local folder
             // cause package can't be serialized to be passed to a new app domain
             var tmpPackageFilePath = SavePackageAsTempFile(e.Package);
 
+            MetaPackTrace.WriteLine("Resolving solution tool package...");
             var toolPackage = ResolveSolutionToolPackage(e.Package);
 
             if (string.IsNullOrEmpty(toolPackage.Id))
                 throw new Exception("ToolPackage.Id is null or empty");
+
+            MetaPackTrace.WriteLine(string.Format("Resolved solution tool package with ID:[{0}] version:[{1}]",
+                toolPackage.Id,
+                toolPackage.Version));
 
             // install main tool package
             var toolResolver = MetaPackServiceContainer.Instance.GetService<ToolResolutionService>();
@@ -537,12 +544,16 @@ namespace MetaPack.NuGet.Services
 
                         MetaPackTrace.WriteLine(string.Format("Deploying package..."));
                         deploymentService.Deploy(solutionDeploymentOptions);
+
+                        MetaPackTrace.WriteLine(string.Format("Deployment completed"));
                     }
 
                     return ops;
                 });
 
             }
+
+            MetaPackTrace.WriteLine(string.Format("Handling NuGet package OnPackageInstalling completed"));
         }
 
         #endregion

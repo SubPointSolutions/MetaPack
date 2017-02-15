@@ -74,6 +74,7 @@
     <Compile Include="Services\DefaultMetaPackSolutionPackageManager.cs" />
     <Compile Include="Services\IToolResolutionService.cs" />
     <Compile Include="Services\NuGetSolutionPackageService.cs" />
+    <Compile Include="Services\CrossAppDomainTraceService.cs" />
     <Compile Include="Services\SharePointCSOMFileSystem.cs" />
     <Compile Include="Services\MetaPackSolutionPackageManagerBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

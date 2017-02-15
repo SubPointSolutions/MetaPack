@@ -22,7 +22,7 @@ namespace MetaPack.Tests.Services
             IsErrorEnabled = true;
             IsCriticalEnabled = true;
 
-            var fileName = string.Format("spmeta2.regression.{0}.log", GetTimestamp());
+            var fileName = string.Format("metapack.regression.{0}.log", GetTimestamp());
             LogFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, fileName);
         }
 

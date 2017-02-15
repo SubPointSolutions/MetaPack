@@ -4,6 +4,9 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using MetaPack.Core;
+using MetaPack.Core.Services;
+using MetaPack.Core.Utils;
 using MetaPack.NuGet.Services;
 
 namespace MetaPack.NuGet.Utils
@@ -38,22 +41,24 @@ namespace MetaPack.NuGet.Utils
             // Store the parent domain to pass messages to later
             _parentDomain = parentDomain;
 
-            // Create and register the delegate trace listener
-            var listener = new DelegateTraceListener(Write);
+            var logginService = new CrossAppDomainTraceService();
+            MetaPackServiceContainer.Instance.ReplaceService(typeof(TraceServiceBase), logginService);
 
-            Trace.Listeners.Add(listener);
-            Debug.Listeners.Add(listener);
+            CrossAppDomainTraceService.OnTraceEvent += (s, e) =>
+            {
+                Write(e.TraceString);
+            };
         }
 
         private void Write(string message)
         {
-            // Send the message to the parent domain
             _parentDomain.RemoteWrite(message);
         }
 
         private void RemoteWrite(string message)
         {
-            Trace.Write(message);
+            var loggingService = MetaPackServiceContainer.Instance.GetService<TraceServiceBase>();
+            loggingService.Information(0, message);
         }
     }
 }

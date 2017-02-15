@@ -352,14 +352,37 @@ namespace MetaPack.SPMeta2.Services
 
         }
 
+        protected virtual string GetOnModelNodeEventTraceString(object s)
+        {
+            var eventType = s.GetType();
+
+            var TotalModelNodeCount = (int)eventType.GetProperty("TotalModelNodeCount").GetValue(s);
+            var ProcessedModelNodeCount = (int)eventType.GetProperty("ProcessedModelNodeCount").GetValue(s);
+
+            var currentNode = eventType.GetProperty("CurrentNode").GetValue(s);
+            var currrentNodeValue = currentNode.GetType().GetProperty("Value").GetValue(currentNode);
+
+            var traceString = string.Format("[{0}/{1}] - [{2}%] - [{3}] [{4}]",
+                new object[]
+                {
+                    ProcessedModelNodeCount,
+                    TotalModelNodeCount,
+                    100d*(double) ProcessedModelNodeCount/(double) TotalModelNodeCount,
+                    currrentNodeValue.GetType().Name,
+                    currrentNodeValue
+                });
+
+            return traceString;
+        }
+
         public void OnModelNodeProcessing(object o, object s)
         {
-
+            MetaPackTrace.WriteLine(string.Format("Processing: {0}", GetOnModelNodeEventTraceString(s)));
         }
 
         public void OnModelNodeProcessed(object o, object s)
         {
-
+            MetaPackTrace.WriteLine(string.Format("Processed: {0}", GetOnModelNodeEventTraceString(s)));
         }
     }
 }
