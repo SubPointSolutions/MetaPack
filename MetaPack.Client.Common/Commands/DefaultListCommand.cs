@@ -4,7 +4,6 @@ using System.Linq;
 using MetaPack.Client.Common.Commands.Base;
 using MetaPack.Client.Common.Services;
 using MetaPack.NuGet.Services;
-using MetaPack.SPMeta2.Services;
 using Microsoft.SharePoint.Client;
 using NuGet;
 

@@ -3,7 +3,6 @@ using System.Diagnostics;
 using System.Linq;
 using MetaPack.Client.Common.Commands.Base;
 using MetaPack.Client.Common.Services;
-using MetaPack.SPMeta2.Services;
 using Microsoft.SharePoint.Client;
 using NuGet;
 using System.IO;
@@ -42,8 +41,10 @@ namespace MetaPack.Client.Common.Commands
             if (Package == null)
                 throw new ArgumentException("Package");
 
-            var packagingService = new SPMeta2SolutionPackageService();
-            packagingService.Push(Package, Source, ApiKey);
+            throw new NotImplementedException();
+
+            //var packagingService = new 2SolutionPackageService();
+            //packagingService.Push(Package, Source, ApiKey);
 
             return null;
         }

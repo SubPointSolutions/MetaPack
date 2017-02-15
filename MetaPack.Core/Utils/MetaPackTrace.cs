@@ -22,8 +22,17 @@ namespace MetaPack.Core.Utils
 
         public static void WriteLine(string message)
         {
+            WriteLine(message, null);
+        }
+
+        public static void WriteLine(string message, params object[] p)
+        {
             var traceService = MetaPackServiceContainer.Instance.GetService<TraceServiceBase>();
-            traceService.Information(0, message);
+
+            if (p != null)
+                traceService.Information(0, string.Format(message, p));
+            else
+                traceService.Information(0, message);
         }
 
         #endregion

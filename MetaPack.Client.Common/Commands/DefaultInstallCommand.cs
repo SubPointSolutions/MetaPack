@@ -1,14 +1,13 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using MetaPack.Client.Common.Commands.Base;
 using MetaPack.Client.Common.Services;
 using MetaPack.NuGet.Services;
-using MetaPack.SPMeta2.Services;
 using Microsoft.SharePoint.Client;
 using NuGet;
-using SPMeta2.CSOM.Standard.Services;
-using SPMeta2.Diagnostic;
+using MetaPack.Core.Utils;
 
 namespace MetaPack.Client.Common.Commands
 {
@@ -24,7 +23,7 @@ namespace MetaPack.Client.Common.Commands
             }
         }
 
-        public string Source { get; set; }
+        public List<string> PackageSources { get; set; }
         public string Id { get; set; }
         public string Version { get; set; }
 
@@ -33,7 +32,7 @@ namespace MetaPack.Client.Common.Commands
         #region methods
         public override object Execute()
         {
-            if (string.IsNullOrEmpty(Source))
+            if (PackageSources.Count == 0)
                 throw new ArgumentException("Source");
 
             if (string.IsNullOrEmpty(Id))
@@ -60,42 +59,41 @@ namespace MetaPack.Client.Common.Commands
                 context =>
                 {
                     // connect to remote repo
-                    Console.WriteLine("Connecting to NuGet repository:[{0}]", Source);
-                    var repo = PackageRepositoryFactory.Default.CreateRepository(Source);
+                    var repo = new AggregateRepository(PackageRepositoryFactory.Default, PackageSources, true);
                     IPackage package = null;
 
                     if (!string.IsNullOrEmpty(Version))
                     {
-                        Console.WriteLine("Fetching package [{0}] with version [{1}]", Id, Version);
+                        MetaPackTrace.WriteLine("Fetching package [{0}] with version [{1}]", Id, Version);
                         package = repo.FindPackage(Id, new SemanticVersion(Version));
                     }
                     else
                     {
-                        Console.WriteLine("Fetching the latest package [{0}]", Id);
+                        MetaPackTrace.WriteLine("Fetching the latest package [{0}]", Id);
                         package = repo.FindPackage(Id);
                     }
 
                     if (package == null)
                     {
-                        Console.WriteLine("Cannot find package [{0}]. Throwing exception.", Id);
+                        MetaPackTrace.WriteLine("Cannot find package [{0}]. Throwing exception.", Id);
                         throw new ArgumentException("package");
                     }
                     else
                     {
-                        Console.WriteLine("Found remote package [{0}].", package.GetFullName());
+                        MetaPackTrace.WriteLine("Found remote package [{0}].", package.GetFullName());
                     }
 
-                    Console.WriteLine("Found package [{0} - {1}]. Installing package to SharePoint web site...",
+                    MetaPackTrace.WriteLine("Found package [{0} - {1}]. Installing package to SharePoint web site...",
                             package.Id,
                             package.Version);
-                  
+
                     // create manager with repo and current web site
                     MetaPackSolutionPackageManagerBase packageManager = new DefaultMetaPackSolutionPackageManager(repo, context);
 
                     // install package
                     packageManager.InstallPackage(package, false, PreRelease);
 
-                    Console.WriteLine("Completed installation. All good!");
+                    MetaPackTrace.WriteLine("Completed installation. All good!");
                 });
 
             return null;

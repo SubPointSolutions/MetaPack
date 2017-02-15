@@ -8,7 +8,6 @@ using System.Threading.Tasks;
 
 namespace MetaPack.Client.Console.Options
 {
-
     public class DefaultOptions
     {
         #region constructors
