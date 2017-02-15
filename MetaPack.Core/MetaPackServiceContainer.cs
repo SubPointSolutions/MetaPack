@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using MetaPack.Core.Services;
-using MetaPack.Core.Services.Base;
 
 namespace MetaPack.Core
 {
@@ -91,6 +90,18 @@ namespace MetaPack.Core
         #region properties
 
         public static MetaPackServiceContainer Instance { get; set; }
+
+
+        public void ReplaceService(Type type, object service)
+        {
+            if (!Services.ContainsKey(type))
+                Services.Add(type, new List<object>());
+
+            var list = Services[type];
+
+            list.Clear();
+            list.Add(service);
+        }
 
         #endregion
     }

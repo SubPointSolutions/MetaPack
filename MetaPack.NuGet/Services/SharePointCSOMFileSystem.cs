@@ -593,7 +593,6 @@ namespace MetaPack.NuGet.Services
         protected virtual void EnsureMetapackLibrary()
         {
             // we may consider using SPMeta2 model provision later on
-
             LogUtils.Log("Ensuring MetaPack list");
 
             var web = _context.Web;
@@ -602,6 +601,7 @@ namespace MetaPack.NuGet.Services
             if (list == null)
             {
                 LogUtils.Log("MetaPack list does not exist. Creating new one..");
+
                 var newList = web.Lists.Add(new ListCreationInformation
                 {
                     TemplateType = (int)ListTemplateType.DocumentLibrary,

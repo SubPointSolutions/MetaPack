@@ -18,14 +18,15 @@ var defaultTestAssemblyPaths = new string[] {
 };
 
 var useNuGetPackaging = true;
-var useNuGetPublishing = true;
+var useNuGetPublishing = false;
 
 var useCIBuildVersion = false;
 
-var g_hardcoreVersionBase = "1.2.95";
-var g_SPMeta2VersionBase = "1.2.95";
+var g_hardcoreVersionBase = "1.2.100";
+var g_SPMeta2VersionBase = "1.2.100";
 
 var g_hardcoreVersion = g_hardcoreVersionBase + "-beta1";
+g_hardcoreVersion = g_hardcoreVersionBase;
 
 var date = DateTime.Now;
 var stamp = (date.ToString("yy") + date.DayOfYear.ToString("000") + date.ToString("HHmm"));
@@ -50,6 +51,7 @@ var buildDirs = new [] {
     new DirectoryPath("./../MetaPack.NuGet/bin/"),
 
     new DirectoryPath("./../MetaPack.SPMeta2/bin/"),
+    new DirectoryPath("./../MetaPack.SharePointPnP/bin/"),
 
     new DirectoryPath("./../MetaPack.Tests/bin/"),
 
@@ -153,6 +155,7 @@ var environmentVariables = new string[] {
             {
                 new NuSpecDependency() { Id = "MetaPack.Core", Version = g_SPMeta2VersionBase },
                 new NuSpecDependency() { Id = "MetaPack.NuGet", Version = g_SPMeta2VersionBase },
+                new NuSpecDependency() { Id = "SPMeta2.Core", Version = g_SPMeta2VersionBase },
             },
 
              Authors = new [] { "SubPoint Solutions" },
@@ -176,6 +179,45 @@ var environmentVariables = new string[] {
                 },
                 new NuSpecContent {
                     Source = "MetaPack.SPMeta2.xml",
+                    Target = "lib/net45"
+                }
+            },
+            
+            OutputDirectory = new DirectoryPath(nuGetPackagesDirectory)
+        },
+
+        new NuGetPackSettings()
+        {
+            Id = "MetaPack.SharePointPnP",
+            Version = g_hardcoreVersion,
+
+            Dependencies = new []
+            {
+                new NuSpecDependency() { Id = "MetaPack.Core", Version = g_SPMeta2VersionBase },
+                new NuSpecDependency() { Id = "MetaPack.NuGet", Version = g_SPMeta2VersionBase },
+            },
+
+            Authors = new [] { "SubPoint Solutions" },
+            Owners = new [] { "SubPoint Solutions" },
+            LicenseUrl = new Uri("http://docs.subpointsolutions.com/metapack/license"),
+            ProjectUrl = new Uri("https://github.com/SubPointSolutions/metapack"),
+            
+            Description = "MetaPack implementation for SharePointPnP model packaging, delivery and updates with NuGet protocol. Enables SharePointPnP model provision from NuGet galleries.",
+            Copyright = "Copyright 2016",
+            Tags = new [] { "SPMeta2", "Provisoin", "SharePoint", "Office365Dev", "Office365", "metapack", "nuget" },
+
+            RequireLicenseAcceptance = false,
+            Symbols = false,
+            NoPackageAnalysis = true,
+            BasePath  = "./../MetaPack.SharePointPnP/bin/debug",
+            
+            Files = new [] {
+                new NuSpecContent {
+                    Source = "MetaPack.SharePointPnP.dll",
+                    Target = "lib/net45"
+                },
+                new NuSpecContent {
+                    Source = "MetaPack.SharePointPnP.xml",
                     Target = "lib/net45"
                 }
             },
@@ -304,7 +346,8 @@ Task("Run-Unit-Tests")
 });
 
 Task("NuGet-Packaging")
-    .IsDependentOn("Run-Unit-Tests")
+    //.IsDependentOn("Run-Unit-Tests")
+	.IsDependentOn("Build")
     .Does(() =>
 {
     if(!useNuGetPackaging) {
@@ -506,6 +549,9 @@ Task("CLI-Chocolatey-Publishing")
 
 Task("Default")
     .IsDependentOn("Run-Unit-Tests");
+
+Task("Default-NuGet-Packaging")
+    .IsDependentOn("NuGet-Packaging");
 
 Task("Default-NuGet")
     .IsDependentOn("NuGet-Publishing");

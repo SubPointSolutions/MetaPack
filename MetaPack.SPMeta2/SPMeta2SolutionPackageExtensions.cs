@@ -1,5 +1,4 @@
 ﻿using System;
-using SPMeta2.Models;
 
 namespace MetaPack.SPMeta2
 {
@@ -7,20 +6,20 @@ namespace MetaPack.SPMeta2
     {
         #region methods
 
-        public static SPMeta2SolutionPackage AddModel(this SPMeta2SolutionPackage package, ModelNode model)
-        {
-            return AddModel(package, model, null);
-        }
+        //public static SPMeta2SolutionPackage AddModel(this SPMeta2SolutionPackage package, ModelNode model)
+        //{
+        //    return AddModel(package, model, null);
+        //}
 
-        public static SPMeta2SolutionPackage AddModel(this SPMeta2SolutionPackage package, ModelNode model, Action<ModelNode> action)
-        {
-            if (action != null)
-                action(model);
+        //public static SPMeta2SolutionPackage AddModel(this SPMeta2SolutionPackage package, ModelNode model, Action<ModelNode> action)
+        //{
+        //    if (action != null)
+        //        action(model);
 
-            package.Models.Add(model);
+        //    package.Models.Add(model);
 
-            return package;
-        }
+        //    return package;
+        //}
 
         #endregion
     }

@@ -15,7 +15,22 @@ namespace MetaPack.Core.Packaging
     [DataContract]
     public class SolutionPackageDependency
     {
+        #region pproperties
+
+        /// <summary>
+        /// Corresponds to NuGet package spec design 
+        /// https://docs.nuget.org/ndocs/schema/nuspec
+        /// </summary>
+        [DataMember]
         public string Id { get; set; }
+
+        /// <summary>
+        /// Corresponds to NuGet package spec design 
+        /// https://docs.nuget.org/ndocs/schema/nuspec
+        /// </summary>
+        [DataMember]
         public string Version { get; set; }
+
+        #endregion
     }
 }

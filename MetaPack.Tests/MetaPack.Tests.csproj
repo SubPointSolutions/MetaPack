@@ -58,24 +58,24 @@
       <HintPath>..\packages\Newtonsoft.Json.6.0.8\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="NuGet.Core, Version=2.11.1.812, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\NuGet.Core.2.11.1\lib\net40-Client\NuGet.Core.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="NuGet.Core, Version=1.6.30117.9648, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\NuGet.Core.2.12.0\lib\net40-Client\NuGet.Core.dll</HintPath>
     </Reference>
     <Reference Include="SPMeta2, Version=1.0.0.0, Culture=neutral, PublicKeyToken=d71faae3bf28531a, processorArchitecture=MSIL">
-      <HintPath>..\packages\SPMeta2.Core.1.2.95-beta1\lib\net45\SPMeta2.dll</HintPath>
+      <HintPath>..\packages\SPMeta2.Core.1.2.100\lib\net45\SPMeta2.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="SPMeta2.CSOM, Version=1.0.0.0, Culture=neutral, PublicKeyToken=d71faae3bf28531a, processorArchitecture=MSIL">
-      <HintPath>..\packages\SPMeta2.CSOM.Foundation.1.2.95-beta1\lib\net45\SPMeta2.CSOM.dll</HintPath>
+      <HintPath>..\packages\SPMeta2.CSOM.Foundation.1.2.100\lib\net45\SPMeta2.CSOM.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="SPMeta2.CSOM.Standard, Version=1.0.0.0, Culture=neutral, PublicKeyToken=d71faae3bf28531a, processorArchitecture=MSIL">
-      <HintPath>..\packages\SPMeta2.CSOM.Standard.1.2.95-beta1\lib\net45\SPMeta2.CSOM.Standard.dll</HintPath>
+      <HintPath>..\packages\SPMeta2.CSOM.Standard.1.2.100\lib\net45\SPMeta2.CSOM.Standard.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="SPMeta2.Standard, Version=1.0.0.0, Culture=neutral, PublicKeyToken=d71faae3bf28531a, processorArchitecture=MSIL">
-      <HintPath>..\packages\SPMeta2.Core.Standard.1.2.95-beta1\lib\net45\SPMeta2.Standard.dll</HintPath>
+      <HintPath>..\packages\SPMeta2.Core.Standard.1.2.100\lib\net45\SPMeta2.Standard.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
@@ -108,11 +108,12 @@
     <Compile Include="Common\SolutionPackageType.cs" />
     <Compile Include="Consts\RegConsts.cs" />
     <Compile Include="Extensions\IPackageRepositoryExtensions.cs" />
-    <Compile Include="Scenarios\ApiSamplesTests.cs" />
-    <Compile Include="Scenarios\ClientScenarioTests.cs" />
+    <Compile Include="Scenarios\_ApiSamplesTests.cs" />
+    <Compile Include="Scenarios\_ClientScenarioTests.cs" />
+    <Compile Include="Services\RegressionTraceService.cs" />
     <Compile Include="Utils\EnvironmentUtils.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Scenarios\NuGetScenarioTests.cs" />
+    <Compile Include="Scenarios\_NuGetScenarioTests.cs" />
     <Compile Include="Scenarios\DeploymentScenarioTests.cs" />
     <Compile Include="Scenarios\PackagingScenarioTests.cs" />
   </ItemGroup>
@@ -129,16 +130,43 @@
       <Project>{A15F8430-15F3-4E25-AA60-221D244EA2FD}</Project>
       <Name>MetaPack.NuGet</Name>
     </ProjectReference>
+    <ProjectReference Include="..\MetaPack.SharePointPnP\MetaPack.SharePointPnP.csproj">
+      <Project>{02FD93D0-B74C-4571-8AF4-4E7A849DB8D1}</Project>
+      <Name>MetaPack.SharePointPnP</Name>
+    </ProjectReference>
     <ProjectReference Include="..\MetaPack.SPMeta2\MetaPack.SPMeta2.csproj">
       <Project>{c7e76de7-4ca9-43b6-8ddd-78928f4267bb}</Project>
       <Name>MetaPack.SPMeta2</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="Data\PnPTemplates\OpenXML\MetaPack.SharePointPnP.DefaultTeamSite.pnp">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Data\PnPTemplates\Folders\SharePoint.UI.Responsive\Disable-SPResponsiveUI.ps1">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Data\PnPTemplates\Folders\SharePoint.UI.Responsive\Enable-SPResponsiveUI.ps1">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Data\PnPTemplates\Folders\SharePoint.UI.Responsive\README.MD">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Regression\" />
+    <Content Include="Data\PnPTemplates\Folders\SharePoint.UI.Responsive\01-Responsive.UI.Infrastructure.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Data\PnPTemplates\Folders\SharePoint.UI.Responsive\02-Responsive.UI.Template.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Data\PnPTemplates\Folders\SharePoint.UI.Responsive\PnP-Responsive-UI.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Data\PnPTemplates\Folders\SharePoint.UI.Responsive\pnp_responsive_ui.css">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">

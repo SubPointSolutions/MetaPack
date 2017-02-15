@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Linq;
 using MetaPack.Client.Common.Commands.Base;
 using MetaPack.Client.Common.Services;
+using MetaPack.NuGet.Services;
 using MetaPack.SPMeta2.Services;
 using Microsoft.SharePoint.Client;
 using NuGet;
@@ -86,7 +87,7 @@ namespace MetaPack.Client.Common.Commands
 
                     Console.WriteLine("Checking local package [{0}]", Id);
                     // create manager with repo and current web site
-                    var packageManager = new SPMeta2SolutionPackageManager(repo, context);
+                    var packageManager = new DefaultMetaPackSolutionPackageManager(repo, context);
 
                     //var localPackage = packageManager.LocalRepository.FindPackage(package.Id, package.Version, true, true);
                     var localPackages = packageManager.LocalRepository.FindPackagesById(package.Id);
@@ -126,26 +127,29 @@ namespace MetaPack.Client.Common.Commands
                     Console.WriteLine("SPMeta2 runtime:[{0}]", m2runtime);
 
                     Console.WriteLine("Using StandardCSOMProvisionService...");
-                    // setup provision services
-                    packageManager.ProvisionService = new StandardCSOMProvisionService();
-                    packageManager.ProvisionServiceHost = context;
+                    
+                    // TODO
 
-                    // SPMeta2 provision tracing
-                    packageManager.ProvisionService.OnModelNodeProcessed += (sender, args) =>
-                    {
-                        var msg = string.Format(" Provisioning: [{0}/{1}] - [{2}%] - [{3}] [{4}]",
-                            new object[]
-                            {
-                                args.ProcessedModelNodeCount,
-                                args.TotalModelNodeCount,
-                                100d*(double) args.ProcessedModelNodeCount/(double) args.TotalModelNodeCount,
-                                args.CurrentNode.Value.GetType().Name,
-                                args.CurrentNode.Value
-                            });
+                    //// setup provision services
+                    //packageManager.ProvisionService = new StandardCSOMProvisionService();
+                    //packageManager.ProvisionServiceHost = context;
 
-                        Trace.WriteLine(msg);
-                        Console.WriteLine(msg);
-                    };
+                    //// SPMeta2 provision tracing
+                    //packageManager.ProvisionService.OnModelNodeProcessed += (sender, args) =>
+                    //{
+                    //    var msg = string.Format(" Provisioning: [{0}/{1}] - [{2}%] - [{3}] [{4}]",
+                    //        new object[]
+                    //        {
+                    //            args.ProcessedModelNodeCount,
+                    //            args.TotalModelNodeCount,
+                    //            100d*(double) args.ProcessedModelNodeCount/(double) args.TotalModelNodeCount,
+                    //            args.CurrentNode.Value.GetType().Name,
+                    //            args.CurrentNode.Value
+                    //        });
+
+                    //    Trace.WriteLine(msg);
+                    //    Console.WriteLine(msg);
+                    //};
 
                     // install package
                     packageManager.InstallPackage(package, false, PreRelease);

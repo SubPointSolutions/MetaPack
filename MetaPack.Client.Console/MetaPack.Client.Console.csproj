@@ -53,6 +53,10 @@
     <Reference Include="CommandLine">
       <HintPath>..\packages\CommandLineParser.1.9.71\lib\net45\CommandLine.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.Web.XmlTransform, Version=2.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Web.Xdt.2.1.1\lib\net40\Microsoft.Web.XmlTransform.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
@@ -85,6 +89,18 @@
     <ProjectReference Include="..\MetaPack.Client.Common\MetaPack.Client.Common.csproj">
       <Project>{9D4CEB39-5B75-46ED-989B-BFA648A9469E}</Project>
       <Name>MetaPack.Client.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MetaPack.Core\MetaPack.Core.csproj">
+      <Project>{262728CF-54E6-44CE-ADA9-8AB6934FC4CE}</Project>
+      <Name>MetaPack.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MetaPack.NuGet\MetaPack.NuGet.csproj">
+      <Project>{A15F8430-15F3-4E25-AA60-221D244EA2FD}</Project>
+      <Name>MetaPack.NuGet</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MetaPack.SPMeta2\MetaPack.SPMeta2.csproj">
+      <Project>{C7E76DE7-4CA9-43B6-8DDD-78928F4267BB}</Project>
+      <Name>MetaPack.SPMeta2</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

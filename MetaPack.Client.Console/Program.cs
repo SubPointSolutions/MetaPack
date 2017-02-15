@@ -11,6 +11,10 @@ using CommandLine;
 using MetaPack.Client.Common.Commands;
 using MetaPack.Client.Console.Consts;
 using System.Reflection;
+using MetaPack.Core;
+using MetaPack.Core.Services;
+using MetaPack.NuGet.Services;
+using MetaPack.SPMeta2.Services;
 
 namespace MetaPack.Client.Console
 {
@@ -31,6 +35,7 @@ namespace MetaPack.Client.Console
             currentDomain.AssemblyResolve += LoadAssembliesFromWorkingDirectory;
 
             ParseAppConfig();
+            ConfigureServiceContainer();
 
             if (!args.Any())
                 args = new string[1] { "help" };
@@ -63,6 +68,15 @@ namespace MetaPack.Client.Console
             }
 
             Environment.Exit(0);
+        }
+
+        private static void ConfigureServiceContainer()
+        {
+            var instance = MetaPackServiceContainer.Instance;
+
+            instance.RegisterService(typeof(TraceServiceBase), new TraceSourceService());
+            instance.RegisterService(typeof(NuGetSolutionPackageService), new SPMeta2SolutionPackageService());
+            instance.RegisterService(typeof(SolutionPackageDeploymentService), new SPMeta2SolutionPackageService());
         }
 
         static Assembly LoadAssembliesFromWorkingDirectory(object sender, ResolveEventArgs args)

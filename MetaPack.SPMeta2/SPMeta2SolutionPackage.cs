@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Runtime.Serialization;
 using MetaPack.Core;
 using MetaPack.Core.Packaging;
-using SPMeta2.Models;
+//using SPMeta2.Models;
 
 namespace MetaPack.SPMeta2
 {
@@ -18,15 +18,31 @@ namespace MetaPack.SPMeta2
 
         public SPMeta2SolutionPackage()
         {
-            Models = new List<ModelNode>();
+            ModelFolders = new List<string>();
         }
 
         #endregion
 
         #region properties
 
-        [DataMember]
-        public List<ModelNode> Models { get; set; }
+        /// <summary>
+        /// Path to folders with serialized models
+        /// </summary>
+        [IgnoreDataMember]
+        public List<string> ModelFolders { get; set; }
+
+       
+        #endregion
+
+        #region methods
+
+        [OnDeserializing]
+        private void OnDeserializing(StreamingContext context)
+        {
+            if (ModelFolders == null)
+                ModelFolders = new List<string>();
+        }
+
 
         #endregion
     }

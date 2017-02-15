@@ -45,24 +45,31 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Common\DefaultOptions.cs" />
+    <Compile Include="Common\OptionValue.cs" />
     <Compile Include="Consts\MetaPackConsts.cs" />
     <Compile Include="Packaging\SolutionPackageDependency.cs" />
     <Compile Include="MetaPackServiceContainer.cs" />
-    <Compile Include="Services\ISolutionPackageSerializationService.cs" />
+    <Compile Include="Packaging\SolutionPackageProvisionOptions.cs" />
+    <Compile Include="Packaging\SolutionPackageProvisionOptionsExtensions.cs" />
     <Compile Include="Services\DefaultXMLSerializationService.cs" />
     <Compile Include="Services\SerializationServiceBase.cs" />
+    <Compile Include="Services\SolutionPackageDeploymentServiceBase.cs" />
     <Compile Include="Services\SolutionPackageServiceBase.cs" />
     <Compile Include="Services\SolutionPackageServiceBaseExtensions.cs" />
     <Compile Include="Packaging\SolutionPackageBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Packaging\SolutionPackageOptions.cs" />
-    <Compile Include="Services\Base\TraceServiceBase.cs" />
+    <Compile Include="Services\TraceServiceBase.cs" />
+    <Compile Include="Services\TraceServiceBaseExtensions.cs" />
     <Compile Include="Services\TraceSourceService.cs" />
     <Compile Include="Utils\ConvertUtils.cs" />
+    <Compile Include="Utils\MetaPackTrace.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

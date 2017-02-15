@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics;
 using MetaPack.Core;
-using MetaPack.Core.Services.Base;
+using MetaPack.Core.Services;
 
 namespace MetaPack.NuGet.Utils
 {
