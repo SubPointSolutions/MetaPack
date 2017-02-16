@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 using MetaPack.Core.Packaging;
 using MetaPack.Core.Services;
 using MetaPack.NuGet.Services;
-using MetaPack.SPMeta2.Extensions;
 using NuGet;
 using MetaPack.Core.Consts;
+using MetaPack.Core.Utils;
 
 namespace MetaPack.SPMeta2.Services
 {
@@ -36,6 +36,8 @@ namespace MetaPack.SPMeta2.Services
 
         public override Stream Pack(SolutionPackageBase package, SolutionPackageOptions options)
         {
+            MetaPackTrace.Verbose("Packing solution package...");
+
             var typedPackage = package as SPMeta2SolutionPackage;
 
             if (typedPackage == null)
@@ -62,6 +64,8 @@ namespace MetaPack.SPMeta2.Services
 
             resultStream.Position = 0;
 
+            MetaPackTrace.Verbose("Packing solution package completed...");
+
             return resultStream;
         }
 
@@ -81,7 +85,7 @@ namespace MetaPack.SPMeta2.Services
                 var typedPackage = SerializationService.Deserialize(typeof(SPMeta2SolutionPackage), solutionFileContent) as SPMeta2SolutionPackage;
 
                 // unpack models
-                    UnpackFoldersPackage(zipPackage, ModelFoldersPath, typedPackage.ModelFolders);
+                UnpackFoldersPackage(zipPackage, ModelFoldersPath, typedPackage.ModelFolders);
 
                 return typedPackage;
             }

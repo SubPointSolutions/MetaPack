@@ -16,6 +16,7 @@ using Microsoft.SharePoint.Client;
 using NuGet;
 using System.Xml.Linq;
 using MetaPack.Core.Common;
+using MetaPack.Core.Exceptions;
 using MetaPack.Core.Utils;
 
 namespace MetaPack.NuGet.Services
@@ -64,7 +65,8 @@ namespace MetaPack.NuGet.Services
         #region methods
         private void InitProvisionEvents()
         {
-            this.PackageInstalling += OnPackageInstalling;
+            MetaPackTrace.Verbose("InitProvisionEvents");
+            PackageInstalling += OnPackageInstalling;
         }
 
         protected virtual string SavePackageAsTempFile(IPackage package)
@@ -82,14 +84,6 @@ namespace MetaPack.NuGet.Services
             return tmpPackageFilePath;
         }
 
-        protected List<SolutionToolPackage> ResolveAdditionalTooling()
-        {
-            var result = new List<SolutionToolPackage>();
-
-            return result;
-        }
-
-
         /// <summary>
         /// Resolves solution tool package.
         /// 
@@ -98,10 +92,14 @@ namespace MetaPack.NuGet.Services
         /// <returns></returns>
         protected virtual SolutionToolPackage ResolveSolutionToolPackage(IPackage package)
         {
+            MetaPackTrace.Verbose("Resolving solution tool packages...");
+
             SolutionToolPackage result = null;
 
             if (SolutionToolPackage == null)
             {
+                MetaPackTrace.Verbose(".SolutionToolPackage is null. Switching to tags and solution itself");
+
                 // resolve from the tags
                 var tags = string.IsNullOrEmpty(package.Tags)
                             ? package.Tags.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries)
@@ -112,6 +110,8 @@ namespace MetaPack.NuGet.Services
 
                 if (!string.IsNullOrEmpty(packageId))
                 {
+                    MetaPackTrace.Verbose("Found tool. ToolId:[{0}] ToolVersion:[{1}]", packageId, packageVersion);
+
                     result = new SolutionToolPackage
                     {
                         Id = packageId,
@@ -120,63 +120,67 @@ namespace MetaPack.NuGet.Services
                 }
                 else
                 {
-                    MetaPackTrace.WriteLine("Cannot find any solution tool package tags.");
-                }
+                    MetaPackTrace.Verbose("Solution package tags don't have tool package defined. Switching to solution options.");
 
-                var defaultSolutionPackagingService = new DefaultNuGetSolutionPackageService();
-                var solutionPackageFile = defaultSolutionPackagingService.FindSolutionPackageFile(package);
+                    var defaultSolutionPackagingService = new DefaultNuGetSolutionPackageService();
+                    var solutionPackageFile = defaultSolutionPackagingService.FindSolutionPackageFile(package);
 
-                var serializationService = new DefaultXMLSerializationService();
-                serializationService.RegisterKnownType(typeof(SolutionPackageBase));
+                    var serializationService = new DefaultXMLSerializationService();
+                    serializationService.RegisterKnownType(typeof(SolutionPackageBase));
 
-                using (var streamReader = new StreamReader(solutionPackageFile.GetStream()))
-                {
-                    var solutionFileContent = streamReader.ReadToEnd();
-
-                    var xDoc = XDocument.Parse(solutionFileContent);
-                    var rootElementName = xDoc.Root.Name.LocalName;
-
-                    var defNamespace = xDoc.Root.Attribute("xmlns").Value;
-                    var genericXmlDoc = xDoc.ToString()
-                                        .Replace(
-                                            string.Format("<{0}", rootElementName),
-                                            string.Format("<{0}", typeof(SolutionPackageBase).Name))
-                                         .Replace(
-                                            string.Format("</{0}>", rootElementName),
-                                            string.Format("</{0}>", typeof(SolutionPackageBase).Name))
-
-                                        .Replace(defNamespace, "http://schemas.datacontract.org/2004/07/MetaPack.Core.Packaging");
-
-
-
-                    var typedPackage = serializationService.Deserialize(
-                                        typeof(SolutionPackageBase), genericXmlDoc)
-                                        as SolutionPackageBase;
-
-                    var packageIdFromPackage = ExtractAdditionalOption(typedPackage.AdditionalOptions, DefaultOptions.SolutionToolPackage.PackageId.Id);
-                    var packageVersionFromPackage = ExtractAdditionalOption(typedPackage.AdditionalOptions, DefaultOptions.SolutionToolPackage.PackageVersion.Id);
-
-                    if (!string.IsNullOrEmpty(packageIdFromPackage))
+                    MetaPackTrace.Verbose("Unpacking solution package...");
+                    using (var streamReader = new StreamReader(solutionPackageFile.GetStream()))
                     {
-                        result = new SolutionToolPackage
+                        var solutionFileContent = streamReader.ReadToEnd();
+
+                        var xDoc = XDocument.Parse(solutionFileContent);
+                        var rootElementName = xDoc.Root.Name.LocalName;
+
+                        var defNamespace = xDoc.Root.Attribute("xmlns").Value;
+                        var genericXmlDoc = xDoc.ToString()
+                                            .Replace(
+                                                string.Format("<{0}", rootElementName),
+                                                string.Format("<{0}", typeof(SolutionPackageBase).Name))
+                                             .Replace(
+                                                string.Format("</{0}>", rootElementName),
+                                                string.Format("</{0}>", typeof(SolutionPackageBase).Name))
+
+                                            .Replace(defNamespace, "http://schemas.datacontract.org/2004/07/MetaPack.Core.Packaging");
+
+
+
+                        var typedPackage = serializationService.Deserialize(
+                                            typeof(SolutionPackageBase), genericXmlDoc)
+                                            as SolutionPackageBase;
+
+                        var packageIdFromPackage = ExtractAdditionalOption(typedPackage.AdditionalOptions, DefaultOptions.SolutionToolPackage.PackageId.Id);
+                        var packageVersionFromPackage = ExtractAdditionalOption(typedPackage.AdditionalOptions, DefaultOptions.SolutionToolPackage.PackageVersion.Id);
+
+                        if (!string.IsNullOrEmpty(packageIdFromPackage))
                         {
-                            Id = packageIdFromPackage,
-                            Version = packageVersionFromPackage
-                        };
-                    }
-                    else
-                    {
-                        MetaPackTrace.WriteLine("Cannot find any solution tool package options in SolutionPackage.AdditionalOptions");
+                            MetaPackTrace.Verbose("Found tool. ToolId:[{0}] ToolVersion:[{1}]", packageId, packageVersion);
+
+                            result = new SolutionToolPackage
+                            {
+                                Id = packageIdFromPackage,
+                                Version = packageVersionFromPackage
+                            };
+                        }
+                        else
+                        {
+                            MetaPackTrace.Verbose("Cannot find any solution tool package options in SolutionPackage.AdditionalOptions");
+                        }
                     }
                 }
 
                 if (result == null)
-                    throw new ArgumentException("Can't resolve solution tool package from .SolutionToolPackage, tags and solution package itself");
+                    throw new MetaPackException("Can't resolve solution tool package from .SolutionToolPackage, tags and solution package itself");
             }
             else
             {
                 result = SolutionToolPackage;
             }
+
             return result;
         }
 
@@ -195,14 +199,6 @@ namespace MetaPack.NuGet.Services
             return null;
         }
 
-        private static void SetDefaultXmlNamespace(XElement xelem, XNamespace xmlns)
-        {
-            xelem.Name = xmlns + xelem.Name.LocalName;
-
-            foreach (var e in xelem.Elements())
-                SetDefaultXmlNamespace(e, xmlns);
-        }
-
         protected virtual string ExtractTagValueByPrefix(IEnumerable<string> tags, string valuePrefix)
         {
             var tagValue = tags.FirstOrDefault(t => t.StartsWith(valuePrefix));
@@ -218,21 +214,22 @@ namespace MetaPack.NuGet.Services
 
         protected virtual void OnPackageInstalling(object sender, PackageOperationEventArgs e)
         {
-            MetaPackTrace.WriteLine(string.Format("Handling NuGet package OnPackageInstalling event"));
+            MetaPackTrace.Info("NuGet package installation started");
+            MetaPackTrace.Info("Package [{0}] version [{1}]", e.Package.Id, e.Package.Version);
 
             // save pachage to a local folder
             // cause package can't be serialized to be passed to a new app domain
             var tmpPackageFilePath = SavePackageAsTempFile(e.Package);
 
-            MetaPackTrace.WriteLine("Resolving solution tool package...");
+            MetaPackTrace.Info("Resolving solution tool package...");
             var toolPackage = ResolveSolutionToolPackage(e.Package);
 
-            if (string.IsNullOrEmpty(toolPackage.Id))
-                throw new Exception("ToolPackage.Id is null or empty");
+            if (toolPackage == null || string.IsNullOrEmpty(toolPackage.Id))
+                throw new MetaPackException("Cannot resolve solution tool package");
 
-            MetaPackTrace.WriteLine(string.Format("Resolved solution tool package with ID:[{0}] version:[{1}]",
-                toolPackage.Id,
-                toolPackage.Version));
+            MetaPackTrace.Info("Resolved solution tool package [{0}] version:[{1}]",
+                    toolPackage.Id,
+                    toolPackage.Version);
 
             // install main tool package
             var toolResolver = MetaPackServiceContainer.Instance.GetService<ToolResolutionService>();
@@ -242,39 +239,65 @@ namespace MetaPack.NuGet.Services
 
             var toolRepo = toolResolver.PackageManager.LocalRepository;
 
+            MetaPackTrace.Info("Installing solution tool package...");
             toolResolver.InstallTool(toolPackage);
+
+            MetaPackTrace.Info("Resolving additional tooling for tool package [{0}]", toolPackage.Id);
 
             // resolve main assembly, resolve additional tooling
             var toolNuGetPackage = toolResolver.PackageManager.LocalRepository.FindPackage(toolPackage.Id);
 
             var assemblyHint = toolPackage.AssemblyNameHint ?? toolPackage.Id + ".dll";
             var additionalTools = toolResolver.ResolveAdditionalTooling(toolRepo, toolNuGetPackage, assemblyHint);
-            toolResolver.InstallTools(additionalTools);
+
+            if (additionalTools.Count > 0)
+            {
+                MetaPackTrace.Info("Found [{0}] additional tools", additionalTools.Count);
+
+                foreach (var tool in additionalTools)
+                    MetaPackTrace.Info("    Tool [{0}] version:[{1}]", tool.Id, tool.Version);
+
+                MetaPackTrace.Info("Installing additional tools...");
+                toolResolver.InstallTools(additionalTools);
+
+                MetaPackTrace.Info("Installing additional tools completed");
+            }
+            else
+            {
+                MetaPackTrace.Info("No additional tools were found");
+            }
 
             // resolve package and deployment classes
             // by default lookup firs implementations of the following classes:
             //     * SolutionPackageServiceBase
             //     * SolutionPackageDeploymentServiceBase
+
+            MetaPackTrace.Info("Resolving solution packaging implemetation");
             var packagingServiceClassFullName = toolResolver.ResolveClassImplementationFullName(toolRepo, toolNuGetPackage,
                 assemblyHint,
                 typeof(SolutionPackageServiceBase).Name);
 
             if (string.IsNullOrEmpty(packagingServiceClassFullName))
-                throw new Exception(string.Format("Cannot find impl for service:[{0}]", typeof(SolutionPackageServiceBase).Name));
+                throw new MetaPackException(string.Format("Cannot find impl for service:[{0}]", typeof(SolutionPackageServiceBase).Name));
 
+            MetaPackTrace.Info("Resolved solution tool implemetation:[{0}]", packagingServiceClassFullName);
+
+            MetaPackTrace.Info("Resolving solution deployment implemetation");
             var deploymentServiceFullName = toolResolver.ResolveClassImplementationFullName(toolRepo, toolNuGetPackage,
                 assemblyHint,
                 typeof(SolutionPackageDeploymentServiceBase).Name);
 
             if (string.IsNullOrEmpty(deploymentServiceFullName))
-                throw new Exception(string.Format("Cannot find impl for service:[{0}]", typeof(SolutionPackageDeploymentServiceBase).Name));
+                throw new MetaPackException(string.Format("Cannot find impl for service:[{0}]", typeof(SolutionPackageDeploymentServiceBase).Name));
+
+            MetaPackTrace.Info("Resolved solution deployment implemetation:[{0}]", deploymentServiceFullName);
 
             var toolAssemblies = toolResolver.ResolveAssemblyPaths(toolRepo, toolNuGetPackage, "net45", false);
             var toolAssembly = toolAssemblies.FirstOrDefault(a => a.EndsWith(assemblyHint));
 
-            MetaPackTrace.WriteLine(string.Format("Current Domain:[{0}]", AppDomain.CurrentDomain.Id));
+            MetaPackTrace.Verbose("Current AppDomain.ID:[{0}]", AppDomain.CurrentDomain.Id);
 
-            // unpack, deploy
+            MetaPackTrace.Info("Unpacking solution package...");
             using (var context = AppDomainContext.Create())
             {
                 var detectedAdditionalToolAssemblies = new List<string>();
@@ -283,7 +306,7 @@ namespace MetaPack.NuGet.Services
                 CrossDomainTraceHelper.StartListening(context.Domain);
 
                 // tool assembly
-                MetaPackTrace.WriteLine(string.Format("Loading main tool assembly:[{0}]", toolAssembly));
+                MetaPackTrace.Verbose("Loading main tool assembly:[{0}]", toolAssembly);
                 context.LoadAssembly(LoadMethod.LoadFile, toolAssembly);
 
                 var deploymentOptions = new AppDomainDeploymentOptions
@@ -303,19 +326,17 @@ namespace MetaPack.NuGet.Services
                     });
                 }
 
-                // install additional tools
-
                 var result = RemoteFunc.Invoke(context.Domain, deploymentOptions, (ops) =>
                 {
                     var ress = new AppDomainDeploymentOptions();
 
-                    MetaPackTrace.WriteLine(string.Format("[!] Domain:[{0}] Call from the remote domain:[{1}]", AppDomain.CurrentDomain.Id, AppDomain.CurrentDomain.Id));
+                    MetaPackTrace.Verbose("Extracting additional tools from solutuion package...");
+                    MetaPackTrace.Verbose("Current AppDomain.Id:[{0}]", AppDomain.CurrentDomain.Id);
 
-                    MetaPackTrace.WriteLine(string.Format("Package path:[{0}]", ops.PackageFilePath));
+                    MetaPackTrace.Verbose("Package path:[{0}]", ops.PackageFilePath);
 
-                    MetaPackTrace.WriteLine(string.Format("Packaging impl:[{0}]", ops.PackagingServiceClassFullName));
-                    MetaPackTrace.WriteLine(string.Format("Deployment impl:[{0}]", ops.DeploymentServiceClassFullName));
-
+                    MetaPackTrace.Verbose("Packaging service impl:[{0}]", ops.PackagingServiceClassFullName);
+                    MetaPackTrace.Verbose("Deployment service impl:[{0}]", ops.DeploymentServiceClassFullName);
 
                     var allClasses = AppDomain.CurrentDomain
                                              .GetAssemblies()
@@ -325,33 +346,31 @@ namespace MetaPack.NuGet.Services
                     var deploymentClassType = allClasses.FirstOrDefault(c => c.FullName.ToUpper() == ops.DeploymentServiceClassFullName.ToUpper());
 
                     if (packagingClassType == null)
-                        throw new Exception(string.Format("Cannot find type by full name:[{0}]", ops.PackagingServiceClassFullName));
+                        throw new MetaPackException(string.Format("Cannot find type by full name:[{0}]", ops.PackagingServiceClassFullName));
 
                     if (deploymentClassType == null)
-                        throw new Exception(string.Format("Cannot find type by full name:[{0}]", ops.DeploymentServiceClassFullName));
+                        throw new MetaPackException(string.Format("Cannot find type by full name:[{0}]", ops.DeploymentServiceClassFullName));
 
-                    MetaPackTrace.WriteLine("Creating packaging service implementation...");
+                    MetaPackTrace.Verbose("Creating packaging service implementation...");
                     var packagingService = Activator.CreateInstance(packagingClassType) as SolutionPackageServiceBase;
 
                     if (packagingService == null)
-                        throw new Exception("Cannot create instance of packaging service");
+                        throw new MetaPackException("Cannot create instance of packaging service");
 
-                    MetaPackTrace.WriteLine("Creating deployment service implementation...");
+                    MetaPackTrace.Verbose("Creating deployment service implementation...");
                     var deploymentService = Activator.CreateInstance(deploymentClassType) as SolutionPackageDeploymentServiceBase;
 
                     if (deploymentService == null)
-                        throw new Exception("Cannot create instance of deployment service");
+                        throw new MetaPackException("Cannot create instance of deployment service");
 
-                    // unpack package
-                    // TODO
-                    MetaPackTrace.WriteLine(string.Format("Reading package:[{0}]", ops.PackageFilePath));
+                    MetaPackTrace.Verbose(string.Format("Reading package:[{0}]", ops.PackageFilePath));
                     using (var packageStream = System.IO.File.OpenRead(ops.PackageFilePath))
                     {
-                        MetaPackTrace.WriteLine(string.Format("Unpacking package..."));
+                        MetaPackTrace.Verbose(string.Format("Unpacking package..."));
                         var solutionPackage = packagingService.Unpack(packageStream);
 
                         if (solutionPackage != null)
-                            MetaPackTrace.WriteLine(string.Format("Succesfully unpacked package."));
+                            MetaPackTrace.Verbose(string.Format("Succesfully unpacked package."));
 
                         // deployment options
                         var solutionDeploymentOptions = new SolutionPackageProvisionOptions
@@ -364,10 +383,10 @@ namespace MetaPack.NuGet.Services
                             solutionDeploymentOptions.SetOptionValue(option.Name, option.Value);
 
                         // check for additional tools
-                        MetaPackTrace.WriteLine(string.Format("Checking additional tools for unpacked package..."));
+                        MetaPackTrace.Verbose(string.Format("Checking additional tools for unpacked package..."));
                         if (deploymentService is SolutionPackageDeploymentService)
                         {
-                            MetaPackTrace.WriteLine(string.Format("Calling SolutionPackageDeploymentService.GetAdditionalToolPackages()..."));
+                            MetaPackTrace.Verbose(string.Format("Calling SolutionPackageDeploymentService.GetAdditionalToolPackages()..."));
 
                             var toolableDeploymentService = deploymentService as SolutionPackageDeploymentService;
                             var additonalTool2s =
@@ -387,19 +406,15 @@ namespace MetaPack.NuGet.Services
                             }
                             else
                             {
-                                MetaPackTrace.WriteLine(string.Format("No additional tools were found"));
+                                MetaPackTrace.Verbose(string.Format("No additional tools were found"));
                             }
                         }
                         else
                         {
-                            MetaPackTrace.WriteLine(string.Format("No additional tools are found. Current deployment service isn't of type 'SolutionPackageDeploymentService'"));
+                            MetaPackTrace.Verbose(string.Format("No additional tools are found. Current deployment service isn't of type 'SolutionPackageDeploymentService'"));
                         }
 
-                        MetaPackTrace.WriteLine(string.Format("Deploying package..."));
-
-                        // check fo
-
-                        //deploymentService.Deploy(solutionDeploymentOptions);
+                        MetaPackTrace.Verbose(string.Format("Deploying package..."));
                     }
 
                     return ress;
@@ -408,54 +423,69 @@ namespace MetaPack.NuGet.Services
                 // checking detected additional tools
                 var detecedAdditionalTools = result.ToolAdditionalPackages;
 
-                foreach (var additionalTool in detecedAdditionalTools)
+                if (detecedAdditionalTools.Count > 0)
                 {
-                    toolResolver.InstallTool(additionalTool.Id);
-                    var addToolPackage = toolRepo.FindPackage(additionalTool.Id);
+                    MetaPackTrace.Info(string.Format("Solution package requires [{0}] additional tools", detecedAdditionalTools.Count));
 
-                    var additionalToolAssemblies = toolResolver.ResolveAssemblyPaths(toolRepo, addToolPackage, "net45", false);
-
-                    if (!string.IsNullOrEmpty(additionalTool.AssemblyNameHint))
+                    foreach (var additionalTool in detecedAdditionalTools)
                     {
-                        detectedAdditionalToolAssemblies.AddRange(additionalToolAssemblies
-                            .Where(p => p.ToUpper().Contains(additionalTool.AssemblyNameHint.ToUpper())));
-                    }
-                    else
-                    {
-                        detectedAdditionalToolAssemblies.AddRange(additionalToolAssemblies);
-                    }
+                        MetaPackTrace.Info(string.Format("    Installing additional tool [{0}] version [{1}]", additionalTool.Id, additionalTool.Version));
 
-                    detectedAdditionalToolAllAssemblies.AddRange(
-                        toolResolver.ResolveAssemblyPaths(toolRepo, addToolPackage, "net45", true)
+                        toolResolver.InstallTool(additionalTool.Id);
+                        var addToolPackage = toolRepo.FindPackage(additionalTool.Id);
+
+                        var additionalToolAssemblies = toolResolver.ResolveAssemblyPaths(toolRepo, addToolPackage,
+                            "net45", false);
+
+                        if (!string.IsNullOrEmpty(additionalTool.AssemblyNameHint))
+                        {
+                            detectedAdditionalToolAssemblies.AddRange(additionalToolAssemblies
+                                .Where(p => p.ToUpper().Contains(additionalTool.AssemblyNameHint.ToUpper())));
+                        }
+                        else
+                        {
+                            detectedAdditionalToolAssemblies.AddRange(additionalToolAssemblies);
+                        }
+
+                        detectedAdditionalToolAllAssemblies.AddRange(
+                            toolResolver.ResolveAssemblyPaths(toolRepo, addToolPackage, "net45", true)
                         );
+                    }
                 }
 
-                // tool additional tool assemblies
-                foreach (var tt in detectedAdditionalToolAssemblies)
+                if (detectedAdditionalToolAssemblies.Count > 0)
                 {
-                    MetaPackTrace.WriteLine(string.Format("Loading additional tool assembly:[{0}]", toolAssembly));
-                    context.LoadAssembly(LoadMethod.LoadFile, tt);
+                    MetaPackTrace.Info("Detected [{0}] assemblies to be loaded", detectedAdditionalToolAssemblies.Count);
+
+                    // tool additional tool assemblies
+                    foreach (var tt in detectedAdditionalToolAssemblies)
+                    {
+                        MetaPackTrace.Info("    Loading tool assembly [{0}]", toolAssembly);
+                        context.LoadAssembly(LoadMethod.LoadFile, tt);
+                    }
                 }
 
                 var paths = new List<string>();
 
                 // add probing path for ALL tool assemblies 
-                foreach (var assemblyPath in detectedAdditionalToolAllAssemblies)
+                foreach (var assemblyDir in detectedAdditionalToolAllAssemblies
+                                                .Select(p => Path.GetDirectoryName(p))
+                                                .Distinct()
+                                                .OrderBy(d => d))
                 {
-                    var assemblyDir = Path.GetDirectoryName(assemblyPath);
-
-                    MetaPackTrace.WriteLine(string.Format("Addint probe path:[{0}]", assemblyDir));
+                    MetaPackTrace.Verbose("    Adding additional tool probing path [{0}]", assemblyDir);
                     paths.Add(assemblyDir);
 
                     context.AssemblyImporter.AddProbePath(assemblyDir);
                 }
 
                 // add probing path for ALL tool assemblies 
-                foreach (var assemblyPath in toolAssemblies)
+                foreach (var assemblyDir in toolAssemblies
+                                                 .Select(p => Path.GetDirectoryName(p))
+                                                 .Distinct()
+                                                 .OrderBy(d => d))
                 {
-                    var assemblyDir = Path.GetDirectoryName(assemblyPath);
-
-                    MetaPackTrace.WriteLine(string.Format("Addint probe path:[{0}]", assemblyDir));
+                    MetaPackTrace.Verbose("    Adding tool probing path [{0}]", assemblyDir);
                     paths.Add(assemblyDir);
 
                     context.AssemblyImporter.AddProbePath(assemblyDir);
@@ -467,8 +497,8 @@ namespace MetaPack.NuGet.Services
                 {
                     AppDomain.CurrentDomain.AssemblyResolve += (sss, eee) =>
                     {
-                        MetaPackTrace.WriteLine(string.Format("WHO:[{0}]", eee));
-                        MetaPackTrace.WriteLine(string.Format("WHAT:[{0}]", eee.Name));
+                        MetaPackTrace.Verbose(string.Format("AppDomain assembly:[{0}]", eee));
+                        MetaPackTrace.Verbose(string.Format("Assembly requested:[{0}]", eee.Name));
 
                         var assemblyName = eee.Name.Split(',')[0] + ".dll";
 
@@ -478,23 +508,25 @@ namespace MetaPack.NuGet.Services
 
                             if (System.IO.File.Exists(tmpAssemblyPath))
                             {
+                                MetaPackTrace.Verbose("Loaded from [{0}]", tmpAssemblyPath);
                                 return Assembly.LoadFile(tmpAssemblyPath);
                             }
                         }
+
+                        MetaPackTrace.Verbose("Cannot find. Throwing exception.");
 
                         throw new Exception(string.Format("Cannot load requested assembly [{0}]. Requested by [{1}]",
                             eee.Name,
                             eee.RequestingAssembly));
                     };
 
-                    MetaPackTrace.WriteLine(string.Format("[!] Domain:[{0}] Call from the remote domain:[{1}]", AppDomain.CurrentDomain.Id, AppDomain.CurrentDomain.Id));
+                    MetaPackTrace.Verbose("Extracting additional tools from solutuion package...");
+                    MetaPackTrace.Verbose("Current AppDomain.Id:[{0}]", AppDomain.CurrentDomain.Id);
 
-                    MetaPackTrace.WriteLine(string.Format("Package path:[{0}]", ops.PackageFilePath));
+                    MetaPackTrace.Verbose("Package path:[{0}]", ops.PackageFilePath);
 
-                    MetaPackTrace.WriteLine(string.Format("Packaging impl:[{0}]", ops.PackagingServiceClassFullName));
-                    MetaPackTrace.WriteLine(string.Format("Deployment impl:[{0}]", ops.DeploymentServiceClassFullName));
-
-
+                    MetaPackTrace.Verbose("Packaging service impl:[{0}]", ops.PackagingServiceClassFullName);
+                    MetaPackTrace.Verbose("Deployment service impl:[{0}]", ops.DeploymentServiceClassFullName);
 
                     var allClasses = AppDomain.CurrentDomain
                                              .GetAssemblies()
@@ -504,33 +536,33 @@ namespace MetaPack.NuGet.Services
                     var deploymentClassType = allClasses.FirstOrDefault(c => c.FullName.ToUpper() == ops.DeploymentServiceClassFullName.ToUpper());
 
                     if (packagingClassType == null)
-                        throw new Exception(string.Format("Cannot find type by full name:[{0}]", ops.PackagingServiceClassFullName));
+                        throw new MetaPackException(string.Format("Cannot find type by full name:[{0}]", ops.PackagingServiceClassFullName));
 
                     if (deploymentClassType == null)
-                        throw new Exception(string.Format("Cannot find type by full name:[{0}]", ops.DeploymentServiceClassFullName));
+                        throw new MetaPackException(string.Format("Cannot find type by full name:[{0}]", ops.DeploymentServiceClassFullName));
 
-                    MetaPackTrace.WriteLine("Creating packaging service implementation...");
+                    MetaPackTrace.Verbose("Creating packaging service implementation...");
                     var packagingService = Activator.CreateInstance(packagingClassType) as SolutionPackageServiceBase;
 
                     if (packagingService == null)
-                        throw new Exception("Cannot create instance of packaging service");
+                        throw new MetaPackException("Cannot create instance of packaging service");
 
-                    MetaPackTrace.WriteLine("Creating deployment service implementation...");
+                    MetaPackTrace.Verbose("Creating deployment service implementation...");
                     var deploymentService = Activator.CreateInstance(deploymentClassType) as SolutionPackageDeploymentServiceBase;
 
                     if (deploymentService == null)
-                        throw new Exception("Cannot create instance of deployment service");
+                        throw new MetaPackException("Cannot create instance of deployment service");
 
                     // unpack package
                     // TODO
-                    MetaPackTrace.WriteLine(string.Format("Reading package:[{0}]", ops.PackageFilePath));
+                    MetaPackTrace.Verbose(string.Format("Reading package:[{0}]", ops.PackageFilePath));
                     using (var packageStream = System.IO.File.OpenRead(ops.PackageFilePath))
                     {
-                        MetaPackTrace.WriteLine(string.Format("Unpacking package..."));
+                        MetaPackTrace.Verbose(string.Format("Unpacking package..."));
                         var solutionPackage = packagingService.Unpack(packageStream);
 
                         if (solutionPackage != null)
-                            MetaPackTrace.WriteLine(string.Format("Succesfully unpacked package."));
+                            MetaPackTrace.Verbose(string.Format("Succesfully unpacked package."));
 
                         // deployment options
                         var solutionDeploymentOptions = new SolutionPackageProvisionOptions
@@ -542,10 +574,10 @@ namespace MetaPack.NuGet.Services
                         foreach (var option in ops.AdditionalOptions)
                             solutionDeploymentOptions.SetOptionValue(option.Name, option.Value);
 
-                        MetaPackTrace.WriteLine(string.Format("Deploying package..."));
+                        MetaPackTrace.Info(string.Format("Deploying package..."));
                         deploymentService.Deploy(solutionDeploymentOptions);
 
-                        MetaPackTrace.WriteLine(string.Format("Deployment completed"));
+                        MetaPackTrace.Info(string.Format("Package deployment cimpleted"));
                     }
 
                     return ops;
@@ -553,7 +585,7 @@ namespace MetaPack.NuGet.Services
 
             }
 
-            MetaPackTrace.WriteLine(string.Format("Handling NuGet package OnPackageInstalling completed"));
+            MetaPackTrace.Info("NuGet package installation completed");
         }
 
         #endregion

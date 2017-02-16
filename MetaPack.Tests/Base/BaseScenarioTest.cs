@@ -37,7 +37,7 @@ namespace MetaPack.Tests.Base
 
             MetaPackServiceContainer.Instance.ReplaceService(typeof(TraceServiceBase), regressionTraceService);
 
-            var useSPMeta2 = true;
+            var useSPMeta2 = false;
             var usePnP = true;
 
             UseLocaNuGet = true;
@@ -285,7 +285,13 @@ namespace MetaPack.Tests.Base
         {
             foreach (var service in MetaPackService)
             {
-                Trace.WriteLine(string.Format("Testing service:[{0}]", service.GetType()));
+                Trace.WriteLine(string.Format("Testing services:"));
+
+                Trace.WriteLine(string.Format(" ToolID:[{0}]", service.ToolPackage.Id));
+                Trace.WriteLine(string.Format(" ToolVersion:[{0}]", service.ToolPackage.Version));
+                Trace.WriteLine(string.Format(" PackagingService:[{0}]", service.PackagingService));
+                Trace.WriteLine(string.Format(" DeploymentService:[{0}]", service.DeploymentService));
+
                 action(service);
             }
         }

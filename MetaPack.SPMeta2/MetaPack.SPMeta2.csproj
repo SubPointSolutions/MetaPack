@@ -57,9 +57,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Extensions\ModelNodeExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Extensions\DefaultXMLSerializationServiceExtensions.cs" />
     <Compile Include="Services\SPMeta2SolutionPackageDeploymentService.cs" />
     <Compile Include="Services\SPMeta2SolutionPackageService.cs" />
     <Compile Include="Services\SPMeta2ToolResolutionService.cs" />

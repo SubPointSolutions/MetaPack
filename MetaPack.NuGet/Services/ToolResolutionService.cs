@@ -28,6 +28,23 @@ namespace MetaPack.NuGet.Services
 
         #endregion
 
+        #region classes
+
+        [Serializable]
+        public class ResolveAdditionalToolingOptions : MarshalByRefObject
+        {
+            public string AssemblyName { get; set; }
+        }
+
+        [Serializable]
+        public class ResolveClassImplementationOptions : MarshalByRefObject
+        {
+            public string AssemblyName { get; set; }
+            public string ClassName { get; set; }
+        }
+
+        #endregion
+
         #region properties
 
         protected PackageManager packageManager;
@@ -52,165 +69,10 @@ namespace MetaPack.NuGet.Services
 
         #region methods
 
-        protected virtual void InitPackageManager()
-        {
-            Directory.CreateDirectory(ToolPath);
-
-            var repo = new AggregateRepository(PackageRepositoryFactory.Default, PackageSources, true);
-
-            packageManager = new PackageManager(
-               repo,
-               new DefaultPackagePathResolver("https://packages.nuget.org/api/v2"),
-               new PhysicalFileSystem(ToolPath)
-           );
-        }
-
-        public void RefreshPackageManager()
-        {
-            InitPackageManager();
-        }
-
-        internal void InstallTool(SolutionToolPackage toolPackage)
-        {
-            InstallTool(toolPackage.Id);
-        }
-
-        public virtual void InstallTool(string packageId)
-        {
-            InstallTools(new[] { packageId });
-        }
-
-        public virtual void InstallTools(IEnumerable<SolutionToolPackage> packages)
-        {
-            foreach (var tool in packages)
-            {
-                InstallTool(tool.Id);
-            }
-        }
-
-        public virtual void InstallTools(IEnumerable<string> packageIds)
-        {
-            // install
-            foreach (var toolPackage in packageIds)
-            {
-                MetaPackTrace.WriteLine(string.Format("Resolving tool:[{0}]", toolPackage));
-                var localPackage = PackageManager.LocalRepository.FindPackage(toolPackage);
-
-                if (localPackage == null)
-                {
-                    MetaPackTrace.WriteLine(string.Format("Tool does not exist. Installing..."));
-
-                    var package = PackageManager.SourceRepository.FindPackage(toolPackage);
-                    PackageManager.InstallPackage(package, false, true, false);
-                }
-                else
-                {
-                    MetaPackTrace.WriteLine(string.Format("Tool exists. No need for install"));
-                }
-            }
-        }
-
-        public virtual List<string> ResolveAssemblyPaths(IPackageRepository packageRepository, IPackage localToolPackage,
-            string netVersion)
-        {
-            return ResolveAssemblyPaths(packageRepository, localToolPackage, netVersion, true);
-        }
-
-        public virtual List<string> ResolveAssemblyPaths(IPackageRepository packageRepository, IPackage localToolPackage, string netVersion, bool recursive)
-        {
-            var result = new List<string>();
-
-            _resolvedPackages.Clear();
-            ResolveAssemblyPathsInternal(packageRepository, localToolPackage, netVersion, result, recursive);
-
-            return result;
-        }
-
-        private Dictionary<string, List<string>> _resolvedPackages = new Dictionary<string, List<string>>();
-        protected virtual void ResolveAssemblyPathsInternal(IPackageRepository packageRepository,
-            IPackage localToolPackage, string netVersion,
-            List<string> paths,
-             bool recursive)
-        {
-            var packageId = localToolPackage.Id;
-            var packageVersion = localToolPackage.Version.Version.ToString();
-
-            if (!_resolvedPackages.ContainsKey(packageId))
-                _resolvedPackages.Add(packageId, new List<string>());
-            else
-            {
-                if (!_resolvedPackages[packageId].Contains(packageVersion))
-                    _resolvedPackages[packageId].Add(packageVersion);
-                else
-                    return;
-            }
-
-            var packageFolder = string.Format("{0}.{1}", localToolPackage.Id, localToolPackage.Version);
-            var packageFolderPath = Path.Combine(packageRepository.Source, packageFolder);
-
-            var assemblies = localToolPackage.AssemblyReferences;
-
-            var foundTargetNetVersion = false;
-
-            // todo, implement a better assembly resolution here
-            foreach (var assembly in assemblies)
-            {
-                if (assembly.Path.Contains(@"\" + netVersion + @"\"))
-                {
-                    foundTargetNetVersion = true;
-
-                    var assemblyPath = Path.Combine(packageFolderPath, assembly.Path);
-
-                    if (!File.Exists(assemblyPath))
-                        throw new ArgumentException(string.Format("Cannot find file:[{0}]", assemblyPath));
-
-                    if (!paths.Contains(assemblyPath))
-                        paths.Add(assemblyPath);
-                }
-            }
-
-            if (!foundTargetNetVersion && assemblies.Count() > 0)
-            {
-                var targetAssemblye = assemblies.First();
-
-                var assemblyPath = Path.Combine(packageFolderPath, targetAssemblye.Path);
-
-                if (!paths.Contains(assemblyPath))
-                    paths.Add(assemblyPath);
-            }
-
-            if (recursive)
-            {
-                foreach (var depSet in localToolPackage.DependencySets)
-                {
-                    foreach (var dependency in depSet.Dependencies)
-                    {
-                        var package = packageRepository.FindPackage(dependency.Id, dependency.VersionSpec, true, false);
-                        ResolveAssemblyPathsInternal(packageRepository, package, netVersion, paths, recursive);
-                    }
-                }
-            }
-        }
-
-        #endregion
-
-        [Serializable]
-        public class ResolveAdditionalToolingOptions : MarshalByRefObject
-        {
-            public string AssemblyName { get; set; }
-        }
-
-        [Serializable]
-        public class ResolveClassImplementationOptions : MarshalByRefObject
-        {
-            public string AssemblyName { get; set; }
-            public string ClassName { get; set; }
-        }
-
         public string ResolveClassImplementationFullName(IPackageRepository packageRepository,
-            IPackage nuGetPackage,
-            string assemblyName,
-            string className)
+           IPackage nuGetPackage,
+           string assemblyName,
+           string className)
         {
             var result = string.Empty;
 
@@ -335,5 +197,147 @@ namespace MetaPack.NuGet.Services
 
             return result;
         }
+
+        protected virtual void InitPackageManager()
+        {
+            Directory.CreateDirectory(ToolPath);
+
+            var repo = new AggregateRepository(PackageRepositoryFactory.Default, PackageSources, true);
+
+            packageManager = new PackageManager(
+               repo,
+               new DefaultPackagePathResolver("https://packages.nuget.org/api/v2"),
+               new PhysicalFileSystem(ToolPath)
+           );
+        }
+
+        public void RefreshPackageManager()
+        {
+            InitPackageManager();
+        }
+
+        internal void InstallTool(SolutionToolPackage toolPackage)
+        {
+            InstallTool(toolPackage.Id);
+        }
+
+        public virtual void InstallTool(string packageId)
+        {
+            InstallTools(new[] { packageId });
+        }
+
+        public virtual void InstallTools(IEnumerable<SolutionToolPackage> packages)
+        {
+            foreach (var tool in packages)
+            {
+                InstallTool(tool.Id);
+            }
+        }
+
+        public virtual void InstallTools(IEnumerable<string> packageIds)
+        {
+            // install
+            foreach (var toolPackage in packageIds)
+            {
+                MetaPackTrace.Verbose(string.Format("Resolving tool:[{0}]", toolPackage));
+                var localPackage = PackageManager.LocalRepository.FindPackage(toolPackage);
+
+                if (localPackage == null)
+                {
+                    MetaPackTrace.Verbose(string.Format("Tool does not exist. Installing..."));
+
+                    var package = PackageManager.SourceRepository.FindPackage(toolPackage);
+                    PackageManager.InstallPackage(package, false, true, false);
+                }
+                else
+                {
+                    MetaPackTrace.Verbose(string.Format("Tool exists. No need for install"));
+                }
+            }
+        }
+
+        public virtual List<string> ResolveAssemblyPaths(IPackageRepository packageRepository, IPackage localToolPackage,
+            string netVersion)
+        {
+            return ResolveAssemblyPaths(packageRepository, localToolPackage, netVersion, true);
+        }
+
+        public virtual List<string> ResolveAssemblyPaths(IPackageRepository packageRepository, IPackage localToolPackage, string netVersion, bool recursive)
+        {
+            var result = new List<string>();
+
+            _resolvedPackages.Clear();
+            ResolveAssemblyPathsInternal(packageRepository, localToolPackage, netVersion, result, recursive);
+
+            return result;
+        }
+
+        private Dictionary<string, List<string>> _resolvedPackages = new Dictionary<string, List<string>>();
+        protected virtual void ResolveAssemblyPathsInternal(IPackageRepository packageRepository,
+            IPackage localToolPackage, string netVersion,
+            List<string> paths,
+             bool recursive)
+        {
+            var packageId = localToolPackage.Id;
+            var packageVersion = localToolPackage.Version.Version.ToString();
+
+            if (!_resolvedPackages.ContainsKey(packageId))
+                _resolvedPackages.Add(packageId, new List<string>());
+            else
+            {
+                if (!_resolvedPackages[packageId].Contains(packageVersion))
+                    _resolvedPackages[packageId].Add(packageVersion);
+                else
+                    return;
+            }
+
+            var packageFolder = string.Format("{0}.{1}", localToolPackage.Id, localToolPackage.Version);
+            var packageFolderPath = Path.Combine(packageRepository.Source, packageFolder);
+
+            var assemblies = localToolPackage.AssemblyReferences;
+
+            var foundTargetNetVersion = false;
+
+            // todo, implement a better assembly resolution here
+            foreach (var assembly in assemblies)
+            {
+                if (assembly.Path.Contains(@"\" + netVersion + @"\"))
+                {
+                    foundTargetNetVersion = true;
+
+                    var assemblyPath = Path.Combine(packageFolderPath, assembly.Path);
+
+                    if (!File.Exists(assemblyPath))
+                        throw new ArgumentException(string.Format("Cannot find file:[{0}]", assemblyPath));
+
+                    if (!paths.Contains(assemblyPath))
+                        paths.Add(assemblyPath);
+                }
+            }
+
+            if (!foundTargetNetVersion && assemblies.Count() > 0)
+            {
+                var targetAssemblye = assemblies.First();
+
+                var assemblyPath = Path.Combine(packageFolderPath, targetAssemblye.Path);
+
+                if (!paths.Contains(assemblyPath))
+                    paths.Add(assemblyPath);
+            }
+
+            if (recursive)
+            {
+                foreach (var depSet in localToolPackage.DependencySets)
+                {
+                    foreach (var dependency in depSet.Dependencies)
+                    {
+                        var package = packageRepository.FindPackage(dependency.Id, dependency.VersionSpec, true, false);
+                        ResolveAssemblyPathsInternal(packageRepository, package, netVersion, paths, recursive);
+                    }
+                }
+            }
+        }
+
+        #endregion
     }
 }

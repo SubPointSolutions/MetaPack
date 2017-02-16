@@ -18,21 +18,44 @@ namespace MetaPack.Core.Utils
 
         #endregion
 
-        #region methods
+        #region properties
 
-        public static void WriteLine(string message)
+        public static TraceServiceBase TraceService
         {
-            WriteLine(message, null);
+            get
+            {
+                return MetaPackServiceContainer.Instance.GetService<TraceServiceBase>();
+            }
         }
 
-        public static void WriteLine(string message, params object[] p)
-        {
-            var traceService = MetaPackServiceContainer.Instance.GetService<TraceServiceBase>();
+        #endregion
 
+        #region methods
+
+        public static void Info(string message)
+        {
+            Info(message, null);
+        }
+
+        public static void Info(string message, params object[] p)
+        {
             if (p != null)
-                traceService.Information(0, string.Format(message, p));
+                TraceService.Information(0, string.Format(message, p));
             else
-                traceService.Information(0, message);
+                TraceService.Information(0, message);
+        }
+
+        public static void Verbose(string message)
+        {
+            Verbose(message, null);
+        }
+
+        public static void Verbose(string message, params object[] p)
+        {
+            if (p != null)
+                TraceService.VerboseFormat(0, message, p);
+            else
+                TraceService.Verbose(0, message);
         }
 
         #endregion
