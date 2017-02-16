@@ -159,9 +159,6 @@ namespace MetaPack.Tests.Scenarios
                 {
                     // push
                     PushPackageToCIRepository(solutionPackage, solutionDependencies, packagingService);
-
-                    return;
-
                     // find
                     var ciPackage = FindPackageInCIRepository(packageId, packageVersion);
 
