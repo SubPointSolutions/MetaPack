@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.31101.0
+VisualStudioVersion = 12.0.30501.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dependencies", "Dependencies\Dependencies.csproj", "{6DF9ACA5-56E2-4B03-A783-C24B939A1152}"
 EndProject
@@ -65,6 +65,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MetaPack.SharePointPnP", "M
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Providers", "Providers", "{11EE3BB7-6E08-42C1-8718-9798C687C7CD}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MetaPack.Client.Common.Tests", "MetaPack.Client.Common.Tests\MetaPack.Client.Common.Tests.csproj", "{F76412E6-9C03-4E66-825C-F684146F2774}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -109,6 +111,10 @@ Global
 		{02FD93D0-B74C-4571-8AF4-4E7A849DB8D1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{02FD93D0-B74C-4571-8AF4-4E7A849DB8D1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{02FD93D0-B74C-4571-8AF4-4E7A849DB8D1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F76412E6-9C03-4E66-825C-F684146F2774}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F76412E6-9C03-4E66-825C-F684146F2774}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F76412E6-9C03-4E66-825C-F684146F2774}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F76412E6-9C03-4E66-825C-F684146F2774}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -124,5 +130,6 @@ Global
 		{9A9AD32D-8364-4D57-8115-26178CB1EB3C} = {1CB33485-2130-4560-9B0E-73A2DB07F650}
 		{B30F6CA8-3E96-4734-B6B1-A61F201099E4} = {4F769F89-E461-49F6-B05D-C3DBB7C773BC}
 		{02FD93D0-B74C-4571-8AF4-4E7A849DB8D1} = {11EE3BB7-6E08-42C1-8718-9798C687C7CD}
+		{F76412E6-9C03-4E66-825C-F684146F2774} = {EEC26171-C777-4252-A25F-D50947372A86}
 	EndGlobalSection
 EndGlobal

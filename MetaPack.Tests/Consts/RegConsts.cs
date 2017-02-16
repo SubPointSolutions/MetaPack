@@ -15,13 +15,22 @@ namespace MetaPack.Tests.Consts
             public static string RepoUrl = "MetaPack.NuGet.RepoUrl";
         }
 
-        public static class SharePoint
+        public static class O365
         {
-            public static string RootWebUrl = "MetaPack.SharePoint.RootWebUrl";
-            public static string SubWebUrl = "MetaPack.SharePoint.SubWebUrl";
+            public static string RootWebUrl = "MetaPack.SharePoint.O365.RootWebUrl";
+            public static string SubWebUrl = "MetaPack.SharePoint.O365.SubWebUrl";
 
-            public static string O365UserName = "MetaPack.SharePoint.O365UserName";
-            public static string O365UserPassword = "MetaPack.SharePoint.O365UserPassword";
+            public static string UserName = "MetaPack.SharePoint.O365.UserName";
+            public static string UserPassword = "MetaPack.SharePoint.O365.UserPassword";
+        }
+
+        public static class OnPremis
+        {
+            public static string RootWebUrl = "MetaPack.SharePoint.OnPremis.RootWebUrl";
+            public static string SubWebUrl = "MetaPack.SharePoint.OnPremis.SubWebUrl";
+
+            public static string UserName = "MetaPack.SharePoint.OnPremis.UserName";
+            public static string UserPassword = "MetaPack.SharePoint.OnPremis.UserPassword";
         }
     }
 }

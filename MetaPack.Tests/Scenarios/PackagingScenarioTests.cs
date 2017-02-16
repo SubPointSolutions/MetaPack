@@ -231,7 +231,7 @@ namespace MetaPack.Tests.Scenarios
 
         private void Can_Push_Internal(NuGetSolutionPackageService packagingService)
         {
-            WithNuGetContext((apiUrl, apiKey, repoUrl) =>
+            WithCINuGetContext((apiUrl, apiKey, repoUrl) =>
             {
                 var solutionPackage = CreateNewSolutionPackage(packagingService);
 

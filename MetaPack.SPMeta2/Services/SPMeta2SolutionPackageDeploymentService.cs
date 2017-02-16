@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -247,6 +248,11 @@ namespace MetaPack.SPMeta2.Services
                     {
                         MetaPackTrace.WriteLine(string.Format("Detected CSOM provision."));
 
+                        var m2CSOMAssembly = AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault(a => a.FullName == "SPMeta2.CSOM, Version=1.0.0.0, Culture=neutral, PublicKeyToken=d71faae3bf28531a");
+
+                        if (m2CSOMAssembly == null)
+                            throw new Exception(string.Format("Cannot find assembly:[SPMeta2.CSOM]"));
+
                         var userName = options.GetOptionValue(DefaultOptions.User.Name.Id);
                         var userPassword = options.GetOptionValue(DefaultOptions.User.Password.Id);
 
@@ -305,8 +311,13 @@ namespace MetaPack.SPMeta2.Services
                             }
                         }
 
-                        MetaPackTrace.WriteLine(string.Format("Creating model host instance..."));
-                        var modelHostInstance = Activator.CreateInstance(modelHostType, new object[] { clientContextInstance });
+                        var modelHostFromClientContextMethod = modelHostType.GetMethod("FromClientContext");
+
+                        if (modelHostFromClientContextMethod == null)
+                            throw new Exception("Cannot find FromClientContext method on model host");
+
+                        MetaPackTrace.WriteLine(string.Format("Creating model host instance of type:[{0}]", modelHostType));
+                        var modelHostInstance = modelHostFromClientContextMethod.Invoke(null, new object[] { clientContextInstance });
 
                         MetaPackTrace.WriteLine(string.Format("Created model host instance of type:[{0}]", modelHostInstance));
                         var provisionMethod = ReflectionUtils.GetMethod(provisionService, "DeployModel");

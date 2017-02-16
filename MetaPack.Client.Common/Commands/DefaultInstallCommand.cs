@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using MetaPack.Client.Common.Commands.Base;
 using MetaPack.Client.Common.Services;
+using MetaPack.Core.Common;
 using MetaPack.NuGet.Services;
 using Microsoft.SharePoint.Client;
 using NuGet;
@@ -23,7 +24,7 @@ namespace MetaPack.Client.Common.Commands
             }
         }
 
-        public List<string> PackageSources { get; set; }
+
         public string Id { get; set; }
         public string Version { get; set; }
 
@@ -89,6 +90,35 @@ namespace MetaPack.Client.Common.Commands
 
                     // create manager with repo and current web site
                     MetaPackSolutionPackageManagerBase packageManager = new DefaultMetaPackSolutionPackageManager(repo, context);
+
+                    // TODO, transform command options to SolutionOptions
+
+                    // add options
+                    packageManager.SolutionOptions.Add(DefaultOptions.SharePoint.Api.CSOM);
+                    packageManager.SolutionOptions.Add(DefaultOptions.SharePoint.Edition.Foundation);
+                    packageManager.SolutionOptions.Add(DefaultOptions.SharePoint.Version.O365);
+
+                    packageManager.SolutionOptions.Add(new OptionValue
+                    {
+                        Name = DefaultOptions.Site.Url.Id,
+                        Value = context.Url
+                    });
+
+                    if (IsSharePointOnline)
+                    {
+                        // if o365 - add user name and password
+                        packageManager.SolutionOptions.Add(new OptionValue
+                        {
+                            Name = DefaultOptions.User.Name.Id,
+                            Value = UserName
+                        });
+
+                        packageManager.SolutionOptions.Add(new OptionValue
+                        {
+                            Name = DefaultOptions.User.Password.Id,
+                            Value = UserPassword
+                        });
+                    }
 
                     // install package
                     packageManager.InstallPackage(package, false, PreRelease);

@@ -78,7 +78,7 @@ namespace MetaPack.Client.Console
             Log(string.Format("Requested assembly: " + args.Name));
             Log(string.Format("Requested assembly by: " + args.RequestingAssembly));
 
-            return null;
+            return LoadAssembliesFromDepsDirectory(sender, args);
         }
 
         private static void ConfigureServiceContainer()
@@ -89,19 +89,46 @@ namespace MetaPack.Client.Console
             instance.ReplaceService(typeof(TraceServiceBase), traceService);
         }
 
-        static Assembly LoadAssembliesFromWorkingDirectory(object sender, ResolveEventArgs args)
+        static Assembly LoadAssembliesFromDepsDirectory(object sender, ResolveEventArgs args)
         {
             var assemblyName = new AssemblyName(args.Name).Name + ".dll";
 
             var folderPath = Path.GetDirectoryName(WorkingDirectory);
-            var assemblyPath = Path.Combine(folderPath, assemblyName);
+            var so2013CSOMPath = Path.Combine(folderPath, "sp2013-csom");
 
-            Log(string.Format("Loading assenbly [{0}] from [{1}]", assemblyName, assemblyPath));
+            var assemblyPath = Path.Combine(so2013CSOMPath, assemblyName);
+
+            Log(string.Format("MetaPack.Client.Console - Loading assenbly [{0}] from [{1}]", assemblyName, assemblyPath));
 
             if (!File.Exists(assemblyPath)) return null;
 
             var assembly = Assembly.LoadFrom(assemblyPath);
             return assembly;
+        }
+
+        private static List<string> ResolveNuGetGalleryPaths(string value)
+        {
+            var result = new List<string>();
+
+            if (!string.IsNullOrEmpty(value))
+            {
+                var urls = value.Split(new string[] { ";" }, StringSplitOptions.RemoveEmptyEntries);
+
+                foreach (var url in urls)
+                {
+                    if (url.ToLower().StartsWith("http"))
+                    {
+                        result.Add(url);
+                    }
+                    else
+                    {
+                        var localPath = Path.GetFullPath(url);
+                        result.Add(localPath);
+                    }
+                }
+            }
+
+            return result;
         }
 
         private static void ParseAppConfig()
@@ -110,33 +137,40 @@ namespace MetaPack.Client.Console
             {
                 Log("Reading app.config 'NuGet.Galleries' value...");
 
-                var nugetUrls = ConfigurationManager.AppSettings["NuGet.Galleries"];
 
-                if (!string.IsNullOrEmpty(nugetUrls))
-                {
-                    Log(string.Format("NuGet.Galleries: [{0}]", nugetUrls));
+                var nugetUrls = new List<string>();
 
-                    var urls = nugetUrls.Split(new string[] { ";" }, StringSplitOptions.RemoveEmptyEntries);
+                nugetUrls.AddRange(ResolveNuGetGalleryPaths(ConfigurationManager.AppSettings["NuGet.Galleries"]));
 
-                    if (urls.Any())
-                    {
-                        DefaultValues.DefaultNuGetRepositories.Clear();
-                        DefaultValues.DefaultNuGetRepositories.AddRange(urls);
+                nugetUrls.AddRange(ResolveNuGetGalleryPaths(Environment.GetEnvironmentVariable(
+                                                                        "MetaPack.NuGet.Galleries",
+                                                                        EnvironmentVariableTarget.Machine)));
 
-                        Log(string.Format("Using default NuGet gallery from app.config:[{0}]",
-                          Environment.NewLine + string.Join(Environment.NewLine + "    ", DefaultValues.DefaultNuGetRepositories) + Environment.NewLine));
-                    }
-                    else
-                    {
-                        Log(string.Format("Using default NuGet gallery:[{0}]", DefaultValues.DefaultNuGetRepositories));
-                    }
+                nugetUrls.AddRange(ResolveNuGetGalleryPaths(Environment.GetEnvironmentVariable(
+                                                                        "MetaPack.NuGet.Galleries",
+                                                                        EnvironmentVariableTarget.User)));
 
-                }
-                else
-                {
-                    Log(string.Format("'NuGet.Galleries' is null or empty. Using default NuGet gallery:[{0}]",
-                        DefaultValues.DefaultNuGetRepositories));
-                }
+                nugetUrls.AddRange(ResolveNuGetGalleryPaths(Environment.GetEnvironmentVariable(
+                                                                        "MetaPack.NuGet.Galleries",
+                                                                        EnvironmentVariableTarget.Process)));
+                // updating the defaults
+                DefaultValues.DefaultNuGetRepositories.Clear();
+                DefaultValues.DefaultNuGetRepositories.AddRange(nugetUrls);
+
+                Log(string.Format("Using NuGet galleries:[{0}]",
+                      Environment.NewLine + string.Join(Environment.NewLine + "    ", DefaultValues.DefaultNuGetRepositories) + Environment.NewLine));
+
+                var toolResolutionService = MetaPackServiceContainer.Instance.GetService<ToolResolutionService>();
+
+                if (toolResolutionService == null)
+                    toolResolutionService = new ToolResolutionService();
+
+                toolResolutionService.PackageSources.Clear();
+                toolResolutionService.PackageSources.AddRange(DefaultValues.DefaultNuGetRepositories);
+
+                toolResolutionService.RefreshPackageManager();
+
+                MetaPackServiceContainer.Instance.ReplaceService(typeof(ToolResolutionService), toolResolutionService);
             }
             catch (Exception e)
             {

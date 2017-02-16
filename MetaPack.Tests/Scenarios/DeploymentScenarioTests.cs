@@ -107,6 +107,8 @@ namespace MetaPack.Tests.Scenarios
 
         #region utils
 
+
+
         private void Can_Deploy_Solution_Package_Internal(bool isRootUrl, int provisionCount, bool? useDependencies)
         {
             WithMetaPackServices(service =>
@@ -147,60 +149,23 @@ namespace MetaPack.Tests.Scenarios
                 foreach (var soutionDependency in solutionDependencies)
                 {
                     var nuGetPackageDependency = packagingService.Pack(soutionDependency, null);
-
                     nuGetPackageDependencies.Add(nuGetPackageDependency);
                 }
 
                 var nuGetPackage = packagingService.Pack(solutionPackage, null);
                 var canFind = false;
 
-                WithNuGetContext((apiUrl, apiKey, repoUrl) =>
+                WithCINuGetContext((apiUrl, apiKey, repoUrl) =>
                 {
-                    IPackageRepository repo = null;
+                    // push
+                    PushPackageToCIRepository(solutionPackage, solutionDependencies, packagingService);
 
-                    if (UseLocaNuGet)
-                        repo = PackageRepositoryFactory.Default.CreateRepository(LocalNuGetFolderPath);
-                    else
-                        repo = PackageRepositoryFactory.Default.CreateRepository(repoUrl);
+                    return;
 
-                    foreach (var soutionDependency in solutionDependencies)
-                    {
-                        if (UseLocaNuGet)
-                        {
-                            var filePath = Path.Combine(LocalNuGetFolderPath,
-                                String.Format("{0}.{1}.nupkg", soutionDependency.Id, soutionDependency.Version));
-                            packagingService.PackToFile(soutionDependency, filePath);
-
-                        }
-                        else
-                        {
-                            packagingService.Push(soutionDependency, apiUrl, apiKey);
-                        }
-                    }
-
-                    if (UseLocaNuGet)
-                    {
-                        var filePath = Path.Combine(LocalNuGetFolderPath,
-                            String.Format("{0}.{1}.nupkg", solutionPackage.Id, solutionPackage.Version));
-                        packagingService.PackToFile(solutionPackage, filePath);
-                    }
-                    else
-                    {
-                        packagingService.Push(solutionPackage, apiUrl, apiKey);
-                    }
-
-                    // get the package
-                    IPackageRepository ciRepo = null;
-
-                    if (UseLocaNuGet)
-                        ciRepo = PackageRepositoryFactory.Default.CreateRepository(LocalNuGetFolderPath);
-                    else
-                        ciRepo = PackageRepositoryFactory.Default.CreateRepository(repoUrl);
-
-                    var ciPackage = ciRepo.FindPackageSafe(packageId, new SemanticVersion(packageVersion));
+                    // find
+                    var ciPackage = FindPackageInCIRepository(packageId, packageVersion);
 
                     Assert.IsNotNull(ciPackage, "Solution package");
-
                     canFind = ciPackage != null;
 
                     Action<ClientContext> action = context =>
@@ -209,50 +174,45 @@ namespace MetaPack.Tests.Scenarios
                         {
                             Trace.WriteLine(string.Format("Installing:[{0}/{1}]", index, provisionCount));
 
-                            // create nuget package manager within current SharePoint context
-                            var packageManager = new DefaultMetaPackSolutionPackageManager(repo, context);
-
-                            // if not defined, then solution tool is resolved by the package tags
-                            //packageManager.SolutionToolPackage = new SolutionToolPackage
-                            //{
-                            //    Id = service.ToolPackage.Id,
-                            //    Version = service.ToolPackage.Version
-                            //};
-
-                            // add options
-                            packageManager.SolutionOptions.Add(DefaultOptions.SharePoint.Api.CSOM);
-                            packageManager.SolutionOptions.Add(DefaultOptions.SharePoint.Edition.Foundation);
-                            packageManager.SolutionOptions.Add(DefaultOptions.SharePoint.Version.O365);
-
-
-                            packageManager.SolutionOptions.Add(new OptionValue
+                            WithCIRepositoryContext(repo =>
                             {
-                                Name = DefaultOptions.Site.Url.Id,
-                                Value = context.Url
-                            });
+                                // create nuget package manager within current SharePoint context
+                                var packageManager = new DefaultMetaPackSolutionPackageManager(repo, context);
 
-                            // if o365 - add user name and password
-                            packageManager.SolutionOptions.Add(new OptionValue
-                            {
-                                Name = DefaultOptions.User.Name.Id,
-                                Value = O365UserName
-                            });
+                                // add options
+                                packageManager.SolutionOptions.Add(DefaultOptions.SharePoint.Api.CSOM);
+                                packageManager.SolutionOptions.Add(DefaultOptions.SharePoint.Edition.Foundation);
+                                packageManager.SolutionOptions.Add(DefaultOptions.SharePoint.Version.O365);
 
-                            packageManager.SolutionOptions.Add(new OptionValue
-                            {
-                                Name = DefaultOptions.User.Password.Id,
-                                Value = O365UserPassword
-                            });
+                                packageManager.SolutionOptions.Add(new OptionValue
+                                {
+                                    Name = DefaultOptions.Site.Url.Id,
+                                    Value = context.Url
+                                });
 
-                            // install package
-                            packageManager.InstallPackage(ciPackage, false, false);
+                                // if o365 - add user name and password
+                                packageManager.SolutionOptions.Add(new OptionValue
+                                {
+                                    Name = DefaultOptions.User.Name.Id,
+                                    Value = O365UserName
+                                });
+
+                                packageManager.SolutionOptions.Add(new OptionValue
+                                {
+                                    Name = DefaultOptions.User.Password.Id,
+                                    Value = O365UserPassword
+                                });
+
+                                // install package
+                                packageManager.InstallPackage(ciPackage, false, false);
+                            });
                         }
                     };
 
                     if (isRootUrl)
-                        WithRootSharePointContext(action);
+                        WithCIRootSharePointContext(action);
                     else
-                        WithSubWebSharePointContext(action);
+                        WithCISubWebSharePointContext(action);
                 });
 
                 Assert.IsTrue(canFind);

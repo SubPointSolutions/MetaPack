@@ -67,7 +67,7 @@ namespace MetaPack.Tests.Scenarios
         [TestCategory("Metapack.Samples")]
         public void Can_Package_SPMeta2_Models_To_NuGet_Gallery()
         {
-            WithNuGetContext((apiUrl, apiKey, repoUrl) =>
+            WithCINuGetContext((apiUrl, apiKey, repoUrl) =>
             {
                 // you need to apiUrl / apiKey for your NuGet Gallery
                 // apiUrl - something like 'https://{your-nuget-gallery}/api/v2'
@@ -112,7 +112,7 @@ namespace MetaPack.Tests.Scenarios
         [TestCategory("Metapack.Samples")]
         public void Can_Unpack_Package_From_NuGet_Gallery()
         {
-            WithNuGetContext((apiUrl, apiKey, repoUrl) =>
+            WithCINuGetContext((apiUrl, apiKey, repoUrl) =>
             {
                 // you need to apiUrl / apiKey for your NuGet Gallery
                 // apiUrl - something like 'https://{your-nuget-gallery}/api/v2'
@@ -182,9 +182,9 @@ namespace MetaPack.Tests.Scenarios
             // context is an instance of ClientContext
             // use CSOM for both SharePoint Online and SharePoint 2013 
 
-            WithRootSharePointContext(context =>
+            WithCIRootSharePointContext(context =>
             {
-                WithNuGetContext((apiUrl, apiKey, repoUrl) =>
+                WithCINuGetContext((apiUrl, apiKey, repoUrl) =>
                 {
                     // you need to apiUrl / apiKey for your NuGet Gallery
                     // apiUrl - something like 'https://{your-nuget-gallery}/api/v2'

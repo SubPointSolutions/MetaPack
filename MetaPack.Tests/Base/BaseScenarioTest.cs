@@ -20,7 +20,9 @@ using MetaPack.NuGet.Common;
 using MetaPack.SharePointPnP;
 using MetaPack.SharePointPnP.Services;
 using MetaPack.Core.Common;
+using MetaPack.Tests.Extensions;
 using MetaPack.Tests.Services;
+using NuGet;
 
 namespace MetaPack.Tests.Base
 {
@@ -35,13 +37,13 @@ namespace MetaPack.Tests.Base
 
             MetaPackServiceContainer.Instance.ReplaceService(typeof(TraceServiceBase), regressionTraceService);
 
-            var useSPMeta2 = false;
-            var usePnP = true;
+            var useSPMeta2 = true;
+            var usePnP = false;
 
             UseLocaNuGet = true;
 
-            O365UserName = EnvironmentUtils.GetEnvironmentVariable(RegConsts.SharePoint.O365UserName);
-            O365UserPassword = EnvironmentUtils.GetEnvironmentVariable(RegConsts.SharePoint.O365UserPassword);
+            O365UserName = EnvironmentUtils.GetEnvironmentVariable(RegConsts.O365.UserName);
+            O365UserPassword = EnvironmentUtils.GetEnvironmentVariable(RegConsts.O365.UserPassword);
 
             if (!Environment.Is64BitProcess)
                 throw new Exception("x64 process is requred. VS -> Test -> Test Settings -> Default process architecture -> x64");
@@ -78,9 +80,9 @@ namespace MetaPack.Tests.Base
             }
 
             var localNuGetFolder = "local-nuget-packages";
-            LocalNuGetFolderPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, localNuGetFolder);
+            LocalNuGetRepositoryFolderPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, localNuGetFolder);
 
-            Directory.CreateDirectory(LocalNuGetFolderPath);
+            Directory.CreateDirectory(LocalNuGetRepositoryFolderPath);
 
             if (UseLocaNuGet)
             {
@@ -115,7 +117,7 @@ namespace MetaPack.Tests.Base
         public string O365UserPassword { get; set; }
 
         public bool UseLocaNuGet { get; set; }
-        public string LocalNuGetFolderPath { get; set; }
+        public string LocalNuGetRepositoryFolderPath { get; set; }
 
         protected List<MetaPackServiceContext> MetaPackService { get; set; }
 
@@ -123,27 +125,109 @@ namespace MetaPack.Tests.Base
 
         #region general
 
-        protected void WithRootSharePointContext(Action<ClientContext> action)
+        protected virtual void PushPackageToCIRepository(
+           SolutionPackageBase solutionPackage,
+           NuGetSolutionPackageService packagingService
+       )
         {
-            var rootWebUrl = EnvironmentUtils.GetEnvironmentVariable(RegConsts.SharePoint.RootWebUrl);
+            PushPackageToCIRepository(solutionPackage, null, packagingService);
+        }
+
+        protected virtual void PushPackageToCIRepository(
+            SolutionPackageBase solutionPackage,
+            List<SolutionPackageBase> solutionDependencies,
+            NuGetSolutionPackageService packagingService
+            )
+        {
+            IPackageRepository repo = null;
+
+            if (solutionDependencies != null)
+            {
+                foreach (var soutionDependency in solutionDependencies)
+                {
+                    if (UseLocaNuGet)
+                    {
+                        var filePath = Path.Combine(LocalNuGetRepositoryFolderPath,
+                            String.Format("{0}.{1}.nupkg", soutionDependency.Id, soutionDependency.Version));
+                        packagingService.PackToFile(soutionDependency, filePath);
+
+                    }
+                    else
+                    {
+                        WithCINuGetContext((apiUrl, apiKey, repoUrl) =>
+                        {
+                            packagingService.Push(soutionDependency, apiUrl, apiKey);
+                        });
+                    }
+                }
+            }
+
+            if (UseLocaNuGet)
+            {
+                var filePath = Path.Combine(LocalNuGetRepositoryFolderPath,
+                    String.Format("{0}.{1}.nupkg", solutionPackage.Id, solutionPackage.Version));
+                packagingService.PackToFile(solutionPackage, filePath);
+            }
+            else
+            {
+                WithCINuGetContext((apiUrl, apiKey, repoUrl) =>
+                {
+                    packagingService.Push(solutionPackage, apiUrl, apiKey);
+                });
+            }
+        }
+
+        protected virtual void WithCIRepositoryContext(Action<IPackageRepository> action)
+        {
+            if (UseLocaNuGet)
+            {
+                var ciRepo = PackageRepositoryFactory.Default.CreateRepository(LocalNuGetRepositoryFolderPath);
+
+                action(ciRepo);
+            }
+            else
+            {
+                WithCINuGetContext((apiUrl, apiKey, repoUrl) =>
+                {
+                    var ciRepo = PackageRepositoryFactory.Default.CreateRepository(repoUrl);
+                    action(ciRepo);
+                });
+            }
+        }
+
+        protected IPackage FindPackageInCIRepository(string packageId, string packageVersion)
+        {
+            IPackage result = null;
+
+            WithCIRepositoryContext(repo =>
+            {
+                result = repo.FindPackageSafe(packageId, new SemanticVersion(packageVersion));
+            });
+
+            return result;
+        }
+
+        protected void WithCIRootSharePointContext(Action<ClientContext> action)
+        {
+            var rootWebUrl = EnvironmentUtils.GetEnvironmentVariable(RegConsts.O365.RootWebUrl);
 
             if (string.IsNullOrEmpty(rootWebUrl))
                 throw new NullReferenceException("rootWebUrl");
 
-            WithSharePointContext(rootWebUrl, action);
+            WithCISharePointContext(rootWebUrl, action);
         }
 
-        protected void WithSubWebSharePointContext(Action<ClientContext> action)
+        protected void WithCISubWebSharePointContext(Action<ClientContext> action)
         {
-            var subwebUrl = EnvironmentUtils.GetEnvironmentVariable(RegConsts.SharePoint.SubWebUrl);
+            var subwebUrl = EnvironmentUtils.GetEnvironmentVariable(RegConsts.O365.SubWebUrl);
 
             if (string.IsNullOrEmpty(subwebUrl))
                 throw new NullReferenceException("subwebUrl");
 
-            WithSharePointContext(subwebUrl, action);
+            WithCISharePointContext(subwebUrl, action);
         }
 
-        protected void WithSharePointContext(string url, Action<ClientContext> action)
+        protected void WithCISharePointContext(string url, Action<ClientContext> action)
         {
             var userName = O365UserName;
             var userPassword = O365UserPassword;
@@ -165,7 +249,7 @@ namespace MetaPack.Tests.Base
             }
         }
 
-        protected void WithNuGetContext(Action<string, string, string> action)
+        protected void WithCINuGetContext(Action<string, string, string> action)
         {
             var apiUrl = EnvironmentUtils.GetEnvironmentVariable(RegConsts.NuGet.ApiUrl);
             var apiKey = EnvironmentUtils.GetEnvironmentVariable(RegConsts.NuGet.ApiKey);

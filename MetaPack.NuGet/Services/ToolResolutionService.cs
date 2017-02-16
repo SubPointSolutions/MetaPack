@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using AppDomainToolkit;
+using MetaPack.Core.Utils;
 using MetaPack.NuGet.Common;
 using MetaPack.NuGet.Utils;
 using NuGet;
@@ -92,16 +93,19 @@ namespace MetaPack.NuGet.Services
             // install
             foreach (var toolPackage in packageIds)
             {
+                MetaPackTrace.WriteLine(string.Format("Resolving tool:[{0}]", toolPackage));
                 var localPackage = PackageManager.LocalRepository.FindPackage(toolPackage);
 
                 if (localPackage == null)
                 {
+                    MetaPackTrace.WriteLine(string.Format("Tool does not exist. Installing..."));
+
                     var package = PackageManager.SourceRepository.FindPackage(toolPackage);
-                    PackageManager.InstallPackage(package, false, true);
+                    PackageManager.InstallPackage(package, false, true, false);
                 }
                 else
                 {
-                    // 
+                    MetaPackTrace.WriteLine(string.Format("Tool exists. No need for install"));
                 }
             }
         }
