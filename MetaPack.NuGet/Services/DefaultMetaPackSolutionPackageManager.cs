@@ -178,6 +178,7 @@ namespace MetaPack.NuGet.Services
             }
             else
             {
+                MetaPackTrace.Verbose("SolutionToolPackage is preefined by external input.");
                 result = SolutionToolPackage;
             }
 
@@ -431,8 +432,14 @@ namespace MetaPack.NuGet.Services
                     {
                         MetaPackTrace.Info(string.Format("    Installing additional tool [{0}] version [{1}]", additionalTool.Id, additionalTool.Version));
 
-                        toolResolver.InstallTool(additionalTool.Id);
-                        var addToolPackage = toolRepo.FindPackage(additionalTool.Id);
+                        toolResolver.InstallTool(additionalTool.Id, additionalTool.Version);
+
+                        IPackage addToolPackage = null;
+
+                        if (!string.IsNullOrEmpty(additionalTool.Version))
+                            addToolPackage = toolRepo.FindPackage(additionalTool.Id, new SemanticVersion(additionalTool.Version));
+                        else
+                            addToolPackage = toolRepo.FindPackage(additionalTool.Id);
 
                         var additionalToolAssemblies = toolResolver.ResolveAssemblyPaths(toolRepo, addToolPackage,
                             "net45", false);

@@ -18,6 +18,12 @@ namespace MetaPack.Client.Console.Options.Base
         [Option("debug", HelpText = "Use debug trace")]
         public bool Debug { get; set; }
 
+        [Option("toolid", HelpText = "NuGet package ID of the tool to use for packing, unpacking and deployment operations")]
+        public string ToolId { get; set; }
+
+        [Option("toolversion", HelpText = "NuGet package Version of the tool to use for packing, unpacking and deployment operations")]
+        public string ToolVersion { get; set; }
+
         #endregion
 
         #region help

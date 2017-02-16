@@ -31,6 +31,9 @@ namespace MetaPack.Client.Common.Commands.Base
 
         public List<string> PackageSources { get; set; }
 
+        public string ToolId { get; set; }
+        public string ToolVersion { get; set; }
+
         #endregion
 
         #region methods

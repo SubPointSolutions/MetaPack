@@ -219,39 +219,55 @@ namespace MetaPack.NuGet.Services
 
         internal void InstallTool(SolutionToolPackage toolPackage)
         {
-            InstallTool(toolPackage.Id);
+            InstallTool(toolPackage.Id, toolPackage.Version);
         }
 
-        public virtual void InstallTool(string packageId)
+        public virtual void InstallTool(string packageId, string packageVersion)
         {
-            InstallTools(new[] { packageId });
+            InstallTools(new Dictionary<string, string>
+            {
+                {packageId, packageVersion}
+            });
         }
 
         public virtual void InstallTools(IEnumerable<SolutionToolPackage> packages)
         {
             foreach (var tool in packages)
             {
-                InstallTool(tool.Id);
+                InstallTool(tool.Id, tool.Version);
             }
         }
 
-        public virtual void InstallTools(IEnumerable<string> packageIds)
+        public virtual void InstallTools(Dictionary<string, string> packages)
         {
             // install
-            foreach (var toolPackage in packageIds)
+            foreach (var id in packages.Keys)
             {
-                MetaPackTrace.Verbose(string.Format("Resolving tool:[{0}]", toolPackage));
-                var localPackage = PackageManager.LocalRepository.FindPackage(toolPackage);
+                var toolPackage = id;
+                var toolPackageVersion = packages[id];
+
+                MetaPackTrace.Verbose(string.Format("Resolving tool:[{0}] version:[{1}]", toolPackage, toolPackageVersion));
+                IPackage localPackage = null;
+
+                if (!string.IsNullOrEmpty(toolPackageVersion))
+                    localPackage = PackageManager.LocalRepository.FindPackage(toolPackage, new SemanticVersion(toolPackageVersion));
+                else
+                    localPackage = PackageManager.LocalRepository.FindPackage(toolPackage);
 
                 if (localPackage == null)
                 {
-                    MetaPackTrace.Verbose(string.Format("Tool does not exist. Installing..."));
+                    MetaPackTrace.Verbose(string.Format("Tool package does not exist locally. Installing..."));
 
-                    var package = PackageManager.SourceRepository.FindPackage(toolPackage);
+                    IPackage package;
+
+                    if (!string.IsNullOrEmpty(toolPackageVersion))
+                        package = PackageManager.SourceRepository.FindPackage(toolPackage, new SemanticVersion(toolPackageVersion));
+                    else
+                        package = PackageManager.SourceRepository.FindPackage(toolPackage);
 
                     if (package == null)
                     {
-                        throw new MetaPackException(string.Format("Cannit find package:[{0}]", toolPackage));
+                        throw new MetaPackException(string.Format("Cannot find package:[{0}] version:[{1}]", toolPackage, toolPackageVersion));
                     }
 
                     PackageManager.InstallPackage(package, false, true, false);

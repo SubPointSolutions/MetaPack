@@ -58,6 +58,10 @@
       <Project>{03F3D2A9-4BD8-4E76-8042-F617721222CA}</Project>
       <Name>MetaPack.Client.Console</Name>
     </ProjectReference>
+    <ProjectReference Include="..\MetaPack.Core\MetaPack.Core.csproj">
+      <Project>{262728CF-54E6-44CE-ADA9-8AB6934FC4CE}</Project>
+      <Name>MetaPack.Core</Name>
+    </ProjectReference>
     <ProjectReference Include="..\MetaPack.Tests\MetaPack.Tests.csproj">
       <Project>{3456E472-9046-4B61-A48B-46CC28321E7C}</Project>
       <Name>MetaPack.Tests</Name>

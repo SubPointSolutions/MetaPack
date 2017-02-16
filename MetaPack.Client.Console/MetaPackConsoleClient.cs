@@ -261,7 +261,10 @@ namespace MetaPack.Client.Console
                 Version = op.Version,
                 PreRelease = op.PreRelease,
                 UserName = op.UserName,
-                UserPassword = op.UserPassword
+                UserPassword = op.UserPassword,
+
+                ToolId = op.ToolId,
+                ToolVersion = op.ToolVersion
             };
 
             if (!string.IsNullOrEmpty(op.SharePointVersion))

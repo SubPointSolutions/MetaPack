@@ -39,13 +39,11 @@ namespace MetaPack.Tests.Base
             MetaPackServiceContainer.Instance.ReplaceService(typeof(TraceServiceBase), regressionTraceService);
 
             var useSPMeta2 = true;
-            var usePnP = true;
+            var usePnP = false;
 
             UseLocaNuGet = true;
 
             InitEnvironmentVariables();
-
-
 
             if (!Environment.Is64BitProcess)
                 throw new Exception("x64 process is requred. VS -> Test -> Test Settings -> Default process architecture -> x64");
@@ -104,6 +102,13 @@ namespace MetaPack.Tests.Base
 
                 MetaPackServiceContainer.Instance.RegisterService(typeof(ToolResolutionService), toolResolutionService);
             }
+        }
+
+        protected virtual void CreateNewSolutionPackage(MetaPackServiceContext service)
+        {
+            var solutionPackage = CreateNewSolutionPackage(service.PackagingService);
+            UpdatePackageVersion(solutionPackage);
+            PushPackageToCIRepository(solutionPackage, null, service.PackagingService);
         }
 
         private void InitEnvironmentVariables()
@@ -188,7 +193,16 @@ namespace MetaPack.Tests.Base
         protected virtual void PushPackageToCIRepository(
             SolutionPackageBase solutionPackage,
             List<SolutionPackageBase> solutionDependencies,
-            NuGetSolutionPackageService packagingService
+            NuGetSolutionPackageService packagingService)
+        {
+            PushPackageToCIRepository(solutionPackage, solutionDependencies, packagingService, UseLocaNuGet);
+        }
+
+        protected virtual void PushPackageToCIRepository(
+            SolutionPackageBase solutionPackage,
+            List<SolutionPackageBase> solutionDependencies,
+            NuGetSolutionPackageService packagingService,
+            bool useLocal
             )
         {
             IPackageRepository repo = null;
@@ -197,7 +211,7 @@ namespace MetaPack.Tests.Base
             {
                 foreach (var soutionDependency in solutionDependencies)
                 {
-                    if (UseLocaNuGet)
+                    if (useLocal)
                     {
                         var filePath = Path.Combine(LocalNuGetRepositoryFolderPath,
                             String.Format("{0}.{1}.nupkg", soutionDependency.Id, soutionDependency.Version));
@@ -214,7 +228,7 @@ namespace MetaPack.Tests.Base
                 }
             }
 
-            if (UseLocaNuGet)
+            if (useLocal)
             {
                 var filePath = Path.Combine(LocalNuGetRepositoryFolderPath,
                     String.Format("{0}.{1}.nupkg", solutionPackage.Id, solutionPackage.Version));
@@ -345,6 +359,8 @@ namespace MetaPack.Tests.Base
                 Trace.WriteLine(string.Format(" DeploymentService:[{0}]", service.DeploymentService));
 
                 Trace.WriteLine(string.Format(" CI package ID:[{0}]", service.DeploymentService));
+
+                CreateNewSolutionPackage(service);
 
                 action(service);
             }

@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using MetaPack.Core.Exceptions;
 using MetaPack.Tests.Base;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -61,7 +62,97 @@ namespace MetaPack.Client.Console.Tests.Scenarios
                 Assert.AreEqual(0, result);
             });
         }
-        
+
+        [TestMethod]
+        [TestCategory("Metapack.Client.Console")]
+        [TestCategory("CI.O365")]
+
+        public void Can_Run_Install_Command_O365_WithCustomToolId()
+        {
+            WithMetaPackServices(service =>
+            {
+                var packageId = service.CIPackageId;
+
+                var siteUrl = O365RootWebUrl;
+                var userName = O365UserName;
+                var userPassword = O365UserPassword;
+
+                var result = ExecuteClientWithArgs(new Dictionary<string, string>()
+                {
+                    { "install", string.Empty},
+                    { "--id", packageId},
+                    { "--url", siteUrl},
+                    { "--username", userName},
+                    { "--userpassword", userPassword},
+                    { "--spversion", "o365"},
+                    { "--toolid", "MetaPack.SPMeta2"}
+                });
+
+                Assert.AreEqual(0, result);
+            });
+        }
+
+        [TestMethod]
+        [TestCategory("Metapack.Client.Console")]
+        [TestCategory("CI.O365")]
+        [ExpectedException(typeof(MetaPackException))]
+        public void Can_Run_Install_Command_O365_WithCustomToolIdAndVersion()
+        {
+            // should raise MetaPackException on cannot find the tool
+            WithMetaPackServices(service =>
+            {
+                var packageId = service.CIPackageId;
+
+                var siteUrl = O365RootWebUrl;
+                var userName = O365UserName;
+                var userPassword = O365UserPassword;
+
+                var result = ExecuteClientWithArgs(new Dictionary<string, string>()
+                {
+                    { "install", string.Empty},
+                    { "--id", packageId},
+                    { "--url", siteUrl},
+                    { "--username", userName},
+                    { "--userpassword", userPassword},
+                    { "--spversion", "o365"},
+                    { "--toolid", "MetaPack.SPMeta2"},
+                    { "--toolversion", "1.1.0." + new Random().Next(10,100)}
+                });
+
+                Assert.AreEqual(0, result);
+            });
+        }
+
+
+        [TestMethod]
+        [TestCategory("Metapack.Client.Console")]
+        [TestCategory("CI.O365")]
+        public void Can_Run_Install_Command_O365_WithCustomToolIdAndVersion_12100()
+        {
+            WithMetaPackServices(service =>
+            {
+                var packageId = service.CIPackageId;
+
+                var siteUrl = O365RootWebUrl;
+                var userName = O365UserName;
+                var userPassword = O365UserPassword;
+
+                var result = ExecuteClientWithArgs(new Dictionary<string, string>()
+                {
+                    { "install", string.Empty},
+                    { "--id", packageId},
+                    { "--url", siteUrl},
+                    { "--username", userName},
+                    { "--userpassword", userPassword},
+                    { "--spversion", "o365"},
+                    { "--toolid", "MetaPack.SPMeta2"},
+                    { "--toolversion", "1.2.100"}
+                });
+
+                Assert.AreEqual(0, result);
+            });
+        }
+
         [TestMethod]
         [TestCategory("Metapack.Client.Console")]
         [TestCategory("CI.OnPremis")]

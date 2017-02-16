@@ -9,6 +9,7 @@ using MetaPack.NuGet.Services;
 using Microsoft.SharePoint.Client;
 using NuGet;
 using MetaPack.Core.Utils;
+using MetaPack.NuGet.Common;
 
 namespace MetaPack.Client.Common.Commands
 {
@@ -81,7 +82,7 @@ namespace MetaPack.Client.Common.Commands
                     }
                     else
                     {
-                    
+
                     }
 
                     MetaPackTrace.Info("Found package [{0}] version [{1}].",
@@ -120,6 +121,15 @@ namespace MetaPack.Client.Common.Commands
                             Name = DefaultOptions.User.Password.Id,
                             Value = UserPassword
                         });
+                    }
+
+                    if (!string.IsNullOrEmpty(ToolId))
+                    {
+                        packageManager.SolutionToolPackage = new SolutionToolPackage
+                        {
+                            Id = ToolId,
+                            Version = ToolVersion
+                        };
                     }
 
                     // install package
