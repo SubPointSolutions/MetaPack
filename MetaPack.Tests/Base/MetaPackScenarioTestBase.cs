@@ -28,23 +28,24 @@ using NuGet;
 namespace MetaPack.Tests.Base
 {
     [TestClass]
-    public class BaseScenarioTest
+    public class MetaPackScenarioTestBase
     {
         #region constructors
 
-        public BaseScenarioTest()
+        public MetaPackScenarioTestBase()
         {
             var regressionTraceService = new RegressionTraceService();
 
             MetaPackServiceContainer.Instance.ReplaceService(typeof(TraceServiceBase), regressionTraceService);
 
-            var useSPMeta2 = false;
+            var useSPMeta2 = true;
             var usePnP = true;
 
             UseLocaNuGet = true;
 
-            O365UserName = EnvironmentUtils.GetEnvironmentVariable(RegConsts.O365.UserName);
-            O365UserPassword = EnvironmentUtils.GetEnvironmentVariable(RegConsts.O365.UserPassword);
+            InitEnvironmentVariables();
+
+
 
             if (!Environment.Is64BitProcess)
                 throw new Exception("x64 process is requred. VS -> Test -> Test Settings -> Default process architecture -> x64");
@@ -62,7 +63,9 @@ namespace MetaPack.Tests.Base
                     ToolPackage = new SolutionToolPackage
                     {
                         Id = "MetaPack.SPMeta2"
-                    }
+                    },
+
+                    CIPackageId = "MetaPack.SPMeta2.CI"
                 });
             }
 
@@ -76,7 +79,9 @@ namespace MetaPack.Tests.Base
                     ToolPackage = new SolutionToolPackage
                     {
                         Id = "MetaPack.SharePointPnP"
-                    }
+                    },
+
+                    CIPackageId = "MetaPack.SharePointPnP.CI"
                 });
             }
 
@@ -99,6 +104,18 @@ namespace MetaPack.Tests.Base
 
                 MetaPackServiceContainer.Instance.RegisterService(typeof(ToolResolutionService), toolResolutionService);
             }
+        }
+
+        private void InitEnvironmentVariables()
+        {
+            O365UserName = EnvironmentUtils.GetEnvironmentVariable(RegConsts.O365.UserName);
+            O365UserPassword = EnvironmentUtils.GetEnvironmentVariable(RegConsts.O365.UserPassword);
+
+            O365RootWebUrl = EnvironmentUtils.GetEnvironmentVariable(RegConsts.O365.RootWebUrl);
+            O365SubWebUrl = EnvironmentUtils.GetEnvironmentVariable(RegConsts.O365.SubWebUrl);
+
+            OnPremisRootWebUrl = EnvironmentUtils.GetEnvironmentVariable(RegConsts.OnPremis.RootWebUrl);
+            OnPremisSubWebUrl = EnvironmentUtils.GetEnvironmentVariable(RegConsts.OnPremis.SubWebUrl);
         }
 
         private static List<string> ResolveNuGetGalleryPaths(string value)
@@ -136,6 +153,8 @@ namespace MetaPack.Tests.Base
             public NuGetSolutionPackageService PackagingService { get; set; }
 
             public SolutionToolPackage ToolPackage { get; set; }
+
+            public string CIPackageId { get; set; }
         }
 
         #endregion
@@ -144,6 +163,10 @@ namespace MetaPack.Tests.Base
 
         public string O365UserName { get; set; }
         public string O365UserPassword { get; set; }
+
+        public string O365RootWebUrl { get; set; }
+
+        public string O365SubWebUrl { get; set; }
 
         public bool UseLocaNuGet { get; set; }
         public string LocalNuGetRepositoryFolderPath { get; set; }
@@ -321,6 +344,8 @@ namespace MetaPack.Tests.Base
                 Trace.WriteLine(string.Format(" PackagingService:[{0}]", service.PackagingService));
                 Trace.WriteLine(string.Format(" DeploymentService:[{0}]", service.DeploymentService));
 
+                Trace.WriteLine(string.Format(" CI package ID:[{0}]", service.DeploymentService));
+
                 action(service);
             }
         }
@@ -334,7 +359,9 @@ namespace MetaPack.Tests.Base
             return CreateNewSolutionPackage(service, null);
         }
 
-        protected virtual SolutionPackageBase CreateNewSolutionPackage(NuGetSolutionPackageService service, Action<SolutionPackageBase> action)
+        protected virtual SolutionPackageBase CreateNewSolutionPackage(
+                NuGetSolutionPackageService service,
+                Action<SolutionPackageBase> action)
         {
             var knownPackageType = false;
 
@@ -477,5 +504,11 @@ namespace MetaPack.Tests.Base
         }
 
         #endregion
+
+
+
+        public string OnPremisRootWebUrl { get; set; }
+
+        public string OnPremisSubWebUrl { get; set; }
     }
 }

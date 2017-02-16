@@ -25,7 +25,7 @@ using MetaPack.NuGet.Common;
 namespace MetaPack.Tests.Scenarios
 {
     [TestClass]
-    public class DeploymentScenarioTests : BaseScenarioTest
+    public class DeploymentScenarioTests : MetaPackScenarioTestBase
     {
         #region constructors
 

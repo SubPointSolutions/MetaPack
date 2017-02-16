@@ -26,7 +26,7 @@ using MetaPack.SharePointPnP;
 namespace MetaPack.Tests.Scenarios
 {
     [TestClass]
-    public class PackagingScenarioTests : BaseScenarioTest
+    public class PackagingScenarioTests : MetaPackScenarioTestBase
     {
         #region spmeta2
 

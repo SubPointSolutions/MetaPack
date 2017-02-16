@@ -39,6 +39,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <UseVSHostingProcess>false</UseVSHostingProcess>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -85,7 +86,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Consts\SharePointRuntimVersions.cs" />
     <Compile Include="Consts\DefaultValues.cs" />
+    <Compile Include="MetaPackConsoleClient.cs" />
     <Compile Include="Options\Base\InstallOperationSubOptionBase.cs" />
     <Compile Include="Options\Base\SharePointSubOptionsBase.cs" />
     <Compile Include="Options\Base\MetaPackSubOptionsBase.cs" />

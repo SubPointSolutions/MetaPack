@@ -67,6 +67,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Providers", "Providers", "{
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MetaPack.Client.Common.Tests", "MetaPack.Client.Common.Tests\MetaPack.Client.Common.Tests.csproj", "{F76412E6-9C03-4E66-825C-F684146F2774}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MetaPack.Client.Console.Tests", "MetaPack.Client.Console.Tests\MetaPack.Client.Console.Tests.csproj", "{2807EB53-7E01-432F-AD28-7B92836001DF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -115,6 +117,10 @@ Global
 		{F76412E6-9C03-4E66-825C-F684146F2774}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F76412E6-9C03-4E66-825C-F684146F2774}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F76412E6-9C03-4E66-825C-F684146F2774}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2807EB53-7E01-432F-AD28-7B92836001DF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2807EB53-7E01-432F-AD28-7B92836001DF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2807EB53-7E01-432F-AD28-7B92836001DF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2807EB53-7E01-432F-AD28-7B92836001DF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -131,5 +137,6 @@ Global
 		{B30F6CA8-3E96-4734-B6B1-A61F201099E4} = {4F769F89-E461-49F6-B05D-C3DBB7C773BC}
 		{02FD93D0-B74C-4571-8AF4-4E7A849DB8D1} = {11EE3BB7-6E08-42C1-8718-9798C687C7CD}
 		{F76412E6-9C03-4E66-825C-F684146F2774} = {EEC26171-C777-4252-A25F-D50947372A86}
+		{2807EB53-7E01-432F-AD28-7B92836001DF} = {EEC26171-C777-4252-A25F-D50947372A86}
 	EndGlobalSection
 EndGlobal

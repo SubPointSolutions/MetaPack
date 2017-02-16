@@ -346,8 +346,7 @@ Task("Run-Unit-Tests")
 });
 
 Task("NuGet-Packaging")
-    //.IsDependentOn("Run-Unit-Tests")
-	.IsDependentOn("Build")
+    .IsDependentOn("Run-Unit-Tests")
     .Does(() =>
 {
     if(!useNuGetPackaging) {

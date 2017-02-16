@@ -17,7 +17,7 @@ using SPMeta2.Syntax.Default;
 namespace MetaPack.Tests.Scenarios
 {
     //[TestClass]
-    public class ApiSamplesTests : BaseScenarioTest
+    public class ApiSamplesTests : MetaPackScenarioTestBase
     {
         #region tests
 
