@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using AppDomainToolkit;
+using MetaPack.Core.Exceptions;
 using MetaPack.Core.Utils;
 using MetaPack.NuGet.Common;
 using MetaPack.NuGet.Utils;
@@ -247,6 +248,12 @@ namespace MetaPack.NuGet.Services
                     MetaPackTrace.Verbose(string.Format("Tool does not exist. Installing..."));
 
                     var package = PackageManager.SourceRepository.FindPackage(toolPackage);
+
+                    if (package == null)
+                    {
+                        throw new MetaPackException(string.Format("Cannit find package:[{0}]", toolPackage));
+                    }
+
                     PackageManager.InstallPackage(package, false, true, false);
                 }
                 else
@@ -339,5 +346,49 @@ namespace MetaPack.NuGet.Services
         }
 
         #endregion
+
+        public void InitPackageSourcesFromString(string value)
+        {
+            var paths = ResolveNuGetGalleryPaths(value);
+            InitPackageSources(paths);
+        }
+
+        private void InitPackageSources(List<string> paths)
+        {
+            foreach (var path in paths)
+                if (!PackageSources.Contains(path))
+                    PackageSources.Add(path);
+        }
+
+        public void InitPackageSourcesFromGetEnvironmentVariable(string variableName, EnvironmentVariableTarget variableTarget)
+        {
+            var paths = ResolveNuGetGalleryPaths(Environment.GetEnvironmentVariable(variableName, variableTarget));
+            InitPackageSources(paths);
+        }
+
+        protected virtual List<string> ResolveNuGetGalleryPaths(string value)
+        {
+            var result = new List<string>();
+
+            if (!string.IsNullOrEmpty(value))
+            {
+                var urls = value.Split(new string[] { ";" }, StringSplitOptions.RemoveEmptyEntries);
+
+                foreach (var url in urls)
+                {
+                    if (url.ToLower().StartsWith("http"))
+                    {
+                        result.Add(url);
+                    }
+                    else
+                    {
+                        var localPath = Path.GetFullPath(url);
+                        result.Add(localPath);
+                    }
+                }
+            }
+
+            return result;
+        }
     }
 }

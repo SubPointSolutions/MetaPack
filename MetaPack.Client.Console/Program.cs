@@ -16,6 +16,7 @@ using MetaPack.Core;
 using MetaPack.Core.Services;
 using MetaPack.Core.Utils;
 using MetaPack.NuGet.Services;
+using MetaPack.Client.Console.Options.Base;
 
 namespace MetaPack.Client.Console
 {
@@ -23,8 +24,12 @@ namespace MetaPack.Client.Console
     {
         private static string WorkingDirectory { get; set; }
 
+        private static ConsoleTraceService ConsoleTraceService { get; set; }
+
         static void Main(string[] args)
         {
+            ConsoleTraceService = new ConsoleTraceService();
+
             ConfigureServiceContainer();
 
             AppDomain.CurrentDomain.AssemblyResolve += CurrentDomain_AssemblyResolve;
@@ -68,15 +73,16 @@ namespace MetaPack.Client.Console
                 HandleWrongArgumentParsing();
             }
 
-           Environment.Exit(0);
+            Environment.Exit(0);
         }
 
         static Assembly CurrentDomain_AssemblyResolve(object sender, ResolveEventArgs args)
         {
-            Log(string.Format("Failing while resolving assembly..."));
-
             Log(string.Format("Requested assembly: " + args.Name));
             Log(string.Format("Requested assembly by: " + args.RequestingAssembly));
+
+            if (args.Name.ToLower().Contains(".resources,"))
+                return null;
 
             return LoadAssembliesFromDepsDirectory(sender, args);
         }
@@ -84,9 +90,7 @@ namespace MetaPack.Client.Console
         private static void ConfigureServiceContainer()
         {
             var instance = MetaPackServiceContainer.Instance;
-
-            var traceService = new ConsoleTraceService();
-            instance.ReplaceService(typeof(TraceServiceBase), traceService);
+            instance.ReplaceService(typeof(TraceServiceBase), ConsoleTraceService);
         }
 
         static Assembly LoadAssembliesFromDepsDirectory(object sender, ResolveEventArgs args)
@@ -106,71 +110,31 @@ namespace MetaPack.Client.Console
             return assembly;
         }
 
-        private static List<string> ResolveNuGetGalleryPaths(string value)
-        {
-            var result = new List<string>();
 
-            if (!string.IsNullOrEmpty(value))
-            {
-                var urls = value.Split(new string[] { ";" }, StringSplitOptions.RemoveEmptyEntries);
-
-                foreach (var url in urls)
-                {
-                    if (url.ToLower().StartsWith("http"))
-                    {
-                        result.Add(url);
-                    }
-                    else
-                    {
-                        var localPath = Path.GetFullPath(url);
-                        result.Add(localPath);
-                    }
-                }
-            }
-
-            return result;
-        }
 
         private static void ParseAppConfig()
         {
             try
             {
-                Log("Reading app.config 'NuGet.Galleries' value...");
-
-
-                var nugetUrls = new List<string>();
-
-                nugetUrls.AddRange(ResolveNuGetGalleryPaths(ConfigurationManager.AppSettings["NuGet.Galleries"]));
-
-                nugetUrls.AddRange(ResolveNuGetGalleryPaths(Environment.GetEnvironmentVariable(
-                                                                        "MetaPack.NuGet.Galleries",
-                                                                        EnvironmentVariableTarget.Machine)));
-
-                nugetUrls.AddRange(ResolveNuGetGalleryPaths(Environment.GetEnvironmentVariable(
-                                                                        "MetaPack.NuGet.Galleries",
-                                                                        EnvironmentVariableTarget.User)));
-
-                nugetUrls.AddRange(ResolveNuGetGalleryPaths(Environment.GetEnvironmentVariable(
-                                                                        "MetaPack.NuGet.Galleries",
-                                                                        EnvironmentVariableTarget.Process)));
-                // updating the defaults
-                DefaultValues.DefaultNuGetRepositories.Clear();
-                DefaultValues.DefaultNuGetRepositories.AddRange(nugetUrls);
-
-                Log(string.Format("Using NuGet galleries:[{0}]",
-                      Environment.NewLine + Environment.NewLine + "    "+ string.Join(Environment.NewLine + "    ", DefaultValues.DefaultNuGetRepositories) + Environment.NewLine));
-
                 var toolResolutionService = MetaPackServiceContainer.Instance.GetService<ToolResolutionService>();
 
                 if (toolResolutionService == null)
                     toolResolutionService = new ToolResolutionService();
 
-                toolResolutionService.PackageSources.Clear();
-                toolResolutionService.PackageSources.AddRange(DefaultValues.DefaultNuGetRepositories);
+                toolResolutionService.InitPackageSourcesFromString(ConfigurationManager.AppSettings["NuGet.Galleries"]);
+                toolResolutionService.InitPackageSourcesFromGetEnvironmentVariable("MetaPack.NuGet.Galleries", EnvironmentVariableTarget.Machine);
+                toolResolutionService.InitPackageSourcesFromGetEnvironmentVariable("MetaPack.NuGet.Galleries", EnvironmentVariableTarget.User);
+                toolResolutionService.InitPackageSourcesFromGetEnvironmentVariable("MetaPack.NuGet.Galleries", EnvironmentVariableTarget.Process);
 
                 toolResolutionService.RefreshPackageManager();
 
+                DefaultValues.DefaultNuGetRepositories.AddRange(toolResolutionService.PackageSources);
+
                 MetaPackServiceContainer.Instance.ReplaceService(typeof(ToolResolutionService), toolResolutionService);
+
+                Log(string.Format("Using NuGet galleries:[{0}]",
+                      Environment.NewLine + Environment.NewLine + "    " + string.Join(Environment.NewLine + "    ", DefaultValues.DefaultNuGetRepositories) + Environment.NewLine));
+
             }
             catch (Exception e)
             {
@@ -195,6 +159,8 @@ namespace MetaPack.Client.Console
         {
             var op = options.Push;
 
+            ConfigureEnvironment(op);
+
             if (!Parser.Default.ParseArguments(args, op))
                 Environment.Exit(Parser.DefaultExitCodeFail);
 
@@ -215,7 +181,6 @@ namespace MetaPack.Client.Console
                     ApiKey = op.ApiKey,
 
                     Package = stream
-
                 };
 
                 command.Execute();
@@ -225,6 +190,8 @@ namespace MetaPack.Client.Console
         private static void HandleUpdateCommand(string[] args, DefaultOptions options)
         {
             var op = options.Update;
+
+            ConfigureEnvironment(op);
 
             if (!Parser.Default.ParseArguments(args, op))
                 Environment.Exit(Parser.DefaultExitCodeFail);
@@ -254,6 +221,8 @@ namespace MetaPack.Client.Console
         private static void HandleInstallCommand(string[] args, DefaultOptions options)
         {
             var op = options.Install;
+
+            ConfigureEnvironment(op);
 
             if (!Parser.Default.ParseArguments(args, op))
                 Environment.Exit(Parser.DefaultExitCodeFail);
@@ -291,6 +260,8 @@ namespace MetaPack.Client.Console
         {
             var op = options.List;
 
+            ConfigureEnvironment(op);
+
             if (!Parser.Default.ParseArguments(args, op))
                 Environment.Exit(Parser.DefaultExitCodeFail);
 
@@ -310,6 +281,11 @@ namespace MetaPack.Client.Console
             }
 
             command.Execute();
+        }
+
+        private static void ConfigureEnvironment(MetaPackSubOptionsBase option)
+        {
+            ConsoleTraceService.IsVerboseEnabled = option.Verbose;
         }
 
         public static void Log(string msg)

@@ -11,6 +11,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using SPMeta2.Models;
 using SPMeta2.Syntax.Default;
 using System.Collections.Generic;
+using System.Configuration;
 using MetaPack.NuGet.Services;
 using MetaPack.SPMeta2.Services;
 using System.Diagnostics;
@@ -37,8 +38,8 @@ namespace MetaPack.Tests.Base
 
             MetaPackServiceContainer.Instance.ReplaceService(typeof(TraceServiceBase), regressionTraceService);
 
-            var useSPMeta2 = false;
-            var usePnP = true;
+            var useSPMeta2 = true;
+            var usePnP = false;
 
             UseLocaNuGet = true;
 
@@ -79,22 +80,50 @@ namespace MetaPack.Tests.Base
                 });
             }
 
-            var localNuGetFolder = "local-nuget-packages";
-            LocalNuGetRepositoryFolderPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, localNuGetFolder);
+            var localNuGetFolder = Path.GetFullPath(@"..\..\..\Build\local-ci-packages");
+            LocalNuGetRepositoryFolderPath = localNuGetFolder;
 
             Directory.CreateDirectory(LocalNuGetRepositoryFolderPath);
 
             if (UseLocaNuGet)
             {
-                var toolResolutioService = new ToolResolutionService();
+                var toolResolutionService = new ToolResolutionService();
+                toolResolutionService.PackageSources.Add(LocalNuGetRepositoryFolderPath);
 
-                var localToolPackagesPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\..\Build\packages");
-                localToolPackagesPath = Path.GetFullPath(localToolPackagesPath);
+                toolResolutionService.InitPackageSourcesFromString(ConfigurationManager.AppSettings["NuGet.Galleries"]);
+                toolResolutionService.InitPackageSourcesFromGetEnvironmentVariable("MetaPack.NuGet.Galleries", EnvironmentVariableTarget.Machine);
+                toolResolutionService.InitPackageSourcesFromGetEnvironmentVariable("MetaPack.NuGet.Galleries", EnvironmentVariableTarget.User);
+                toolResolutionService.InitPackageSourcesFromGetEnvironmentVariable("MetaPack.NuGet.Galleries", EnvironmentVariableTarget.Process);
 
-                toolResolutioService.PackageSources.Add(localToolPackagesPath);
+                toolResolutionService.RefreshPackageManager();
 
-                MetaPackServiceContainer.Instance.RegisterService(typeof(ToolResolutionService), toolResolutioService);
+                MetaPackServiceContainer.Instance.RegisterService(typeof(ToolResolutionService), toolResolutionService);
             }
+        }
+
+        private static List<string> ResolveNuGetGalleryPaths(string value)
+        {
+            var result = new List<string>();
+
+            if (!string.IsNullOrEmpty(value))
+            {
+                var urls = value.Split(new string[] { ";" }, StringSplitOptions.RemoveEmptyEntries);
+
+                foreach (var url in urls)
+                {
+                    if (url.ToLower().StartsWith("http"))
+                    {
+                        result.Add(url);
+                    }
+                    else
+                    {
+                        var localPath = Path.GetFullPath(url);
+                        result.Add(localPath);
+                    }
+                }
+            }
+
+            return result;
         }
 
         #endregion
@@ -433,6 +462,16 @@ namespace MetaPack.Tests.Base
         }
 
         protected virtual string GetTempXmlFilePath()
+        {
+            return Path.Combine(GetTempFolderPath(), GetTempXmlFileName());
+        }
+
+        protected virtual string GetTempNuGetFileName()
+        {
+            return string.Format("{0}.nupkg", Guid.NewGuid().ToString("N"));
+        }
+
+        protected virtual string GetTempNuGetFilePath()
         {
             return Path.Combine(GetTempFolderPath(), GetTempXmlFileName());
         }

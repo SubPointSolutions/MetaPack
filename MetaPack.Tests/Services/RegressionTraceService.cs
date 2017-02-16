@@ -15,7 +15,7 @@ namespace MetaPack.Tests.Services
 
         public RegressionTraceService()
         {
-            IsVerboseEnabled = false;
+            IsVerboseEnabled = true;
 
             IsInformationEnabled = true;
             IsWarningEnabled = true;
@@ -55,7 +55,7 @@ namespace MetaPack.Tests.Services
 
         #region methods
 
-        protected virtual String GetTimestamp()
+        protected virtual string GetTimestamp()
         {
             return (DateTime.Now).ToString("yyyyMMdd_HHmmssfff");
         }
@@ -65,7 +65,6 @@ namespace MetaPack.Tests.Services
             var internalMessgae = string.Format("[{0}]: {1}", level, message);
 
             Trace.WriteLine(internalMessgae);
-            Debug.WriteLine(internalMessgae);
 
             using (var sw = File.AppendText(LogFilePath))
                 sw.WriteLine(internalMessgae);

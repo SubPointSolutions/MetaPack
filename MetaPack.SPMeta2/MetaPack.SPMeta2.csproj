@@ -62,7 +62,6 @@
     <Compile Include="Services\SPMeta2SolutionPackageService.cs" />
     <Compile Include="Services\SPMeta2ToolResolutionService.cs" />
     <Compile Include="SPMeta2SolutionPackage.cs" />
-    <Compile Include="SPMeta2SolutionPackageExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

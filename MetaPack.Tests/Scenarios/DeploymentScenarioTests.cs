@@ -107,8 +107,6 @@ namespace MetaPack.Tests.Scenarios
 
         #region utils
 
-
-
         private void Can_Deploy_Solution_Package_Internal(bool isRootUrl, int provisionCount, bool? useDependencies)
         {
             WithMetaPackServices(service =>
@@ -161,8 +159,6 @@ namespace MetaPack.Tests.Scenarios
                     PushPackageToCIRepository(solutionPackage, solutionDependencies, packagingService);
                     // find
                     var ciPackage = FindPackageInCIRepository(packageId, packageVersion);
-
-                    return;
 
                     Assert.IsNotNull(ciPackage, "Solution package");
                     canFind = ciPackage != null;

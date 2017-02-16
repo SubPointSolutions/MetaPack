@@ -189,14 +189,7 @@ namespace MetaPack.Tests.Scenarios
             Assert.IsNotNull(nuGetPackage);
             Assert.IsTrue(nuGetPackage.Length > 0);
 
-            // to file extension
-            var fileName = string.Format("{0}.{1}.nupkg", solutionPackage.Id, solutionPackage.Version);
-
-            var fileDir = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString("N"));
-            var filePath = Path.Combine(fileDir, fileName);
-
-            Directory.CreateDirectory(fileDir);
-
+            var filePath = GetTempNuGetFilePath();
             packagingService.PackToFile(solutionPackage, filePath);
 
             Assert.IsTrue(File.Exists(filePath));
@@ -212,18 +205,13 @@ namespace MetaPack.Tests.Scenarios
             Assert.IsNotNull(nuGetPackage);
             Assert.IsTrue(nuGetPackage.Length > 0);
 
-            var fileName = string.Format("{0}.{1}.nupkg", solutionPackage.Id, solutionPackage.Version);
+            var filePath = GetTempNuGetFilePath();
 
-            var fileDir = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString("N"));
-            var filePath = Path.Combine(fileDir, fileName);
-
-            Directory.CreateDirectory(fileDir);
             packagingService.PackToFile(solutionPackage, filePath);
 
             // unpacking and checking props
             using (var streamReader = File.OpenRead(filePath))
             {
-
                 var unpackedSolutionPackage = packagingService.Unpack(streamReader) as SolutionPackageBase;
                 action(solutionPackage, unpackedSolutionPackage);
             }
