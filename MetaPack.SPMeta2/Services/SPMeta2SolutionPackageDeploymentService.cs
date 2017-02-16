@@ -161,18 +161,18 @@ namespace MetaPack.SPMeta2.Services
 
         public override void Deploy(SolutionPackageProvisionOptions options)
         {
-            MetaPackTrace.WriteLine("Resolving provision class...");
+            MetaPackTrace.Verbose("Resolving provision class...");
 
             var provisionServiceClassName = GetProvisionServiceClassName(options);
-            MetaPackTrace.WriteLine(string.Format("Resolved as:[{0}]", provisionServiceClassName));
+            MetaPackTrace.Verbose(string.Format("Resolved as:[{0}]", provisionServiceClassName));
 
-            MetaPackTrace.WriteLine("Resolving provision class type...");
+            MetaPackTrace.Verbose("Resolving provision class type...");
 
             var allAssemblies = AppDomain.CurrentDomain.GetAssemblies();
 
-            MetaPackTrace.WriteLine("All assemblies");
+            MetaPackTrace.Verbose("All assemblies");
             foreach (var assembly in allAssemblies)
-                MetaPackTrace.WriteLine("    " + assembly.FullName);
+                MetaPackTrace.Verbose("    " + assembly.FullName);
 
             var allClasses = AppDomain.CurrentDomain
                                       .GetAssemblies().SelectMany(a => a.GetTypes().OrderBy(t => t.Name));
@@ -184,9 +184,9 @@ namespace MetaPack.SPMeta2.Services
             if (provisionServiceClass == null)
                 throw new ArgumentNullException(string.Format("Cannot find provision service imp by name:[{0}]", provisionServiceClassName));
             else
-                MetaPackTrace.WriteLine(string.Format("Found as type as:[{0}]", provisionServiceClass));
+                MetaPackTrace.Verbose(string.Format("Found as type as:[{0}]", provisionServiceClass));
 
-            MetaPackTrace.WriteLine(string.Format("Creation provision service instance..."));
+            MetaPackTrace.Verbose(string.Format("Creation provision service instance..."));
             var provisionService = Activator.CreateInstance(provisionServiceClass);
             provisionService.GetType();
 
@@ -209,19 +209,19 @@ namespace MetaPack.SPMeta2.Services
             var spEdition = options.GetOptionValue(DefaultOptions.SharePoint.Edition.Id);
             var spApi = options.GetOptionValue(DefaultOptions.SharePoint.Api.Id);
 
-            MetaPackTrace.WriteLine(string.Format("spVersion:[{0}]", spVersion));
-            MetaPackTrace.WriteLine(string.Format("spEdition:[{0}]", spEdition));
-            MetaPackTrace.WriteLine(string.Format("spApi:[{0}]", spApi));
+            MetaPackTrace.Verbose(string.Format("spVersion:[{0}]", spVersion));
+            MetaPackTrace.Verbose(string.Format("spEdition:[{0}]", spEdition));
+            MetaPackTrace.Verbose(string.Format("spApi:[{0}]", spApi));
 
             if (spApi != DefaultOptions.SharePoint.Api.CSOM.Value)
                 throw new NotSupportedException(string.Format("SharePoint API [{0}] is not supported yet", spApi));
 
-            MetaPackTrace.WriteLine(string.Format("Starting provision for [{0}] model folders", solutionPackage.ModelFolders.Count));
+            MetaPackTrace.Verbose(string.Format("Starting provision for [{0}] model folders", solutionPackage.ModelFolders.Count));
 
             foreach (var modelFolder in solutionPackage.ModelFolders)
             {
                 var modelFiles = Directory.GetFiles(modelFolder, "*.xml");
-                MetaPackTrace.WriteLine(string.Format("Starting provision for [{0}] models", modelFiles.Count()));
+                MetaPackTrace.Verbose(string.Format("Starting provision for [{0}] models", modelFiles.Count()));
 
                 foreach (var modelFle in modelFiles)
                 {
@@ -235,18 +235,18 @@ namespace MetaPack.SPMeta2.Services
 
                     var rootDefinitionClassName = rootDefinitionValue.GetType().Name;
 
-                    MetaPackTrace.WriteLine(string.Format("Provisioning model [{0}]", rootDefinitionValue.GetType().Name));
+                    MetaPackTrace.Verbose(string.Format("Provisioning model [{0}]", rootDefinitionValue.GetType().Name));
 
 
 
-                    MetaPackTrace.WriteLine(string.Format("Resoling model host type..."));
+                    MetaPackTrace.Verbose(string.Format("Resoling model host type..."));
                     var modelHostType = ResolveModelHostType(allClasses, rootDefinitionClassName, spApi);
 
-                    MetaPackTrace.WriteLine(string.Format("Resolved as [{0}]", modelHostType));
+                    MetaPackTrace.Verbose(string.Format("Resolved as [{0}]", modelHostType));
 
                     if (spApi == DefaultOptions.SharePoint.Api.CSOM.Value)
                     {
-                        MetaPackTrace.WriteLine(string.Format("Detected CSOM provision."));
+                        MetaPackTrace.Verbose(string.Format("Detected CSOM provision."));
 
                         var m2CSOMAssembly = AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault(a => a.FullName == "SPMeta2.CSOM, Version=1.0.0.0, Culture=neutral, PublicKeyToken=d71faae3bf28531a");
 
@@ -258,13 +258,13 @@ namespace MetaPack.SPMeta2.Services
 
                         var siteUrl = options.GetOptionValue(DefaultOptions.Site.Url.Id);
 
-                        MetaPackTrace.WriteLine(string.Format("Creating ClientContext for web site:[{0}]", siteUrl));
+                        MetaPackTrace.Verbose(string.Format("Creating ClientContext for web site:[{0}]", siteUrl));
                         var clientContexClass = allClasses.FirstOrDefault(c => c.Name == "ClientContext");
 
                         if (clientContexClass == null)
                             throw new Exception(string.Format("Cannot find class by name:[{0}]", "ClientContext"));
 
-                        MetaPackTrace.WriteLine(string.Format("Creating ClientContext for web site:[{0}]", siteUrl));
+                        MetaPackTrace.Verbose(string.Format("Creating ClientContext for web site:[{0}]", siteUrl));
                         var clientContextInstance = Activator.CreateInstance(clientContexClass, new object[] { siteUrl });
 
                         if (clientContextInstance == null)
@@ -272,16 +272,16 @@ namespace MetaPack.SPMeta2.Services
 
                         if (spVersion == DefaultOptions.SharePoint.Version.O365.Value)
                         {
-                            MetaPackTrace.WriteLine(string.Format("O365 API detected"));
+                            MetaPackTrace.Verbose(string.Format("O365 API detected"));
 
                             if (!string.IsNullOrEmpty(userName) && !string.IsNullOrEmpty(userPassword))
                             {
-                                MetaPackTrace.WriteLine(string.Format("[{0}] and [{1}] aren't null.",
+                                MetaPackTrace.Verbose(string.Format("[{0}] and [{1}] aren't null.",
                                         DefaultOptions.User.Name.Id,
                                         DefaultOptions.User.Password.Id
                                     ));
 
-                                MetaPackTrace.WriteLine(string.Format("Creating Credentials for web site:[{0}]", siteUrl));
+                                MetaPackTrace.Verbose(string.Format("Creating Credentials for web site:[{0}]", siteUrl));
                                 var spCredentialsClass =
                                     allClasses.FirstOrDefault(c => c.Name == "SharePointOnlineCredentials");
 
@@ -299,7 +299,7 @@ namespace MetaPack.SPMeta2.Services
                                 securePassword
                             });
 
-                                MetaPackTrace.WriteLine(string.Format("Setting up credentials..."));
+                                MetaPackTrace.Verbose(string.Format("Setting up credentials..."));
                                 ReflectionUtils.SetPropertyValue(clientContextInstance, "Credentials", spCredentialsInstance);
                             }
                             else
@@ -316,10 +316,10 @@ namespace MetaPack.SPMeta2.Services
                         if (modelHostFromClientContextMethod == null)
                             throw new Exception("Cannot find FromClientContext method on model host");
 
-                        MetaPackTrace.WriteLine(string.Format("Creating model host instance of type:[{0}]", modelHostType));
+                        MetaPackTrace.Verbose(string.Format("Creating model host instance of type:[{0}]", modelHostType));
                         var modelHostInstance = modelHostFromClientContextMethod.Invoke(null, new object[] { clientContextInstance });
 
-                        MetaPackTrace.WriteLine(string.Format("Created model host instance of type:[{0}]", modelHostInstance));
+                        MetaPackTrace.Verbose(string.Format("Created model host instance of type:[{0}]", modelHostInstance));
                         var provisionMethod = ReflectionUtils.GetMethod(provisionService, "DeployModel");
 
                         if (provisionMethod == null)
@@ -330,7 +330,7 @@ namespace MetaPack.SPMeta2.Services
                         }
                         else
                         {
-                            MetaPackTrace.WriteLine(string.Format("Found .DeployModel method."));
+                            MetaPackTrace.Verbose(string.Format("Found .DeployModel method."));
                         }
 
                         var provisionServiceType = provisionService.GetType();
@@ -347,10 +347,10 @@ namespace MetaPack.SPMeta2.Services
                         Delegate del2 = Delegate.CreateDelegate(onModelNodeProcessingEvent.FieldType, this, onModelNodeProcessedHandler);
                         onModelNodeProcessedEvent.SetValue(provisionService, del2);
 
-                        MetaPackTrace.WriteLine(string.Format("Starting provision..."));
+                        MetaPackTrace.Verbose(string.Format("Starting provision..."));
                         provisionMethod.Invoke(provisionService, new[] { modelHostInstance, model });
 
-                        MetaPackTrace.WriteLine(string.Format("Provision completed."));
+                        MetaPackTrace.Verbose(string.Format("Provision completed."));
                     }
                     else
                     {
@@ -388,12 +388,12 @@ namespace MetaPack.SPMeta2.Services
 
         public void OnModelNodeProcessing(object o, object s)
         {
-            MetaPackTrace.WriteLine(string.Format("Processing: {0}", GetOnModelNodeEventTraceString(s)));
+            MetaPackTrace.Info(string.Format("[SPMeta2] - Processing {0}", GetOnModelNodeEventTraceString(s)));
         }
 
         public void OnModelNodeProcessed(object o, object s)
         {
-            MetaPackTrace.WriteLine(string.Format("Processed: {0}", GetOnModelNodeEventTraceString(s)));
+            MetaPackTrace.Info(string.Format("[SPMeta2] - Processed: {0}", GetOnModelNodeEventTraceString(s)));
         }
     }
 }

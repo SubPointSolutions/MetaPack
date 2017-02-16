@@ -560,9 +560,10 @@ Task("Default-Docs")
     .IsDependentOn("Docs-Publishing");
 
 Task("Default-Appveyor")
-	.IsDependentOn("Build") 
+	.IsDependentOn("NuGet-Packaging")
+	.IsDependentOn("Build");
     //.IsDependentOn("NuGet-Publishing")
-    .IsDependentOn("Docs-Publishing");
+    //.IsDependentOn("Docs-Publishing");
 
 Task("Default-CLI-Chocolatey-Packaging")
     .IsDependentOn("CLI-Chocolatey-Packaging");

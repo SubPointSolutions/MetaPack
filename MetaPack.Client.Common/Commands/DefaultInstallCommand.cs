@@ -65,28 +65,30 @@ namespace MetaPack.Client.Common.Commands
 
                     if (!string.IsNullOrEmpty(Version))
                     {
-                        MetaPackTrace.WriteLine("Fetching package [{0}] with version [{1}]", Id, Version);
+                        MetaPackTrace.Info("Fetching package [{0}] with version [{1}]", Id, Version);
                         package = repo.FindPackage(Id, new SemanticVersion(Version));
                     }
                     else
                     {
-                        MetaPackTrace.WriteLine("Fetching the latest package [{0}]", Id);
+                        MetaPackTrace.Info("Fetching the latest package [{0}]", Id);
                         package = repo.FindPackage(Id);
                     }
 
                     if (package == null)
                     {
-                        MetaPackTrace.WriteLine("Cannot find package [{0}]. Throwing exception.", Id);
+                        MetaPackTrace.Info("Cannot find package [{0}]. Throwing exception.", Id);
                         throw new ArgumentException("package");
                     }
                     else
                     {
-                        MetaPackTrace.WriteLine("Found remote package [{0}].", package.GetFullName());
+                    
                     }
 
-                    MetaPackTrace.WriteLine("Found package [{0} - {1}]. Installing package to SharePoint web site...",
+                    MetaPackTrace.Info("Found package [{0}] version [{1}].",
                             package.Id,
                             package.Version);
+
+                    MetaPackTrace.Info("Installing package to SharePoint web site...");
 
                     // create manager with repo and current web site
                     MetaPackSolutionPackageManagerBase packageManager = new DefaultMetaPackSolutionPackageManager(repo, context);
@@ -123,7 +125,7 @@ namespace MetaPack.Client.Common.Commands
                     // install package
                     packageManager.InstallPackage(package, false, PreRelease);
 
-                    MetaPackTrace.WriteLine("Completed installation. All good!");
+                    MetaPackTrace.Info("Completed installation. All good!");
                 });
 
             return null;

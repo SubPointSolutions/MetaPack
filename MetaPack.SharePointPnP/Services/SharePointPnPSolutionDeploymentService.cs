@@ -83,19 +83,19 @@ namespace MetaPack.SharePointPnP.Services
             var spEdition = options.GetOptionValue(DefaultOptions.SharePoint.Edition.Id);
             var spApi = options.GetOptionValue(DefaultOptions.SharePoint.Api.Id);
 
-            MetaPackTrace.WriteLine(string.Format("spVersion:[{0}]", spVersion));
-            MetaPackTrace.WriteLine(string.Format("spEdition:[{0}]", spEdition));
-            MetaPackTrace.WriteLine(string.Format("spApi:[{0}]", spApi));
+            MetaPackTrace.Verbose(string.Format("spVersion:[{0}]", spVersion));
+            MetaPackTrace.Verbose(string.Format("spEdition:[{0}]", spEdition));
+            MetaPackTrace.Verbose(string.Format("spApi:[{0}]", spApi));
 
             if (spApi != DefaultOptions.SharePoint.Api.CSOM.Value)
                 throw new NotSupportedException(string.Format("SharePoint API [{0}] is not supported yet", spApi));
 
 
-            MetaPackTrace.WriteLine("Resolving provision class...");
+            MetaPackTrace.Verbose("Resolving provision class...");
 
             var solutionPackage = options.SolutionPackage as SharePointPnPSolutionPackage;
 
-            MetaPackTrace.WriteLine(string.Format("Found [{0}] provision templates",
+            MetaPackTrace.Verbose(string.Format("Found [{0}] provision templates",
                                     solutionPackage.ProvisioningTemplateFolders.Count));
 
             var pnpAssemblyName = "OfficeDevPnP.Core";
@@ -121,24 +121,24 @@ namespace MetaPack.SharePointPnP.Services
 
             foreach (var templateFolder in solutionPackage.ProvisioningTemplateOpenXmlPackageFolders)
             {
-                MetaPackTrace.WriteLine(string.Format("Deploying OpenXML package from path: [{0}]", templateFolder));
+                MetaPackTrace.Verbose(string.Format("Deploying OpenXML package from path: [{0}]", templateFolder));
 
                 var allPackages = Directory.GetFiles(templateFolder, "*.pnp");
 
-                MetaPackTrace.WriteLine(string.Format("Detected CSOM provision."));
+                MetaPackTrace.Verbose(string.Format("Detected CSOM provision."));
 
                 var userName = options.GetOptionValue(DefaultOptions.User.Name.Id);
                 var userPassword = options.GetOptionValue(DefaultOptions.User.Password.Id);
 
                 var siteUrl = options.GetOptionValue(DefaultOptions.Site.Url.Id);
 
-                MetaPackTrace.WriteLine(string.Format("Creating ClientContext for web site:[{0}]", siteUrl));
+                MetaPackTrace.Verbose(string.Format("Creating ClientContext for web site:[{0}]", siteUrl));
                 var clientContexClass = allClasses.FirstOrDefault(c => c.Name == "ClientContext");
 
                 if (clientContexClass == null)
                     throw new Exception(string.Format("Cannot find class by name:[{0}]", "ClientContext"));
 
-                MetaPackTrace.WriteLine(string.Format("Creating ClientContext for web site:[{0}]", siteUrl));
+                MetaPackTrace.Verbose(string.Format("Creating ClientContext for web site:[{0}]", siteUrl));
                 var clientContextInstance = Activator.CreateInstance(clientContexClass, new object[] { siteUrl });
 
                 if (clientContextInstance == null)
@@ -149,16 +149,16 @@ namespace MetaPack.SharePointPnP.Services
 
                 if (spVersion == DefaultOptions.SharePoint.Version.O365.Value)
                 {
-                    MetaPackTrace.WriteLine(string.Format("O365 API detected"));
+                    MetaPackTrace.Verbose(string.Format("O365 API detected"));
 
                     if (!string.IsNullOrEmpty(userName) && !string.IsNullOrEmpty(userPassword))
                     {
-                        MetaPackTrace.WriteLine(string.Format("[{0}] and [{1}] aren't null.",
+                        MetaPackTrace.Verbose(string.Format("[{0}] and [{1}] aren't null.",
                                 DefaultOptions.User.Name.Id,
                                 DefaultOptions.User.Password.Id
                             ));
 
-                        MetaPackTrace.WriteLine(string.Format("Creating Credentials for web site:[{0}]", siteUrl));
+                        MetaPackTrace.Verbose(string.Format("Creating Credentials for web site:[{0}]", siteUrl));
                         var spCredentialsClass =
                             allClasses.FirstOrDefault(c => c.Name == "SharePointOnlineCredentials");
 
@@ -176,7 +176,7 @@ namespace MetaPack.SharePointPnP.Services
                                 securePassword
                             });
 
-                        MetaPackTrace.WriteLine(string.Format("Setting up credentials..."));
+                        MetaPackTrace.Verbose(string.Format("Setting up credentials..."));
                         ReflectionUtils.SetPropertyValue(clientContextInstance, "Credentials", spCredentialsInstance);
                     }
                     else
@@ -200,7 +200,7 @@ namespace MetaPack.SharePointPnP.Services
                     var fileSystemConnector = fileSystemConnectorInstance;
                     var fileName = Path.GetFileName(pnpPackage);
 
-                    MetaPackTrace.WriteLine(string.Format("Deploying package:[{0}]", fileName));
+                    MetaPackTrace.Verbose(string.Format("Deploying package:[{0}]", fileName));
 
                     var openXMLConnectorInstance = pnpAssembly.CreateInstance(openXmlConnectorType,
                      true, BindingFlags.CreateInstance, null,
@@ -236,7 +236,7 @@ namespace MetaPack.SharePointPnP.Services
                         var templateId = template.GetType().GetProperty("Id")
                             .GetValue(template);
 
-                        MetaPackTrace.WriteLine(string.Format("Deploying template:[{0}]", templateId));
+                        MetaPackTrace.Verbose(string.Format("Deploying template:[{0}]", templateId));
 
                         var provisionOptions = pnpAssembly.CreateInstance(provisioningTemplateApplyingInformationType);
                         var delType = provisionOptions.GetType();
@@ -244,7 +244,7 @@ namespace MetaPack.SharePointPnP.Services
                         var templateDisplayName = template.GetType().GetProperty("DisplayName")
                             .GetValue(template);
 
-                        MetaPackTrace.WriteLine(string.Format("Deploying template:[{0}]", templateDisplayName));
+                        MetaPackTrace.Verbose(string.Format("Deploying template:[{0}]", templateDisplayName));
 
                         var siteToTemplateConversionInstance = pnpAssembly.CreateInstance(siteToTemplateConversionType);
 
@@ -281,12 +281,12 @@ namespace MetaPack.SharePointPnP.Services
 
         public void onMessagesDelegate(string s, tt t)
         {
-            MetaPackTrace.WriteLine(s);
+            MetaPackTrace.Info(string.Format("[SharePointPnP] - {0}", s));
         }
 
         public void onProgressDelegate(string m, int s, int t)
         {
-            MetaPackTrace.WriteLine(string.Format("{0}/{1} - {2}",
+            MetaPackTrace.Info(string.Format("[SharePointPnP] - {0}/{1} - {2}",
                 new object[] { s, t, m }));
         }
 

@@ -68,7 +68,7 @@ namespace MetaPack.Client.Console
                 HandleWrongArgumentParsing();
             }
 
-            Environment.Exit(0);
+           Environment.Exit(0);
         }
 
         static Assembly CurrentDomain_AssemblyResolve(object sender, ResolveEventArgs args)
@@ -158,7 +158,7 @@ namespace MetaPack.Client.Console
                 DefaultValues.DefaultNuGetRepositories.AddRange(nugetUrls);
 
                 Log(string.Format("Using NuGet galleries:[{0}]",
-                      Environment.NewLine + string.Join(Environment.NewLine + "    ", DefaultValues.DefaultNuGetRepositories) + Environment.NewLine));
+                      Environment.NewLine + Environment.NewLine + "    "+ string.Join(Environment.NewLine + "    ", DefaultValues.DefaultNuGetRepositories) + Environment.NewLine));
 
                 var toolResolutionService = MetaPackServiceContainer.Instance.GetService<ToolResolutionService>();
 
@@ -314,7 +314,7 @@ namespace MetaPack.Client.Console
 
         public static void Log(string msg)
         {
-            MetaPackTrace.WriteLine(msg);
+            MetaPackTrace.Info(msg);
         }
     }
 }
