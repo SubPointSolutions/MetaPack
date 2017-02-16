@@ -186,7 +186,7 @@ namespace MetaPack.NuGet.Services
         private Folder LookupFolderByPath(string path, bool create = false)
         {
 
-            LogUtils.Verbose("Fetching folders for path: " + path);
+            NuGetLogUtils.Verbose("Fetching folders for path: " + path);
 
             Folder result = null;
 
@@ -230,7 +230,7 @@ namespace MetaPack.NuGet.Services
                 }
             });
 
-            LogUtils.Verbose("Fetched folders for path: " + path);
+            NuGetLogUtils.Verbose("Fetched folders for path: " + path);
 
             return result;
         }
@@ -406,7 +406,7 @@ namespace MetaPack.NuGet.Services
                 return Enumerable.Empty<string>();
             }
 
-            LogUtils.Verbose("Fetching files for path with filter: " + filter + " : " + path);
+            NuGetLogUtils.Verbose("Fetching files for path with filter: " + filter + " : " + path);
 
 
             if (recursive)
@@ -492,7 +492,7 @@ namespace MetaPack.NuGet.Services
                 result = result.Select(p => Path.Combine(path, p)).ToList();
             }
 
-            LogUtils.Verbose("Fetched files for path with filter: " + filter + " : " + path);
+            NuGetLogUtils.Verbose("Fetched files for path with filter: " + filter + " : " + path);
 
             return result;
         }
@@ -547,7 +547,7 @@ namespace MetaPack.NuGet.Services
 
         public Stream OpenFile(string path)
         {
-            LogUtils.Verbose("Opening file for path: " + path);
+            NuGetLogUtils.Verbose("Opening file for path: " + path);
 
             Stream result = null;
 
@@ -581,7 +581,7 @@ namespace MetaPack.NuGet.Services
 
             });
 
-            LogUtils.Verbose("Opened file for path: " + path);
+            NuGetLogUtils.Verbose("Opened file for path: " + path);
 
             return result;
         }
@@ -592,14 +592,14 @@ namespace MetaPack.NuGet.Services
 
         protected virtual void EnsureMetapackLibrary()
         {
-            LogUtils.Verbose("Detecting MetaPack library on target site...");
+            NuGetLogUtils.Verbose("Detecting MetaPack library on target site...");
 
             var web = _context.Web;
             var list = WebExtensions.LoadListByUrl(web, MetaPackConsts.SharePointLibraryUrl);
 
             if (list == null)
             {
-                LogUtils.Verbose("MetaPack library does not exist. Creating...");
+                NuGetLogUtils.Verbose("MetaPack library does not exist. Creating...");
 
                 var newList = web.Lists.Add(new ListCreationInformation
                 {
@@ -616,11 +616,11 @@ namespace MetaPack.NuGet.Services
                 newList.Update();
                 _context.ExecuteQuery();
 
-                LogUtils.Info("MetaPack library created");
+                NuGetLogUtils.Info("MetaPack library created");
             }
             else
             {
-                LogUtils.Verbose("MetaPack library exists");
+                NuGetLogUtils.Verbose("MetaPack library exists");
             }
         }
 

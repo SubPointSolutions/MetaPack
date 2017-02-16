@@ -82,8 +82,7 @@
     <Compile Include="Services\ToolResolutionService.cs" />
     <Compile Include="Utils\CrossDomainTraceHelper.cs" />
     <Compile Include="Utils\DelegateTraceListener.cs" />
-    <Compile Include="Utils\LogUtils.cs" />
-    <Compile Include="Utils\ReflectionUtils.cs" />
+    <Compile Include="Utils\NuGetLogUtils.cs" />
     <Compile Include="Utils\UrlUtility.cs" />
   </ItemGroup>
   <ItemGroup>

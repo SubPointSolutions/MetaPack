@@ -66,6 +66,7 @@
     <Compile Include="Services\TraceSourceService.cs" />
     <Compile Include="Utils\ConvertUtils.cs" />
     <Compile Include="Utils\MetaPackTrace.cs" />
+    <Compile Include="Utils\ReflectionUtils.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

@@ -41,7 +41,7 @@ namespace MetaPack.SPMeta2.Services
             var typedPackage = package as SPMeta2SolutionPackage;
 
             if (typedPackage == null)
-                throw new ArgumentException(string.Format("package must be of type: [{0}]", typeof(SPMeta2SolutionPackage)));
+                throw new ArgumentNullException(string.Format("package must be of type: [{0}]", typeof(SPMeta2SolutionPackage)));
 
             // create result stream and NuGet package
             var resultStream = new MemoryStream();

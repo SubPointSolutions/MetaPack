@@ -40,7 +40,7 @@ namespace MetaPack.SharePointPnP.Services
             var typedPackage = package as SharePointPnPSolutionPackage;
 
             if (typedPackage == null)
-                throw new ArgumentException(string.Format("package must be of type: [{0}]", typeof(SharePointPnPSolutionPackage)));
+                throw new ArgumentNullException(string.Format("package must be of type: [{0}]", typeof(SharePointPnPSolutionPackage)));
 
             // create result stream and NuGet package
             var resultStream = new MemoryStream();

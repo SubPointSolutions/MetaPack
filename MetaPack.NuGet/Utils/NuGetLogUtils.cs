@@ -4,7 +4,7 @@ using MetaPack.Core.Services;
 
 namespace MetaPack.NuGet.Utils
 {
-    internal class LogUtils
+    internal class NuGetLogUtils
     {
         public static void Info(string message)
         {

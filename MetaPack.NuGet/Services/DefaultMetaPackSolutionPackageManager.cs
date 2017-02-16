@@ -497,7 +497,7 @@ namespace MetaPack.NuGet.Services
                 {
                     AppDomain.CurrentDomain.AssemblyResolve += (sss, eee) =>
                     {
-                        MetaPackTrace.Verbose(string.Format("AppDomain assembly:[{0}]", eee));
+                        MetaPackTrace.Verbose(string.Format("AppDomain assembly:[{0}]", eee.RequestingAssembly));
                         MetaPackTrace.Verbose(string.Format("Assembly requested:[{0}]", eee.Name));
 
                         var assemblyName = eee.Name.Split(',')[0] + ".dll";

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 
-namespace MetaPack.NuGet.Utils
+namespace MetaPack.Core.Utils
 {
     public class PropResult
     {
@@ -174,7 +174,6 @@ namespace MetaPack.NuGet.Utils
             throw new NotImplementedException("GetExpressionValue");
         }
 
-
         public static object GetPropertyValue(object obj, string propName)
         {
             var prop = obj.GetType().GetProperties(BindingFlags.Instance |
@@ -268,6 +267,43 @@ namespace MetaPack.NuGet.Utils
             }
 
             return false;
+        }
+
+        public static IEnumerable<Type> GetAllTypesFromCurrentAppDomain()
+        {
+            return GetAllTypesFromAppDomain(AppDomain.CurrentDomain);
+        }
+
+        public static IEnumerable<Type> GetAllTypesFromAppDomain(AppDomain domain)
+        {
+            return domain.GetAssemblies()
+                         .SelectMany(a => a.GetTypes());
+        }
+
+        public static Type FindTypeByFullName(IEnumerable<Type> types, string fullName)
+        {
+            return types.FirstOrDefault(c => c.FullName.ToUpper() == fullName.ToUpper());
+        }
+
+        public static Type FindTypeByName(IEnumerable<Type> types, string name)
+        {
+            return types.FirstOrDefault(c => c.Name.ToUpper() == name.ToUpper());
+        }
+
+        public static IEnumerable<Assembly> GetAllAssembliesFromCurrentAppDomain()
+        {
+            return GetAllAssembliesAppDomain(AppDomain.CurrentDomain);
+        }
+
+        public static IEnumerable<Assembly> GetAllAssembliesAppDomain(AppDomain domain)
+        {
+            return domain.GetAssemblies()
+                         .OrderBy(a => a.FullName);
+        }
+
+        public static Assembly FindAssemblyByFullName(IEnumerable<Assembly> assemblies, string fullName)
+        {
+            return assemblies.FirstOrDefault(a => a.FullName.ToUpper() == fullName.ToUpper());
         }
 
         #endregion
