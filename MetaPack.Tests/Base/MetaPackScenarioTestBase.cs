@@ -45,8 +45,8 @@ namespace MetaPack.Tests.Base
 
             InitEnvironmentVariables();
 
-            if (!Environment.Is64BitProcess)
-                throw new Exception("x64 process is requred. VS -> Test -> Test Settings -> Default process architecture -> x64");
+            //if (!Environment.Is64BitProcess)
+            //    throw new Exception("x64 process is requred. VS -> Test -> Test Settings -> Default process architecture -> x64");
 
             // packaging
             MetaPackService = new List<MetaPackServiceContext>();
