@@ -28,8 +28,9 @@ string GetGlobalEnvironmentVariable(string name) {
 string GetVersionForNuGetPackage(string id, string defaultVersion, string branch) {
     
     var resultVersion = string.Empty;
-
-    branch = branch ?? "dev";
+    
+	if(branch != "master" && branch != "beta")
+		branch = "dev";
 
     var now = DateTime.Now;
 
@@ -195,6 +196,12 @@ string GetLatestPackageFromNuget(string nugetRepoUrl, string packageId) {
 // CI related environment
 // * dev / beta / master versioning and publishing
 var ciBranch = GetGlobalEnvironmentVariable("ci.activebranch") ?? "dev";
+
+// override under CI run
+var ciBranchOverride = GetGlobalEnvironmentVariable("APPVEYOR_REPO_BRANCH");
+if(!String.IsNullOrEmpty(ciBranchOverride))
+	ciBranch = ciBranchOverride;
+
 var ciNuGetSource = GetGlobalEnvironmentVariable("ci.nuget.source") ?? String.Empty;
 var ciNuGetKey = GetGlobalEnvironmentVariable("ci.nuget.key") ?? String.Empty;
 var ciNuGetShouldPublish = bool.Parse(GetGlobalEnvironmentVariable("ci.nuget.shouldpublish") ?? "FALSE");
