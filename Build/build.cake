@@ -374,6 +374,9 @@ Task("Default-NuGet-Packaging")
 Task("Default-NuGet-Publishing")
     .IsDependentOn("NuGet-Publishing");  
 
+Task("Default-CI")
+    .IsDependentOn("NuGet-Publishing");  
+
 // project specific things
 
 // prjXXX - project specific vars
