@@ -1,234 +1,392 @@
-﻿#addin "Cake.Powershell"
-#addin nuget:?package=Cake.Git
+﻿// common tooling
+// always version to avoid breaking change with new releases
+#addin nuget:?package=Cake.Powershell&Version=0.2.9
+#addin nuget:?package=newtonsoft.json&Version=9.0.1
+#addin nuget:?package=NuGet.Core&Version=2.12.0
 
-//////////////////////////////////////////////////////////////////////
-// ARGUMENTS
-//////////////////////////////////////////////////////////////////////
-
+// defaultXXX - shared, common settings
 var target = Argument("target", "Default");
 var configuration = Argument("configuration", "Debug");
 
+var jsonConfig = Newtonsoft.Json.Linq.JObject.Parse(System.IO.File.ReadAllText("build.json"));
 
-var solutionDirectory = "./../"; 
-var solutionFilePath = "./../MetaPack.sln";
+// default helpers
+var currentTimeStamp = String.Empty;
 
-var defaultTestCategory = "CI.Core";
-var defaultTestAssemblyPaths = new string[] {
-    "./../MetaPack.Tests/bin/debug/MetaPack.Tests.dll"
-};
+string GetGlobalEnvironmentVariable(string name) {
+    var result = System.Environment.GetEnvironmentVariable(name, System.EnvironmentVariableTarget.Process);
 
-var useNuGetPackaging = true;
-var useNuGetPublishing = false;
+    if(String.IsNullOrEmpty(result))
+        result = System.Environment.GetEnvironmentVariable(name, System.EnvironmentVariableTarget.User);
 
-var useCIBuildVersion = false;
+    if(String.IsNullOrEmpty(result))
+        result = System.Environment.GetEnvironmentVariable(name, System.EnvironmentVariableTarget.Machine);
 
-var g_hardcoreVersionBase = "1.2.100";
-var g_SPMeta2VersionBase = "1.2.100";
-
-var g_hardcoreVersion = g_hardcoreVersionBase + "-beta1";
-g_hardcoreVersion = g_hardcoreVersionBase;
-
-var date = DateTime.Now;
-var stamp = (date.ToString("yy") + date.DayOfYear.ToString("000") + date.ToString("HHmm"));
-
-if(useCIBuildVersion) {
-    g_hardcoreVersion = g_hardcoreVersionBase + "-alpha" + stamp;
+    return result;
 }
 
-var nuGetPackagesDirectory = "./packages";
-var chocoPackagesDirectory = "./build";
+string GetVersionForNuGetPackage(string id, string defaultVersion, string branch) {
+    
+    var resultVersion = string.Empty;
 
-//////////////////////////////////////////////////////////////////////
-// PREPARATION
-//////////////////////////////////////////////////////////////////////
+    branch = branch ?? "dev";
 
-var buildDirs = new [] {
+    var now = DateTime.Now;
 
-    new DirectoryPath("./../MetaPack.Client.Common/bin/"),
-    new DirectoryPath("./../MetaPack.Client.Console/bin/"),
+    Information(string.Format("Building nuget package version for branch:[{0}]", branch));
 
-    new DirectoryPath("./../MetaPack.Core/bin/"),
-    new DirectoryPath("./../MetaPack.NuGet/bin/"),
+    switch(branch) {
+       
+        case "dev" : {
 
-    new DirectoryPath("./../MetaPack.SPMeta2/bin/"),
-    new DirectoryPath("./../MetaPack.SharePointPnP/bin/"),
+            var year = now.ToString("yy");
+            var dayOfYear = now.DayOfYear.ToString("000");
+            var timeOfDay = now.ToString("HHmm");
 
-    new DirectoryPath("./../MetaPack.Tests/bin/"),
+            var stamp = int.Parse(year + dayOfYear + timeOfDay);
 
-    new DirectoryPath("./../MetaPack.Client.Common/bin/"),
-    new DirectoryPath("./../MetaPack.Client.Console/bin/"),
+            // save it to a static var to avoid flicks between NuGet package builds
+            if(String.IsNullOrEmpty(currentTimeStamp))
+                currentTimeStamp = stamp.ToString();
 
-    new DirectoryPath(nuGetPackagesDirectory)
-}; 
+            var latestNuGetPackageVersion = GetLatestPackageFromNuget(id);
 
-var environmentVariables = new string[] {
-    //"metapack-nuget-source",
-    //"metapack-nuget-key",
-    //"subpointsolutions-docs-username",
-    //"subpointsolutions-docs-userpassword",
+            if(String.IsNullOrEmpty(latestNuGetPackageVersion))
+                latestNuGetPackageVersion = defaultVersion;
+
+            Information(String.Format("- latest nuget package [{0}] version [{1}]", id, latestNuGetPackageVersion));
+
+            var versionParts = latestNuGetPackageVersion.Split('-');
+
+            var packageVersion = String.Empty;
+            var packageBetaVersion = 0;
+
+            if(versionParts.Count() > 1) {
+                packageVersion = versionParts[0];
+                packageBetaVersion = int.Parse(versionParts[1].Replace("beta", String.Empty));
+            } else {
+                packageVersion = versionParts[0];
+            }
+
+            var currentVersion = new Version(packageVersion);
+
+            Information(String.Format("- currentVersion package [{0}] version [{1}]", id, currentVersion));
+            Information(String.Format("- packageBetaVersion package [{0}] version [{1}]", id, packageBetaVersion));
+
+            var buildIncrement = 5;
+
+            if(packageBetaVersion == 1) {
+                resultVersion = string.Format("{0}.{1}.{2}",
+                        new object[] {
+                                currentVersion.Major,
+                                currentVersion.Minor,
+                                currentVersion.Build + buildIncrement
+                }); 
+            }
+
+            var packageSemanticVersion = packageVersion + "-alpha" + (currentTimeStamp);
+            resultVersion = packageSemanticVersion;
+
+        }; break;
+
+        case "beta" : {
+
+            var latestNuGetPackageVersion = GetLatestPackageFromNuget(id);
+
+            if(String.IsNullOrEmpty(latestNuGetPackageVersion))
+                latestNuGetPackageVersion = defaultVersion;
+
+            Information(String.Format("- latest nuget package [{0}] version [{1}]", id, latestNuGetPackageVersion));
+
+            var versionParts = latestNuGetPackageVersion.Split('-');
+
+            var packageVersion = String.Empty;
+            var packageBetaVersion = 0;
+
+            if(versionParts.Count() > 1) {
+                packageVersion = versionParts[0];
+                packageBetaVersion = int.Parse(versionParts[1].Replace("beta", String.Empty));
+            } else {
+                packageVersion = versionParts[0];
+            }
+
+            var currentVersion = new Version(packageVersion);
+
+            Information(String.Format("- currentVersion package [{0}] version [{1}]", id, currentVersion));
+            Information(String.Format("- packageBetaVersion package [{0}] version [{1}]", id, packageBetaVersion));
+
+            var buildIncrement = 5;
+
+            if(packageBetaVersion == 1) {
+                resultVersion = string.Format("{0}.{1}.{2}",
+                        new object[] {
+                                currentVersion.Major,
+                                currentVersion.Minor,
+                                currentVersion.Build + buildIncrement
+                }); 
+            }
+
+            var packageSemanticVersion = packageVersion + "-beta" + (++packageBetaVersion);
+            resultVersion = packageSemanticVersion;
+
+         }; break;
+
+         case "master" : {
+
+            var latestNuGetPackageVersion = GetLatestPackageFromNuget(id);
+
+            if(String.IsNullOrEmpty(latestNuGetPackageVersion))
+                latestNuGetPackageVersion = defaultVersion;
+
+            Information(String.Format("- latest nuget package [{0}] version [{1}]", id, latestNuGetPackageVersion));
+
+            var versionParts = latestNuGetPackageVersion.Split('-');
+
+            var packageVersion = String.Empty;
+            var packageBetaVersion = 0;
+
+            if(versionParts.Count() > 1) {
+                packageVersion = versionParts[0];
+                packageBetaVersion = int.Parse(versionParts[1].Replace("beta", String.Empty));
+            } else {
+                packageVersion = versionParts[0];
+            }
+
+            var currentVersion = new Version(packageVersion);
+            
+            Information(String.Format("- currentVersion package [{0}] version [{1}]", id, currentVersion));
+            Information(String.Format("- packageBetaVersion package [{0}] version [{1}]", id, packageBetaVersion));
+
+            var buildIncrement = 5;
+
+            if(packageBetaVersion == 0)
+                buildIncrement = 10;
+            
+            resultVersion = string.Format("{0}.{1}.{2}",
+                        new object[] {
+                                currentVersion.Major,
+                                currentVersion.Minor,
+                                currentVersion.Build + buildIncrement
+            }); 
+
+            return resultVersion;
+
+         }; break;
+    }
+
+    return resultVersion;
+}
+
+string GetLatestPackageFromNuget(string packageId) {
+    return GetLatestPackageFromNuget("https://packages.nuget.org/api/v2",packageId);
+}
+
+string GetLatestPackageFromNuget(string nugetRepoUrl, string packageId) {
+    
+    var repo =  NuGet.PackageRepositoryFactory.Default.CreateRepository(nugetRepoUrl);
+    var package =  NuGet.PackageRepositoryExtensions.FindPackage(repo, packageId);
+
+    if(package == null)
+        return String.Empty;
+
+    return package.Version.ToString();
+}
+
+// CI related environment
+// * dev / beta / master versioning and publishing
+var ciBranch = GetGlobalEnvironmentVariable("ci.activebranch") ?? "dev";
+var ciNuGetSource = GetGlobalEnvironmentVariable("ci.nuget.source") ?? String.Empty;
+var ciNuGetKey = GetGlobalEnvironmentVariable("ci.nuget.key") ?? String.Empty;
+var ciNuGetShouldPublish = bool.Parse(GetGlobalEnvironmentVariable("ci.nuget.shouldpublish") ?? "FALSE");
+
+Information(string.Format(" -target:[{0}]",target));
+Information(string.Format(" -configuration:[{0}]", configuration));
+Information(string.Format(" -activeBranch:[{0}]", ciBranch));
+
+// source solution dir and file
+var defaultSolutionDirectory = (string)jsonConfig["defaultSolutionDirectory"]; 
+var defaultSolutionFilePath = (string)jsonConfig["defaultSolutionFilePath"];
+
+// nuget packages
+var defaultNuGetPackagesDirectory = (string)jsonConfig["defaultNuGetPackagesDirectory"];
+var defaultNuspecVersion = (string)jsonConfig["defaultNuspecVersion"];
+
+// test settings
+var defaultTestCategories = jsonConfig["defaultTestCategories"].Select(t => (string)t).ToList();
+var defaultTestAssemblyPaths = jsonConfig["defaultTestAssemblyPaths"].Select(t => (string)t).ToList();
+
+// build settings
+var defaultBuildDirs = jsonConfig["defaultBuildDirs"].Select(t => new DirectoryPath((string)t)).ToList();
+var defaultEnvironmentVariables =  jsonConfig["defaultEnvironmentVariables"].Select(t => (string)t).ToList();
+
+var defaultNuspecs = new List<NuGetPackSettings>();
+
+// common tasks
+// * Validate-Environment
+// * Clean
+// * Restore-NuGet-Packages
+// * Build
+// * Run-Unit-Tests
+// * NuGet-Publishing
+
+Task("Validate-Environment")
+    .Does(() =>
+{
+    foreach(var name in defaultEnvironmentVariables)
+    {
+        Information(string.Format("HasEnvironmentVariable - [{0}]", name));
+        if(!HasEnvironmentVariable(name)) {
+            Information(string.Format("Cannot find environment variable:[{0}]", name));
+            throw new ArgumentException(string.Format("Cannot find environment variable:[{0}]", name));
+        }
+    }
+});
+
+
+Task("Clean")
+    .IsDependentOn("Validate-Environment")
+    .Does(() =>
+{
+    foreach(var dirPath in defaultBuildDirs) {
+        CleanDirectory(dirPath);
+    }        
+});
+
+Task("Restore-NuGet-Packages")
+    .IsDependentOn("Clean")
+    .Does(() =>
+{
+    NuGetRestore(defaultSolutionFilePath);
+});
+
+Task("Build")
+    .IsDependentOn("Restore-NuGet-Packages")
+    .Does(() =>
+{
+      MSBuild(defaultSolutionFilePath, settings => {
+            settings.SetVerbosity(Verbosity.Quiet);
+            settings.SetConfiguration(configuration);
+      });
+});
+
+Task("Run-Unit-Tests")
+    .IsDependentOn("Build")
+    .Does(() =>
+{
+    foreach(var assemblyPath in defaultTestAssemblyPaths) {
+        
+        foreach(var testCategory in defaultTestCategories) {
+            Information(string.Format("Running test category [{0}] for assembly:[{1}]", testCategory, assemblyPath));
+
+            MSTest(new [] { new FilePath(assemblyPath) }, new MSTestSettings {
+                    Category = testCategory
+                });
+        }
+    }        
+});
+
+Task("NuGet-Packaging")
+    .IsDependentOn("Run-Unit-Tests")
+    .IsDependentOn("Build")
+    .Does(() =>
+{
+    Information("Creating NuGet packages of version [{0}] in directory:[{1}]", new []{
+        defaultNuGetPackagesDirectory,
+        defaultNuspecVersion
+    });
+
+    CreateDirectory(defaultNuGetPackagesDirectory);
+    CleanDirectory(defaultNuGetPackagesDirectory);
+
+    foreach(var nuspec in defaultNuspecs)
+    {   
+        nuspec.Version = GetVersionForNuGetPackage(nuspec.Id, defaultNuspecVersion, ciBranch);
+        Information(string.Format("Creating NuGet package for [{0}] of version:[{1}]", nuspec.Id, nuspec.Version));
+
+        NuGetPack(nuspec);
+    }        
+});
+
+Task("NuGet-Publishing")
+    // all packaged should be compiled by NuGet-Packaging task into 'defaultNuGetPackagesDirectory' folder
+    .IsDependentOn("NuGet-Packaging")
+    .Does(() =>
+{
+    if(!ciNuGetShouldPublish) {
+        Information("Skipping NuGet publishing as ciNuGetShouldPublish is false.");
+        return;
+    }
+
+    Information("Publishing NuGet packages to repository: [{0}]", new []{
+        ciNuGetSource
+    });
+
+    var nugetSource = ciNuGetSource;
+	var nugetKey = ciNuGetKey;
+
+    var nuGetPackages = System.IO.Directory.GetFiles(defaultNuGetPackagesDirectory, "*.nupkg");
+
+    foreach(var packageFilePath in nuGetPackages)
+        {
+            var packageFileName = System.IO.Path.GetFileName(packageFilePath);
+
+            if(System.IO.File.Exists(packageFilePath)) {
+                
+                // checking is publushed
+                Information(string.Format("Checking if NuGet package [{0}] is already published", packageFileName));
+                
+                // TODO
+                var isNuGetPackagePublished = false;
+                if(!isNuGetPackagePublished)
+                {
+                    Information(string.Format("Publishing NuGet package [{0}]...", packageFileName));
+                
+                    NuGetPush(packageFilePath, new NuGetPushSettings {
+                        Source = nugetSource,
+                        ApiKey = nugetKey
+                    });
+                }
+                else
+                {
+                    Information(string.Format("NuGet package [{0}] was already published", packageFileName));
+                }                 
+                
+            } else {
+                Information(string.Format("NuGet package does not exist:[{0}]", packageFilePath));
+                throw new ArgumentException(string.Format("NuGet package does not exist:[{0}]", packageFilePath));
+            }
+        }           
+});
+
+// common targets
+Task("Default")
+    .IsDependentOn("Run-Unit-Tests");
+
+Task("Default-Clean")
+    .IsDependentOn("Clean");
+
+Task("Default-Build")
+    .IsDependentOn("Build");
+
+Task("Default-NuGet-Packaging")
+    .IsDependentOn("NuGet-Packaging");
+
+Task("Default-NuGet-Publishing")
+    .IsDependentOn("NuGet-Publishing");  
+
+// project specific things
+
+// prjXXX - project specific vars
+var prjNuspecSPMeta2DependencyVersion = "1.2.100";
+var prjNuspecNuGetCoreDependencyVersion  = "2.12.0";
+
+var prjTestCategories = new string []{
+     
 };
 
- var nuspecs = new [] {
-        new NuGetPackSettings()
-        {
-            Id = "MetaPack.Core",
-            Version = g_hardcoreVersion,
-
-            Dependencies = new []
-            {
-                new NuSpecDependency() { Id = "SPMeta2.Core", Version = g_SPMeta2VersionBase }
-            },
-
-            Authors = new [] { "SubPoint Solutions" },
-            Owners = new [] { "SubPoint Solutions" },
-            LicenseUrl = new Uri("http://docs.subpointsolutions.com/metapack/license"),
-            ProjectUrl = new Uri("https://github.com/SubPointSolutions/metapack"),
-            
-            Description = "MetaPack common infrastructure. Provides high level abstraction for packaging.",
-            Copyright = "Copyright 2016",
-            Tags = new [] { "SPMeta2", "Provisoin", "SharePoint", "Office365Dev", "Office365", "metapack", "nuget" },
-
-            RequireLicenseAcceptance = false,
-            Symbols = false,
-            NoPackageAnalysis = true,
-            BasePath  = "./../MetaPack.Core/bin/debug",
-            
-            Files = new [] {
-                new NuSpecContent {
-                    Source = "MetaPack.Core.dll",
-                    Target = "lib/net45"
-                },
-                new NuSpecContent {
-                    Source = "MetaPack.Core.xml",
-                    Target = "lib/net45"
-                }
-            },
-            
-            OutputDirectory = new DirectoryPath(nuGetPackagesDirectory)
-        },
-
-        new NuGetPackSettings()
-        {
-            Id = "MetaPack.NuGet",
-            Version = g_hardcoreVersion,
-
-            Dependencies = new []
-            {
-                new NuSpecDependency() { Id = "MetaPack.Core", Version = g_SPMeta2VersionBase },
-                new NuSpecDependency() { Id = "NuGet.Core", Version = "2.11.1" },
-            },
-
-            Authors = new [] { "SubPoint Solutions" },
-            Owners = new [] { "SubPoint Solutions" },
-            LicenseUrl = new Uri("http://docs.subpointsolutions.com/metapack/license"),
-            ProjectUrl = new Uri("https://github.com/SubPointSolutions/metapack"),
-            
-            Description = "MetaPack implementation for NuGet protocol. Provides NuGet file-system and other NuGet related services.",
-            Copyright = "Copyright 2016",
-            Tags = new [] { "SPMeta2", "Provisoin", "SharePoint", "Office365Dev", "Office365", "metapack", "nuget" },
-
-            RequireLicenseAcceptance = false,
-            Symbols = false,
-            NoPackageAnalysis = true,
-            BasePath  = "./../MetaPack.Nuget/bin/debug",
-            
-            Files = new [] {
-                new NuSpecContent {
-                    Source = "MetaPack.Nuget.dll",
-                    Target = "lib/net45"
-                },
-                new NuSpecContent {
-                    Source = "MetaPack.Nuget.xml",
-                    Target = "lib/net45"
-                }
-            },
-            
-            OutputDirectory = new DirectoryPath(nuGetPackagesDirectory)
-        },
-
-        new NuGetPackSettings()
-        {
-            Id = "MetaPack.SPMeta2",
-            Version = g_hardcoreVersion,
-
-            Dependencies = new []
-            {
-                new NuSpecDependency() { Id = "MetaPack.Core", Version = g_SPMeta2VersionBase },
-                new NuSpecDependency() { Id = "MetaPack.NuGet", Version = g_SPMeta2VersionBase },
-                new NuSpecDependency() { Id = "SPMeta2.Core", Version = g_SPMeta2VersionBase },
-            },
-
-             Authors = new [] { "SubPoint Solutions" },
-            Owners = new [] { "SubPoint Solutions" },
-            LicenseUrl = new Uri("http://docs.subpointsolutions.com/metapack/license"),
-            ProjectUrl = new Uri("https://github.com/SubPointSolutions/metapack"),
-            
-            Description = "MetaPack implementation for SPMeta2 model packaging, delivery and updates with NuGet protocol. Enables SPMeta2 model provision from NuGet galleries.",
-            Copyright = "Copyright 2016",
-            Tags = new [] { "SPMeta2", "Provisoin", "SharePoint", "Office365Dev", "Office365", "metapack", "nuget" },
-
-            RequireLicenseAcceptance = false,
-            Symbols = false,
-            NoPackageAnalysis = true,
-            BasePath  = "./../MetaPack.SPMeta2/bin/debug",
-            
-            Files = new [] {
-                new NuSpecContent {
-                    Source = "MetaPack.SPMeta2.dll",
-                    Target = "lib/net45"
-                },
-                new NuSpecContent {
-                    Source = "MetaPack.SPMeta2.xml",
-                    Target = "lib/net45"
-                }
-            },
-            
-            OutputDirectory = new DirectoryPath(nuGetPackagesDirectory)
-        },
-
-        new NuGetPackSettings()
-        {
-            Id = "MetaPack.SharePointPnP",
-            Version = g_hardcoreVersion,
-
-            Dependencies = new []
-            {
-                new NuSpecDependency() { Id = "MetaPack.Core", Version = g_SPMeta2VersionBase },
-                new NuSpecDependency() { Id = "MetaPack.NuGet", Version = g_SPMeta2VersionBase },
-            },
-
-            Authors = new [] { "SubPoint Solutions" },
-            Owners = new [] { "SubPoint Solutions" },
-            LicenseUrl = new Uri("http://docs.subpointsolutions.com/metapack/license"),
-            ProjectUrl = new Uri("https://github.com/SubPointSolutions/metapack"),
-            
-            Description = "MetaPack implementation for SharePointPnP model packaging, delivery and updates with NuGet protocol. Enables SharePointPnP model provision from NuGet galleries.",
-            Copyright = "Copyright 2016",
-            Tags = new [] { "SPMeta2", "Provisoin", "SharePoint", "Office365Dev", "Office365", "metapack", "nuget" },
-
-            RequireLicenseAcceptance = false,
-            Symbols = false,
-            NoPackageAnalysis = true,
-            BasePath  = "./../MetaPack.SharePointPnP/bin/debug",
-            
-            Files = new [] {
-                new NuSpecContent {
-                    Source = "MetaPack.SharePointPnP.dll",
-                    Target = "lib/net45"
-                },
-                new NuSpecContent {
-                    Source = "MetaPack.SharePointPnP.xml",
-                    Target = "lib/net45"
-                }
-            },
-            
-            OutputDirectory = new DirectoryPath(nuGetPackagesDirectory)
-        }
-    };  
-
-
-var metaPackCLIBinPath = "./../MetaPack.Client.Console/bin/debug/";
-var metaPackCLIFiles = new string[] {
+var prjChocoPackagesDirectory = "./build";
+var prjMetaPackCLIBinPath = "./../MetaPack.Client.Console/bin/debug/";
+var prjMetaPackCLIFiles = new string[] {
     "metapack.exe",
     "metapack.exe.config",
     
@@ -258,12 +416,209 @@ var metaPackCLIFiles = new string[] {
     "Microsoft.Web.XmlTransform.dll",
 };
 
-var chocolateySpecs = new [] {
+// project specific NuGet packages
+defaultNuspecs.Add(new NuGetPackSettings()
+        {
+            Id = "MetaPack.Core",
+            Version = defaultNuspecVersion,
+
+            Dependencies = new []
+            {
+                new NuSpecDependency() { Id = "SPMeta2.Core", Version = prjNuspecSPMeta2DependencyVersion }
+            },
+
+            Authors = new [] { "SubPoint Solutions" },
+            Owners = new [] { "SubPoint Solutions" },
+            LicenseUrl = new Uri("http://docs.subpointsolutions.com/metapack/license"),
+            ProjectUrl = new Uri("https://github.com/SubPointSolutions/metapack"),
+            
+            Description = "MetaPack common infrastructure. Provides high level abstraction for packaging.",
+            Copyright = "Copyright 2016",
+            Tags = new [] { "SPMeta2", "Provisoin", "SharePoint", "Office365Dev", "Office365", "metapack", "nuget" },
+
+            RequireLicenseAcceptance = false,
+            Symbols = false,
+            NoPackageAnalysis = true,
+            BasePath  = "./../MetaPack.Core/bin/debug",
+            
+            Files = new [] {
+                new NuSpecContent {
+                    Source = "MetaPack.Core.dll",
+                    Target = "lib/net45"
+                },
+                new NuSpecContent {
+                    Source = "MetaPack.Core.xml",
+                    Target = "lib/net45"
+                }
+            },
+            
+            OutputDirectory = new DirectoryPath(defaultNuGetPackagesDirectory)
+});
+
+defaultNuspecs.Add(new NuGetPackSettings()
+        {
+            Id = "MetaPack.NuGet",
+            Version = defaultNuspecVersion,
+
+            Dependencies = new []
+            {
+                new NuSpecDependency() { Id = "MetaPack.Core", Version = prjNuspecSPMeta2DependencyVersion },
+                new NuSpecDependency() { Id = "NuGet.Core", Version = prjNuspecNuGetCoreDependencyVersion },
+                new NuSpecDependency() { Id = "AppDomainToolkit", Version = "1.0.4.3" },
+            },
+
+            Authors = new [] { "SubPoint Solutions" },
+            Owners = new [] { "SubPoint Solutions" },
+            LicenseUrl = new Uri("http://docs.subpointsolutions.com/metapack/license"),
+            ProjectUrl = new Uri("https://github.com/SubPointSolutions/metapack"),
+            
+            Description = "MetaPack implementation for NuGet protocol. Provides NuGet file-system and other NuGet related services.",
+            Copyright = "Copyright 2016",
+            Tags = new [] { "SPMeta2", "Provisoin", "SharePoint", "Office365Dev", "Office365", "metapack", "nuget" },
+
+            RequireLicenseAcceptance = false,
+            Symbols = false,
+            NoPackageAnalysis = true,
+            BasePath  = "./../MetaPack.Nuget/bin/debug",
+            
+            Files = new [] {
+                new NuSpecContent {
+                    Source = "MetaPack.Nuget.dll",
+                    Target = "lib/net45"
+                },
+                new NuSpecContent {
+                    Source = "MetaPack.Nuget.xml",
+                    Target = "lib/net45"
+                }
+            },
+            
+            OutputDirectory = new DirectoryPath(defaultNuGetPackagesDirectory)
+});
+
+defaultNuspecs.Add(new NuGetPackSettings()
+        {
+            Id = "MetaPack.SPMeta2",
+            Version = defaultNuspecVersion,
+
+            Dependencies = new []
+            {
+                new NuSpecDependency() { Id = "MetaPack.Core", Version = prjNuspecSPMeta2DependencyVersion },
+                new NuSpecDependency() { Id = "MetaPack.NuGet", Version = prjNuspecSPMeta2DependencyVersion }               
+            },
+
+             Authors = new [] { "SubPoint Solutions" },
+            Owners = new [] { "SubPoint Solutions" },
+            LicenseUrl = new Uri("http://docs.subpointsolutions.com/metapack/license"),
+            ProjectUrl = new Uri("https://github.com/SubPointSolutions/metapack"),
+            
+            Description = "MetaPack implementation for SPMeta2 model packaging, delivery and updates with NuGet protocol. Enables SPMeta2 model provision from NuGet galleries.",
+            Copyright = "Copyright 2016",
+            Tags = new [] { "SPMeta2", "Provisoin", "SharePoint", "Office365Dev", "Office365", "metapack", "nuget" },
+
+            RequireLicenseAcceptance = false,
+            Symbols = false,
+            NoPackageAnalysis = true,
+            BasePath  = "./../MetaPack.SPMeta2/bin/debug",
+            
+            Files = new [] {
+                new NuSpecContent {
+                    Source = "MetaPack.SPMeta2.dll",
+                    Target = "lib/net45"
+                },
+                new NuSpecContent {
+                    Source = "MetaPack.SPMeta2.xml",
+                    Target = "lib/net45"
+                }
+            },
+            
+            OutputDirectory = new DirectoryPath(defaultNuGetPackagesDirectory)
+});
+
+defaultNuspecs.Add(new NuGetPackSettings()
+        {
+            Id = "MetaPack.SharePointPnP",
+            Version = defaultNuspecVersion,
+
+            Dependencies = new []
+            {
+                new NuSpecDependency() { Id = "MetaPack.Core", Version = prjNuspecSPMeta2DependencyVersion },
+                new NuSpecDependency() { Id = "MetaPack.NuGet", Version = prjNuspecSPMeta2DependencyVersion },
+            },
+
+            Authors = new [] { "SubPoint Solutions" },
+            Owners = new [] { "SubPoint Solutions" },
+            LicenseUrl = new Uri("http://docs.subpointsolutions.com/metapack/license"),
+            ProjectUrl = new Uri("https://github.com/SubPointSolutions/metapack"),
+            
+            Description = "MetaPack implementation for SharePointPnP model packaging, delivery and updates with NuGet protocol. Enables SharePointPnP model provision from NuGet galleries.",
+            Copyright = "Copyright 2016",
+            Tags = new [] { "SPMeta2", "Provisoin", "SharePoint", "Office365Dev", "Office365", "metapack", "nuget" },
+
+            RequireLicenseAcceptance = false,
+            Symbols = false,
+            NoPackageAnalysis = true,
+            BasePath  = "./../MetaPack.SharePointPnP/bin/debug",
+            
+            Files = new [] {
+                new NuSpecContent {
+                    Source = "MetaPack.SharePointPnP.dll",
+                    Target = "lib/net45"
+                },
+                new NuSpecContent {
+                    Source = "MetaPack.SharePointPnP.xml",
+                    Target = "lib/net45"
+                }
+            },
+            
+            OutputDirectory = new DirectoryPath(defaultNuGetPackagesDirectory)
+});
+
+defaultNuspecs.Add(new NuGetPackSettings()
+        {
+            Id = "MetaPack.Client.Common",
+            Version = defaultNuspecVersion,
+
+            Dependencies = new []
+            {
+                new NuSpecDependency() { Id = "MetaPack.Core", Version = prjNuspecSPMeta2DependencyVersion },
+                new NuSpecDependency() { Id = "NuGet.Core", Version = prjNuspecNuGetCoreDependencyVersion },
+            },
+
+             Authors = new [] { "SubPoint Solutions" },
+            Owners = new [] { "SubPoint Solutions" },
+            LicenseUrl = new Uri("http://docs.subpointsolutions.com/metapack/license"),
+            ProjectUrl = new Uri("https://github.com/SubPointSolutions/metapack"),
+            
+            Description = "MetaPack implementation for common solution package operations such as list, update and install",
+            Copyright = "Copyright 2016",
+            Tags = new [] { "SPMeta2", "Provisoin", "SharePoint", "Office365Dev", "Office365", "metapack", "nuget" },
+
+            RequireLicenseAcceptance = false,
+            Symbols = false,
+            NoPackageAnalysis = true,
+            BasePath  = "./../MetaPack.Client.Common/bin/debug",
+            
+            Files = new [] {
+                new NuSpecContent {
+                    Source = "MetaPack.Client.Common.dll",
+                    Target = "lib/net45"
+                },
+                new NuSpecContent {
+                    Source = "MetaPack.Client.Common.xml",
+                    Target = "lib/net45"
+                }
+            },
+            
+            OutputDirectory = new DirectoryPath(defaultNuGetPackagesDirectory)
+});
+
+// prject specific Chocolatey packaging
+var prjChocolateySpecs = new [] {
         new ChocolateyPackSettings()
         {
             Id = "MetaPack",
             Title = "MetaPack",
-            Version = g_hardcoreVersion,
+            Version = defaultNuspecVersion,
 
             Authors = new [] { "SubPoint Solutions" },
             Owners = new [] { "SubPoint Solutions" },
@@ -278,299 +633,14 @@ var chocolateySpecs = new [] {
 
             RequireLicenseAcceptance = false,
             
-            Files = metaPackCLIFiles.Select(f => new ChocolateyNuSpecContent{
-                 Source = System.IO.Path.Combine(metaPackCLIBinPath, f),
+            Files = prjMetaPackCLIFiles.Select(f => new ChocolateyNuSpecContent{
+                 Source = System.IO.Path.Combine(prjMetaPackCLIBinPath, f),
                 Target = "lib/metapack"
             }).ToList(),
             
             AllowUnofficial = false
         }
  };
-
-//////////////////////////////////////////////////////////////////////
-// TASKS
-//////////////////////////////////////////////////////////////////////
-
-Task("Validate-Environment")
-    .Does(() =>
-{
-    foreach(var name in environmentVariables)
-    {
-        Information(string.Format("HasEnvironmentVariable - [{0}]", name));
-        if(!HasEnvironmentVariable(name)) {
-            Information(string.Format("Cannot find environment variable:[{0}]", name));
-            throw new ArgumentException(string.Format("Cannot find environment variable:[{0}]", name));
-        }
-    }
-});
-
-Task("Clean")
-    .IsDependentOn("Validate-Environment")
-    .Does(() =>
-{
-    foreach(var dirPath in buildDirs) {
-        CleanDirectory(dirPath);
-    }        
-});
-
-Task("Restore-NuGet-Packages")
-    .IsDependentOn("Clean")
-    .Does(() =>
-{
-    NuGetRestore(solutionFilePath);
-});
-
-Task("Build")
-    .IsDependentOn("Restore-NuGet-Packages")
-    .Does(() =>
-{
-      MSBuild(solutionFilePath, settings => {
-        
-            settings.SetVerbosity(Verbosity.Quiet);
-            settings.SetConfiguration(configuration);
-      });
-});
-
-Task("Run-Unit-Tests")
-    .IsDependentOn("Build")
-    .Does(() =>
-{
-    foreach(var assemblyPath in defaultTestAssemblyPaths) {
-        
-        Information(string.Format("Running test for assembly:[{0}]", assemblyPath));
-        
-        MSTest(new [] { new FilePath(assemblyPath) }, new MSTestSettings {
-                Category = defaultTestCategory
-            });
-    }
-});
-
-Task("NuGet-Packaging")
-    .IsDependentOn("Run-Unit-Tests")
-    .Does(() =>
-{
-    if(!useNuGetPackaging) {
-        Information("Skipping NuGet packaging...");
-        return;
-    }
-
-    Information("Creating NuGet packages for version:[{0}] and SPMeta2 version:[{1}]", new []{
-        g_hardcoreVersion,
-        g_SPMeta2VersionBase
-    });
-
-    CreateDirectory(nuGetPackagesDirectory);
-    CleanDirectory(nuGetPackagesDirectory);
-
-    foreach(var nuspec in nuspecs)
-    {   
-        Information(string.Format("Creating NuGet package for [{0}]", nuspec.Id));
-        NuGetPack(nuspec);
-    }        
-});
-
-Task("NuGet-Publishing")
-    .IsDependentOn("NuGet-Packaging")
-    .Does(() =>
-{
-    if(!useNuGetPublishing) {
-        Information("Skipping NuGet publishing...");
-        return;
-    }
-
-    Information("Publishing NuGet packages for version:[{0}] and SPMeta2 version:[{1}]", new []{
-        g_hardcoreVersion,
-        g_SPMeta2VersionBase
-    });
-
-    foreach(var nuspec in nuspecs)
-    {   
-        Information(string.Format("Publishing NuGet package for [{0}]", nuspec.Id));
-
-        var packageFileName = string.Format("{0}.{1}.nupkg", nuspec.Id, nuspec.Version);
-        var packageFilePath = string.Format("{0}/{1}", nuGetPackagesDirectory, packageFileName);
-        
-		var nugetSource = EnvironmentVariable("metapack-nuget-source");
-		var nugetKey = EnvironmentVariable("metapack-nuget-key");
-
-        if(System.IO.File.Exists(packageFilePath)) {
-            
-			Information(string.Format("Publishing NuGet package [{0}]...", packageFileName));
-
-            NuGetPush(packageFilePath, new NuGetPushSettings {
-                Source = nugetSource,
-                ApiKey = nugetKey
-            });
-            
-        } else {
-            Information(string.Format("NuGet package does not exist:[{0}]", packageFilePath));
-            throw new ArgumentException(string.Format("NuGet package does not exist:[{0}]", packageFilePath));
-        }
-    }        
-});
-
-
-Task("Docs-Publishing")
-    .Does(() =>
-{
-    var environmentVariables = new [] {
-        "subpointsolutions-docs-username",
-        "subpointsolutions-docs-userpassword",
-    };
-
-    foreach(var name in environmentVariables)
-    {
-        Information(string.Format("HasEnvironmentVariable - [{0}]", name));
-        if(!HasEnvironmentVariable(name)) {
-            Information(string.Format("Cannot find environment variable:[{0}]", name));
-            throw new ArgumentException(string.Format("Cannot find environment variable:[{0}]", name));
-        }
-    }
-
-     var docsRepoUserName = EnvironmentVariable("subpointsolutions-docs-username");
-	 var docsRepoUserPassword = EnvironmentVariable("subpointsolutions-docs-userpassword");
-
-     var docsRepoFolder = string.Format(@"{0}/m2-mp",  "c:/__m2");
-     var docsRepoUrl = @"https://github.com/SubPointSolutions/subpointsolutions-docs";
-     var docsRepoPushUrl = string.Format(@"https://{0}:{1}@github.com/SubPointSolutions/subpointsolutions-docs", docsRepoUserName, docsRepoUserPassword);
-
-     var srcDocsPath = System.IO.Path.GetFullPath(@"./../SubPointSolutions.Docs/Views/metapack");
-     var dstDocsPath = string.Format(@"{0}/subpointsolutions-docs/SubPointSolutions.Docs/Views", docsRepoFolder);
-
-     var commitName = string.Format(@"MetaPack - CI docs update {0}", DateTime.Now.ToString("yyyyMMdd_HHmmssfff"));
-
-     Information(string.Format("Merging documentation wiht commit:[{0}]", commitName));
-
-     Information(string.Format("Cloning repo [{0}] to [{1}]", docsRepoUrl, docsRepoFolder));
-
-     if(!System.IO.Directory.Exists(docsRepoFolder))
-     {   
-        System.IO.Directory.CreateDirectory(docsRepoFolder);   
-
-        var cloneCmd = new []{
-            string.Format("cd '{0}'", docsRepoFolder),
-            string.Format("git clone -b wyam-dev {0}", docsRepoUrl)
-        };
-
-        StartPowershellScript(string.Join(Environment.NewLine, cloneCmd));  
-     }                            
-
-     docsRepoFolder = docsRepoFolder + "/subpointsolutions-docs"; 
-
-     Information(string.Format("Checkout..."));
-     var checkoutCmd = new []{
-            string.Format("cd '{0}'", docsRepoFolder),
-            string.Format("git checkout wyam-dev"),
-            string.Format("git pull")
-      };
-
-      StartPowershellScript(string.Join(Environment.NewLine, checkoutCmd));  
-
-      Information(string.Format("Merge and commit..."));
-      var mergeCmd = new []{
-            string.Format("cd '{0}'", docsRepoFolder),
-            string.Format("copy-item  '{0}' '{1}' -Recurse -Force", srcDocsPath,  dstDocsPath),
-            string.Format("git add *.md"),
-            string.Format("git add *.cs"),
-			string.Format("git add *.cshtml"),
-            string.Format("git commit -m '{0}'", commitName),
-      };
-
-      StartPowershellScript(string.Join(Environment.NewLine, mergeCmd)); 
-
-      Information(string.Format("Push to the main repo..."));
-      var pushCmd = new []{
-            string.Format("cd '{0}'", docsRepoFolder),
-            string.Format("git config http.sslVerify false"),
-            string.Format("git push {0}", docsRepoPushUrl)
-      };
-
-      var res = StartPowershellScript(string.Join(Environment.NewLine, pushCmd), new PowershellSettings()
-      {
-            LogOutput = false,
-            OutputToAppConsole  = false
-      });
-
-      Information(string.Format("Completed docs merge.")); 
-});
-
-Task("CLI-Chocolatey-Packaging")
-    .IsDependentOn("Build")
-    .Does(() =>
-{
-    Information(string.Format("Creating Chocolatey package..."));
-
-    foreach(var chocoSpec in chocolateySpecs) {
-        Information(string.Format("Creating Chocolatey package for [{0}]", chocoSpec.Id));
-        ChocolateyPack(chocoSpec);
-    }
-
-    Information(string.Format("Completed creating chocolatey package"));
-});
-
-Task("CLI-Chocolatey-Publishing")
-    .IsDependentOn("CLI-Chocolatey-Packaging")
-    .Does(() =>
-{
-    Information(string.Format("Publishing Chocolatey package..."));
-
-    foreach(var chocoSpec in chocolateySpecs) {
-        
-        Information(string.Format("Publishing Chocolatey package for [{0}]", chocoSpec.Id));
-
-        var packageFileName = string.Format("{0}.{1}.nupkg", chocoSpec.Id, chocoSpec.Version);
-        var packageFilePath = string.Format("{1}", chocoPackagesDirectory, packageFileName);
-        
-		var chocoSource = EnvironmentVariable("metapack-chocolatey-source");
-		var chocoKey = EnvironmentVariable("metapack-chocolatey-key");
-
-        if(System.IO.File.Exists(packageFilePath)) {
-            
-			Information(string.Format("Publishing Chocolatey package [{0}]...", packageFileName));
-
-            ChocolateyPush(packageFilePath, new ChocolateyPushSettings {
-                Source = chocoSource,
-                ApiKey = chocoKey
-            });
-            
-        } else {
-            Information(string.Format("Chocolatey package does not exist:[{0}]", packageFilePath));
-            throw new ArgumentException(string.Format("Chocolatey package does not exist:[{0}]", packageFilePath));
-        }
-    }
-
-    Information(string.Format("Completed creating chocolatey package"));
-});
-
-//////////////////////////////////////////////////////////////////////
-// TASK TARGETS
-//////////////////////////////////////////////////////////////////////
-
-Task("Default")
-    .IsDependentOn("Run-Unit-Tests");
-
-Task("Default-NuGet-Packaging")
-    .IsDependentOn("NuGet-Packaging");
-
-Task("Default-NuGet")
-    .IsDependentOn("NuGet-Publishing");
-
-Task("Default-Docs")
-    .IsDependentOn("Docs-Publishing");
-
-Task("Default-Appveyor")
-	.IsDependentOn("NuGet-Packaging");
-    //.IsDependentOn("NuGet-Publishing")
-    //.IsDependentOn("Docs-Publishing");
-
-Task("Default-CLI-Chocolatey-Packaging")
-    .IsDependentOn("CLI-Chocolatey-Packaging");
-
-Task("Default-CLI-Chocolatey-Publishing")
-    .IsDependentOn("CLI-Chocolatey-Publishing");
-
-//////////////////////////////////////////////////////////////////////
-// EXECUTION
-//////////////////////////////////////////////////////////////////////
+ 
 
 RunTarget(target);

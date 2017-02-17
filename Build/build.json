@@ -1,0 +1,37 @@
+﻿{
+    "defaultSolutionDirectory" : "./../",
+    "defaultSolutionFilePath" : "./../MetaPack.sln",
+    
+    "defaultNuGetPackagesDirectory" : "./packages",
+
+    "defaultNuspecVersion" : "1.2.100.0",
+
+    "defaultTestCategories": [
+        "CI.Core"
+    ],
+
+    "defaultTestAssemblyPaths": [
+       "./../MetaPack.Tests/bin/debug/MetaPack.Tests.dll",
+       "./../MetaPack.Client.Console.Tests/bin/debug/MetaPack.Client.Console.Tests.dll",
+       "./../MetaPack.Client.Common.Tests/bin/debug/MetaPack.Client.Common.Tests.dll"
+    ],
+
+    "defaultBuildDirs": [
+      "./../MetaPack.Client.Common/bin/",
+      
+      "./../MetaPack.Core/bin/",
+      "./../MetaPack.NuGet/bin/",
+
+      "./../MetaPack.SPMeta2/bin/",
+      "./../MetaPack.SharePointPnP/bin/",
+
+      "./../MetaPack.Tests/bin/",
+
+      "./../MetaPack.Client.Common/bin/",
+      "./../MetaPack.Client.Console/bin/"
+    ],
+
+    "defaultEnvironmentVariables" : [
+
+    ]
+}
