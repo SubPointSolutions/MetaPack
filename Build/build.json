@@ -17,18 +17,18 @@
     ],
 
     "defaultBuildDirs": [
-      "./../MetaPack.Client.Common/bin/",
-      
       "./../MetaPack.Core/bin/",
       "./../MetaPack.NuGet/bin/",
 
       "./../MetaPack.SPMeta2/bin/",
       "./../MetaPack.SharePointPnP/bin/",
 
-      "./../MetaPack.Tests/bin/",
-
       "./../MetaPack.Client.Common/bin/",
-      "./../MetaPack.Client.Console/bin/"
+      "./../MetaPack.Client.Console/bin/",
+
+      "./../MetaPack.Tests/bin/",
+      "./../MetaPack.Client.Console.Tests/bin/",
+      "./../MetaPack.Client.Common.Tests/bin/"
     ],
 
     "defaultEnvironmentVariables" : [
