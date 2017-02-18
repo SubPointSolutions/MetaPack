@@ -394,6 +394,8 @@ Task("Default-CI")
 
 // project specific things
 
+
+
 // prjXXX - project specific vars
 var prjNuspecSPMeta2DependencyVersion = "1.2.100";
 var prjNuspecNuGetCoreDependencyVersion  = "2.12.0";
@@ -405,33 +407,29 @@ var prjTestCategories = new string []{
 var prjChocoPackagesDirectory = "./build";
 var prjMetaPackCLIBinPath = "./../MetaPack.Client.Console/bin/debug/";
 var prjMetaPackCLIFiles = new string[] {
+    
+    // console itself
     "metapack.exe",
     "metapack.exe.config",
     
+    // console helpers
     "CommandLine.dll",
-    
+
+    // matapack core assemblies
     "MetaPack.Core.dll",
     "MetaPack.NuGet.dll",
-    "MetaPack.SPMeta2.dll",
 
-    "MetaPack.Client.Common.dll",
-
-    "SPMeta2.dll",
-    "SPMeta2.Standard.dll",
-
-    "SPMeta2.CSOM.dll",
-    "SPMeta2.CSOM.Standard.dll",
-
-    "Microsoft.SharePoint.Client.dll",
-    "Microsoft.SharePoint.Client.Publishing.dll",
-    "Microsoft.SharePoint.Client.Runtime.dll",
-    "Microsoft.SharePoint.Client.Runtime.dll",
-    "Microsoft.SharePoint.Client.Search.dll",
-    "Microsoft.SharePoint.Client.Taxonomy.dll",
-    "Microsoft.SharePoint.Client.WorkflowServices.dll",
-    
+    // other refs
     "NuGet.Core.dll",
     "Microsoft.Web.XmlTransform.dll",
+    "AppDomainToolkit.dll",
+
+    // metapack common client services
+    "MetaPack.Client.Common.dll",
+
+    // deps
+    "deps/sp2013-csom/Microsoft.SharePoint.Client.dll",
+    "deps/sp2013-csom/Microsoft.SharePoint.Client.Runtime.dll"
 };
 
 var metapackCorePackage = new NuGetPackSettings()
@@ -649,14 +647,14 @@ var prjChocolateySpecs = new [] {
             
             IconUrl = new Uri("https://raw.githubusercontent.com/SubPointSolutions/spmeta2/dev/SPMeta2/SPMeta2.Dependencies/Images/SPMeta2_64_64.png"),
 
-            Description = "MetaPack CLI. Provides a command line interface to deploy SPMeta2 models to SharePoint web sites.",
+            Description = "MetaPack CLI. Provides a command line interface to manage matapack packages.",
             Copyright = "Copyright 2016",
             Tags = new [] { "SPMeta2", "Provision", "SharePoint", "Office365Dev", "Office365", "metapack", "nuget" },
 
             RequireLicenseAcceptance = false,
             
             Files = prjMetaPackCLIFiles.Select(f => new ChocolateyNuSpecContent{
-                 Source = System.IO.Path.Combine(prjMetaPackCLIBinPath, f),
+                Source = System.IO.Path.Combine(prjMetaPackCLIBinPath, f),
                 Target = "lib/metapack"
             }).ToList(),
             
@@ -664,5 +662,22 @@ var prjChocolateySpecs = new [] {
         }
  };
  
+ Task("Default-Chocolatey-Packaging")
+     //.IsDependentOn("Run-Unit-Tests")
+     .IsDependentOn("Build")
+    .Does(() =>
+{
+      Information("Building Chocolatey package...");
+
+      foreach(var chocoSpec in prjChocolateySpecs) {
+
+           chocoSpec.Version = GetVersionForNuGetPackage(chocoSpec.Id, defaultNuspecVersion, ciBranch);
+
+           Information(string.Format("Creating Chocolatey package [{0}] version:[{1}]", chocoSpec.Id, chocoSpec.Version));
+           ChocolateyPack(chocoSpec);
+       }
+
+      Information(string.Format("Completed creating chocolatey package"));
+});
 
 RunTarget(target);
