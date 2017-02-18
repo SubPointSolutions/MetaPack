@@ -10,5 +10,7 @@ namespace MetaPack.Client.Console.Options
 {
     public class UpdateSubOptions : InstallOperationSubOptionBase
     {
+        [Option("force", HelpText = "Force update to the latest one if package already exists")]
+        public bool Force { get; set; }
     }
 }

@@ -25,6 +25,8 @@ namespace MetaPack.Client.Common.Commands
         public string Id { get; set; }
         public string Version { get; set; }
 
+        public bool Force { get; set; }
+
         #endregion
 
         #region methods

@@ -9,7 +9,6 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MetaPack.NuGet.Services;
 using MetaPack.SPMeta2;
 using MetaPack.SPMeta2.Services;
-using MetaPack.Tests.Common;
 using SPMeta2.Models;
 using SPMeta2.Syntax.Default;
 using MetaPack.Core.Services;

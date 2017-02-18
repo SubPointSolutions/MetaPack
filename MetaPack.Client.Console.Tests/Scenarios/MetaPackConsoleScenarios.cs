@@ -66,6 +66,71 @@ namespace MetaPack.Client.Console.Tests.Scenarios
         [TestMethod]
         [TestCategory("Metapack.Client.Console")]
         [TestCategory("CI.O365")]
+        public void Can_Run_Install_Command_O365_From_CustomSource()
+        {
+            WithMetaPackServices(service =>
+            {
+                var packageId = service.CIPackageId;
+
+                var siteUrl = O365RootWebUrl;
+                var userName = O365UserName;
+                var userPassword = O365UserPassword;
+
+                var result = ExecuteClientWithArgs(new Dictionary<string, string>()
+                {
+                    { "install", string.Empty},
+                    
+                    { "--id", "DefinitelyPacked.jQuery"},
+                    { "--version", "1.12.4"},
+
+                    { "--url", siteUrl},
+                    { "--username", userName},
+                    { "--userpassword", userPassword},
+                    { "--spversion", "o365"},
+
+                    { "--source", "https://ci.appveyor.com/nuget/definitelypacked-nuget"},
+                });
+
+                Assert.AreEqual(0, result);
+            });
+        }
+
+        [TestMethod]
+        [TestCategory("Metapack.Client.Console")]
+        [TestCategory("CI.O365")]
+        public void Can_Run_Install_Command_O365_Force()
+        {
+            WithMetaPackServices(service =>
+            {
+                var packageId = service.CIPackageId;
+
+                var siteUrl = O365RootWebUrl;
+                var userName = O365UserName;
+                var userPassword = O365UserPassword;
+
+                var result = ExecuteClientWithArgs(new Dictionary<string, string>()
+                {
+                    { "install", string.Empty},
+                    
+                    { "--id", "DefinitelyPacked.jQuery"},
+                    { "--version", "1.12.4"},
+
+                    { "--url", siteUrl},
+                    { "--username", userName},
+                    { "--userpassword", userPassword},
+                    { "--spversion", "o365"},
+                    { "--force", string.Empty },
+
+                    { "--source", "https://ci.appveyor.com/nuget/definitelypacked-nuget"},
+                });
+
+                Assert.AreEqual(0, result);
+            });
+        }
+
+        [TestMethod]
+        [TestCategory("Metapack.Client.Console")]
+        [TestCategory("CI.O365")]
 
         public void Can_Run_Install_Command_O365_WithCustomToolId()
         {

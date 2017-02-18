@@ -308,6 +308,14 @@ Task("NuGet-Packaging")
     foreach(var nuspec in defaultNuspecs)
     {   
         nuspec.Version = GetVersionForNuGetPackage(nuspec.Id, defaultNuspecVersion, ciBranch);
+
+        // update deps versions to a correct one during build
+        foreach(var dep in nuspec.Dependencies) {
+            if(dep.Id.StartsWith("MetaPack")) {
+                dep.Version = GetVersionForNuGetPackage(dep.Id, defaultNuspecVersion, ciBranch); 
+            }
+        }
+
         Information(string.Format("Creating NuGet package for [{0}] of version:[{1}]", nuspec.Id, nuspec.Version));
 
         NuGetPack(nuspec);
@@ -426,15 +434,14 @@ var prjMetaPackCLIFiles = new string[] {
     "Microsoft.Web.XmlTransform.dll",
 };
 
-// project specific NuGet packages
-defaultNuspecs.Add(new NuGetPackSettings()
+var metapackCorePackage = new NuGetPackSettings()
         {
             Id = "MetaPack.Core",
             Version = defaultNuspecVersion,
 
-            Dependencies = new []
+            Dependencies = new NuSpecDependency[]
             {
-                new NuSpecDependency() { Id = "SPMeta2.Core", Version = prjNuspecSPMeta2DependencyVersion }
+                
             },
 
             Authors = new [] { "SubPoint Solutions" },
@@ -463,16 +470,19 @@ defaultNuspecs.Add(new NuGetPackSettings()
             },
             
             OutputDirectory = new DirectoryPath(defaultNuGetPackagesDirectory)
-});
+};
 
-defaultNuspecs.Add(new NuGetPackSettings()
+// project specific NuGet packages
+defaultNuspecs.Add(metapackCorePackage);
+
+var metapackNuGetPackage = new NuGetPackSettings()
         {
             Id = "MetaPack.NuGet",
             Version = defaultNuspecVersion,
 
             Dependencies = new []
             {
-                new NuSpecDependency() { Id = "MetaPack.Core", Version = prjNuspecSPMeta2DependencyVersion },
+                new NuSpecDependency() { Id = "MetaPack.Core", Version = metapackCorePackage.Version },
                 new NuSpecDependency() { Id = "NuGet.Core", Version = prjNuspecNuGetCoreDependencyVersion },
                 new NuSpecDependency() { Id = "AppDomainToolkit", Version = "1.0.4.3" },
             },
@@ -484,7 +494,7 @@ defaultNuspecs.Add(new NuGetPackSettings()
             
             Description = "MetaPack implementation for NuGet protocol. Provides NuGet file-system and other NuGet related services.",
             Copyright = "Copyright 2016",
-            Tags = new [] { "SPMeta2", "Provisoin", "SharePoint", "Office365Dev", "Office365", "metapack", "nuget" },
+            Tags = new [] { "SPMeta2", "Provision", "SharePoint", "Office365Dev", "Office365", "metapack", "nuget" },
 
             RequireLicenseAcceptance = false,
             Symbols = false,
@@ -503,7 +513,9 @@ defaultNuspecs.Add(new NuGetPackSettings()
             },
             
             OutputDirectory = new DirectoryPath(defaultNuGetPackagesDirectory)
-});
+};
+
+defaultNuspecs.Add(metapackNuGetPackage);
 
 defaultNuspecs.Add(new NuGetPackSettings()
         {
@@ -512,8 +524,8 @@ defaultNuspecs.Add(new NuGetPackSettings()
 
             Dependencies = new []
             {
-                new NuSpecDependency() { Id = "MetaPack.Core", Version = prjNuspecSPMeta2DependencyVersion },
-                new NuSpecDependency() { Id = "MetaPack.NuGet", Version = prjNuspecSPMeta2DependencyVersion }               
+                new NuSpecDependency() { Id = "MetaPack.Core", Version = metapackCorePackage.Version },
+                new NuSpecDependency() { Id = "MetaPack.NuGet", Version = metapackNuGetPackage.Version }               
             },
 
              Authors = new [] { "SubPoint Solutions" },
@@ -551,8 +563,8 @@ defaultNuspecs.Add(new NuGetPackSettings()
 
             Dependencies = new []
             {
-                new NuSpecDependency() { Id = "MetaPack.Core", Version = prjNuspecSPMeta2DependencyVersion },
-                new NuSpecDependency() { Id = "MetaPack.NuGet", Version = prjNuspecSPMeta2DependencyVersion },
+                new NuSpecDependency() { Id = "MetaPack.Core", Version = metapackCorePackage.Version },
+                new NuSpecDependency() { Id = "MetaPack.NuGet", Version = metapackNuGetPackage.Version }
             },
 
             Authors = new [] { "SubPoint Solutions" },
@@ -590,7 +602,7 @@ defaultNuspecs.Add(new NuGetPackSettings()
 
             Dependencies = new []
             {
-                new NuSpecDependency() { Id = "MetaPack.Core", Version = prjNuspecSPMeta2DependencyVersion },
+                new NuSpecDependency() { Id = "MetaPack.Core", Version = metapackCorePackage.Version },
                 new NuSpecDependency() { Id = "NuGet.Core", Version = prjNuspecNuGetCoreDependencyVersion },
             },
 

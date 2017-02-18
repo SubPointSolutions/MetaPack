@@ -2,7 +2,6 @@
 using MetaPack.Core;
 using MetaPack.Core.Services;
 using MetaPack.NuGet.Services;
-using MetaPack.Tests.Common;
 using MetaPack.Tests.Consts;
 using MetaPack.Tests.Extensions;
 using MetaPack.Tests.Scenarios;

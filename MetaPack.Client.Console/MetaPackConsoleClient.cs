@@ -221,7 +221,9 @@ namespace MetaPack.Client.Console
                 Version = op.Version,
                 PreRelease = op.PreRelease,
                 UserName = op.UserName,
-                UserPassword = op.UserPassword
+                UserPassword = op.UserPassword,
+
+                Force = op.Force
             };
 
             if (!string.IsNullOrEmpty(op.SharePointVersion))
@@ -264,7 +266,9 @@ namespace MetaPack.Client.Console
                 UserPassword = op.UserPassword,
 
                 ToolId = op.ToolId,
-                ToolVersion = op.ToolVersion
+                ToolVersion = op.ToolVersion,
+
+                Force = op.Force
             };
 
             if (!string.IsNullOrEmpty(op.SharePointVersion))
