@@ -60,7 +60,7 @@ namespace MetaPack.Client.Console
             var currentFilePath = GetType().Assembly.Location;
             var currentFolderPath = new DirectoryInfo(currentFilePath).Parent.FullName;
 
-            Info(string.Format("Metapack client v{0}", FileVersionInfo.GetVersionInfo(currentFilePath).FileVersion));
+            Info(string.Format("Metapack client v{0}", GetCurrentClientVersion()));
             Info(string.Format("Working directory: [{0}]", currentFolderPath));
 
             WorkingDirectory = currentFolderPath;
@@ -82,6 +82,8 @@ namespace MetaPack.Client.Console
                     result = HandleUpdateCommand(args, options);
                 else if (options.Push != null)
                     result = HandlePushCommand(args, options);
+                else if (options.Version != null)
+                    result = HandleVersionCommand(args, options);
                 else
                     result = HandleMissedCommand(options);
             }))
@@ -90,6 +92,12 @@ namespace MetaPack.Client.Console
             }
 
             return result;
+        }
+
+        protected virtual string GetCurrentClientVersion()
+        {
+            var currentFilePath = GetType().Assembly.Location;
+            return FileVersionInfo.GetVersionInfo(currentFilePath).FileVersion;
         }
 
         protected virtual Assembly CurrentDomain_AssemblyResolve(object sender, ResolveEventArgs args)
@@ -309,6 +317,13 @@ namespace MetaPack.Client.Console
             }
 
             command.Execute();
+
+            return 0;
+        }
+
+        private int HandleVersionCommand(string[] args, DefaultOptions options)
+        {
+
 
             return 0;
         }

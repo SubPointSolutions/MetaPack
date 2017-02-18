@@ -34,6 +34,9 @@ namespace MetaPack.Client.Console.Options
         [VerbOption("push", HelpText = "Push a packaged to NuGet gallery. Use 'push --help' for more information.")]
         public PushSubOptions Push { get; set; }
 
+        [VerbOption("version", HelpText = "Shows current version of CLI.")]
+        public VersionSubOptions Version { get; set; }
+
         #endregion
 
         #region help

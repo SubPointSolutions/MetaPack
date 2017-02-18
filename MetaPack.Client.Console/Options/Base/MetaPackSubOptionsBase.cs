@@ -8,15 +8,20 @@ using System.Threading.Tasks;
 
 namespace MetaPack.Client.Console.Options.Base
 {
-    public class MetaPackSubOptionsBase
+    public class EmptySubOptionsBase
     {
-        #region properties
-
         [Option("verbose", HelpText = "Use verbose trace")]
         public bool Verbose { get; set; }
 
         [Option("debug", HelpText = "Use debug trace")]
         public bool Debug { get; set; }
+    }
+
+    public class MetaPackSubOptionsBase : EmptySubOptionsBase
+    {
+        #region properties
+
+
 
         [Option("toolid", HelpText = "NuGet package ID of the tool to use for packing, unpacking and deployment operations")]
         public string ToolId { get; set; }
