@@ -682,12 +682,10 @@ var prjChocolateySpecs = new [] {
         }
  };
  
- Task("Default-Chocolatey-Packaging")
-     //.IsDependentOn("Run-Unit-Tests")
-     //.IsDependentOn("Build")
+ Task("CLI-Chocolatey-Packaging")
     .Does(() =>
 {
-      Information("Building Chocolatey package...");
+      Information("Building CLI - Chocolatey package...");
 
       foreach(var chocoSpec in prjChocolateySpecs) {
 
@@ -699,5 +697,121 @@ var prjChocolateySpecs = new [] {
 
       Information(string.Format("Completed creating chocolatey package"));
 });
+
+Task("CLI-Zip-Packaging")
+    .Does(() =>
+{
+      Information("Building CLI - Zip package...");
+
+      var cliId = String.Empty;
+      var cliVersion = String.Empty;
+
+      foreach(var chocoSpec in prjChocolateySpecs) {
+
+           cliVersion = GetVersionForNuGetPackage(chocoSpec.Id, defaultNuspecVersion, ciBranch);
+           cliId = chocoSpec.Id;
+           break;
+      }
+
+      var tmpFolderPath = System.IO.Path.Combine( System.IO.Path.GetTempPath(), Guid.NewGuid().ToString("N"));
+      System.IO.Directory.CreateDirectory(tmpFolderPath);
+
+      var cliFilePaths = prjMetaPackCLIFiles.SelectMany(f => {
+                
+                 if(f.Contains("**")) {
+
+                      var dstFolder = f.Replace("**", String.Empty).TrimEnd('\\').Replace('\\', '/');
+                      return System.IO.Directory.GetFiles(System.IO.Path.GetFullPath(prjMetaPackCLIBinPath + @"\" + dstFolder), "*.*");
+                 }
+
+               return new []{ System.IO.Path.GetFullPath(prjMetaPackCLIBinPath + @"\" + f) };
+
+            }).ToList();
+
+   
+
+      Information(string.Format("Creating CLI Zip package [{0}] version:[{1}]", cliId, cliVersion));
+
+      var originalFileBase = System.IO.Path.GetFullPath(prjMetaPackCLIBinPath);
+
+      Information(string.Format("Copying distr files to TMP folder [{0}]", tmpFolderPath));
+
+      foreach(var filePath in cliFilePaths) {
+        
+        Information(string.Format("src file:[{0}]", filePath));    
+        
+        var absPath = filePath
+                        .Replace(originalFileBase, "")
+                        .Replace(System.IO.Path.GetFileName(filePath), "")
+                        .Trim('\\')
+                        .Trim('/');
+        
+        var dstDirectory = System.IO.Path.Combine(tmpFolderPath, absPath);
+        var dstFilePath = System.IO.Path.Combine(dstDirectory,  System.IO.Path.GetFileName(filePath));
+
+        System.IO.Directory.CreateDirectory(dstDirectory);
+
+        Information("- copy from: " + filePath);
+        Information("- copy to  : " + dstFilePath);
+        System.IO.File.Copy(filePath, dstFilePath);
+      }
+
+      var cliZipPackageFileName = String.Format("{0}.{1}.zip", cliId, cliVersion);
+      Information(string.Format("Creating ZIP file [{0}]", cliZipPackageFileName));
+      Zip(tmpFolderPath, cliZipPackageFileName);
+
+      Information(string.Format("Calculating checksum..."));
+
+      var md5 = CalculateFileHash(cliZipPackageFileName, HashAlgorithm.MD5);
+      var sha256 = CalculateFileHash(cliZipPackageFileName, HashAlgorithm.SHA256);
+      var sha512 = CalculateFileHash(cliZipPackageFileName, HashAlgorithm.SHA512);
+
+      Information(string.Format("-md5    :{0}", md5.ToHex()));
+      Information(string.Format("-sha256 :{0}", sha256.ToHex()));
+      Information(string.Format("-sha512 :{0}", sha512.ToHex()));
+
+      var md5File = cliZipPackageFileName + ".MD5SUM";
+      var sha256File = cliZipPackageFileName + ".SHA256SUM";
+      var sha512File = cliZipPackageFileName + ".SHA512SUM";
+
+      System.IO.File.WriteAllLines(cliZipPackageFileName + ".MD5SUM", new string[]{
+          String.Format("{0} {1}", md5.ToHex(), md5File)
+      });
+
+      System.IO.File.WriteAllLines(cliZipPackageFileName + ".SHA256SUM", new string[]{
+          String.Format("{0} {1}", sha256.ToHex(), sha256File)
+      });
+
+      System.IO.File.WriteAllLines(cliZipPackageFileName + ".SHA512SUM", new string[]{
+          String.Format("{0} {1}", sha512.ToHex(), sha512File)
+      });
+
+      var distrFiles = new string[] {
+          cliZipPackageFileName,
+          md5File,
+          sha256File,
+          sha512File
+      };
+
+      Information("Final distributive:");
+      foreach(var filePath in distrFiles)
+      {
+          Information(string.Format("- {0}", filePath));
+      }
+});
+
+
+ Task("Default-CLI-Chocolatey-Packaging")
+     .IsDependentOn("Run-Unit-Tests")
+     .IsDependentOn("CLI-Chocolatey-Packaging");
+
+ Task("Default-CLI-Zip-Packaging")
+     .IsDependentOn("Run-Unit-Tests")
+     .IsDependentOn("CLI-Zip-Packaging");     
+
+ Task("Default-CLI-Full-Packaging")
+     .IsDependentOn("Run-Unit-Tests")
+     .IsDependentOn("CLI-Chocolatey-Packaging")
+     .IsDependentOn("CLI-Zip-Packaging"); 
 
 RunTarget(target);
