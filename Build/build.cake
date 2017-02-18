@@ -202,6 +202,8 @@ var ciBranchOverride = GetGlobalEnvironmentVariable("APPVEYOR_REPO_BRANCH");
 if(!String.IsNullOrEmpty(ciBranchOverride))
 	ciBranch = ciBranchOverride;
 
+ciBranch = "dev";
+
 var ciNuGetSource = GetGlobalEnvironmentVariable("ci.nuget.source") ?? String.Empty;
 var ciNuGetKey = GetGlobalEnvironmentVariable("ci.nuget.key") ?? String.Empty;
 var ciNuGetShouldPublish = bool.Parse(GetGlobalEnvironmentVariable("ci.nuget.shouldpublish") ?? "FALSE");
@@ -427,9 +429,9 @@ var prjMetaPackCLIFiles = new string[] {
     // metapack common client services
     "MetaPack.Client.Common.dll",
 
-    // deps
-    "deps/sp2013-csom/Microsoft.SharePoint.Client.dll",
-    "deps/sp2013-csom/Microsoft.SharePoint.Client.Runtime.dll"
+    "deps/sp2013-csom/**"
+    //"deps/sp2013-csom/Microsoft.SharePoint.Client.dll",
+    //"deps/sp2013-csom/Microsoft.SharePoint.Client.Runtime.dll"
 };
 
 var metapackCorePackage = new NuGetPackSettings()
@@ -652,10 +654,28 @@ var prjChocolateySpecs = new [] {
             Tags = new [] { "SPMeta2", "Provision", "SharePoint", "Office365Dev", "Office365", "metapack", "nuget" },
 
             RequireLicenseAcceptance = false,
-            
-            Files = prjMetaPackCLIFiles.Select(f => new ChocolateyNuSpecContent{
-                Source = System.IO.Path.Combine(prjMetaPackCLIBinPath, f),
-                Target = "lib/metapack"
+
+            Files = prjMetaPackCLIFiles.Select(f => {
+                
+                 if(f.Contains("**")) {
+
+                     var dstFolder = f.Replace("**", String.Empty).TrimEnd('\\').Replace('\\', '/');
+                     var srcFolder = System.IO.Path.GetFullPath(prjMetaPackCLIBinPath +  dstFolder);
+
+                     var chSrcDir = srcFolder + @"**";
+                     var chDstDir = "lib/metapack" + "/" + dstFolder.TrimEnd('/');
+
+                     return new ChocolateyNuSpecContent{
+                         Source = chSrcDir,
+                         Target = chDstDir
+                     };
+                 }
+
+                return new ChocolateyNuSpecContent{
+                    Source = System.IO.Path.Combine(prjMetaPackCLIBinPath, f),
+                    Target = "lib/metapack"
+                };
+
             }).ToList(),
             
             AllowUnofficial = false
@@ -664,7 +684,7 @@ var prjChocolateySpecs = new [] {
  
  Task("Default-Chocolatey-Packaging")
      //.IsDependentOn("Run-Unit-Tests")
-     .IsDependentOn("Build")
+     //.IsDependentOn("Build")
     .Does(() =>
 {
       Information("Building Chocolatey package...");

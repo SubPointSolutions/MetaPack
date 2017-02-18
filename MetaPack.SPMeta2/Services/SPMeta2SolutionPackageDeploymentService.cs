@@ -251,8 +251,6 @@ namespace MetaPack.SPMeta2.Services
                         var userPassword = options.GetOptionValue(DefaultOptions.User.Password.Id);
 
                         var siteUrl = options.GetOptionValue(DefaultOptions.Site.Url.Id);
-
-                        MetaPackTrace.Verbose(string.Format("Creating ClientContext for web site:[{0}]", siteUrl));
                         var clientContexClass = ReflectionUtils.FindTypeByName(allClasses, "ClientContext");
 
                         if (clientContexClass == null)
