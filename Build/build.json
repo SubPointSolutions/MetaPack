@@ -2,8 +2,8 @@
     "defaultSolutionDirectory" : "./../",
     "defaultSolutionFilePath" : "./../MetaPack.sln",
     
-    "defaultNuGetPackagesDirectory" : "./out-nuget-packages",
-    "defaultChocolateyPackagesDirectory" : "./out-chocolatey-packages",
+    "defaultNuGetPackagesDirectory" : "./build-artifact-nuget-packages",
+    "defaultChocolateyPackagesDirectory" : "./build-artifact-chocolatey-packages",
 
     "defaultNuspecVersion" : "0.1.0",
     "defaultTestCategories": [
@@ -176,20 +176,22 @@
             "RequireLicenseAcceptance" : false,
 
             "Files": [
-                "MetaPack.Client.Console/bin/debug/metapack.exe",
-                "MetaPack.Client.Console/bin/debug/metapack.exe.config",
-
-                "MetaPack.Client.Console/bin/debug/CommandLine.dll",
-
-                "MetaPack.Client.Console/bin/debug/MetaPack.Core.dll",
-                "MetaPack.Client.Console/bin/debug/MetaPack.NuGet.dll",
-
-                "MetaPack.Client.Console/bin/debug/NuGet.Core.dll",
-                "MetaPack.Client.Console/bin/debug/Microsoft.Web.XmlTransform.dll",
-                "MetaPack.Client.Console/bin/debug/AppDomainToolkit.dll",
-
-                "MetaPack.Client.Console/bin/debug/MetaPack.Client.Common.dll",
-                "MetaPack.Client.Console/bin/debug/deps/sp2013-csom/**"
+                {
+                    "Source" : "lib/metapack",
+                    "SolutionRelativeSourceFilesFolder" : "MetaPack.Client.Console/bin/debug",
+                    "SourceFiles" : [
+                        "metapack.exe",
+                        "metapack.exe.config",
+                        "CommandLine.dll",
+                        "MetaPack.Core.dll",
+                        "MetaPack.NuGet.dll",
+                        "NuGet.Core.dll",
+                        "Microsoft.Web.XmlTransform.dll",
+                        "AppDomainToolkit.dll",
+                        "MetaPack.Client.Common.dll",
+                        "deps\\sp2013-csom\\**"
+                    ]
+                }
             ]
         }
     ],

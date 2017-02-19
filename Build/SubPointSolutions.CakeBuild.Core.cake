@@ -199,6 +199,10 @@ string GetFullPath(string path) {
     return System.IO.Path.GetFullPath(path);
 }
 
+string ResolveFullPathFromSolutionRelativePath(string solutionRelativePath) {
+    return System.IO.Path.GetFullPath(System.IO.Path.Combine(defaultSolutionDirectory, solutionRelativePath));
+}
+
 List<DirectoryPath> GetAllProjectDirectories(string solutionDirectory) {
     
     Verbose("Looking for *.csproj files in dir: " + solutionDirectory);
@@ -272,37 +276,68 @@ ChocolateyPackSettings[] ResolveChocolateyPackSettings() {
 
         packSettings.RequireLicenseAcceptance = false;
 
-        //var projectPath = System.IO.Path.Combine(defaultSolutionDirectory, packSettings.Id);
-        //var projectBinPath = System.IO.Path.Combine(projectPath, "bin/debug");
+        var files = spec["Files"].Select(t => t).ToArray();
 
-        var files = spec["Files"].Select(t => (string)t).ToArray();
+        Verbose(String.Format("- resolving files [{0}]", files.Count())); 
+        packSettings.Files = files.SelectMany(target => {
+            
+               Verbose(String.Format("Processing file set...")); 
 
-        packSettings.Files = files.Select(f => {
-                
-                // TODO....
+               var result1 = new List<ChocolateyNuSpecContent>();
+               
+               var targetName = (string)target["Source"];
+               Verbose(String.Format("- target name:[{0}]", targetName)); 
 
-                //  if(f.Contains("**")) {
+               var targetFilesFolder = (string)target["SolutionRelativeSourceFilesFolder"];
+               Verbose(String.Format("- target files folder:[{0}]", targetFilesFolder)); 
 
-                //      var dstFolder = f.Replace("**", String.Empty).TrimEnd('\\').Replace('\\', '/');
-                //      var srcFolder = System.IO.Path.GetFullPath(prjMetaPackCLIBinPath +  dstFolder);
+               var targetFiles = target["SourceFiles"].Select(t => (string)t).ToArray();
+               Verbose(String.Format("- target files:[{0}]", targetFiles.Count())); 
 
-                //      var chSrcDir = srcFolder + @"**";
-                //      var chDstDir = "lib/metapack" + "/" + dstFolder.TrimEnd('/');
+               var absFileFolder = System.IO.Path.GetFullPath(System.IO.Path.Combine(defaultSolutionDirectory, targetFilesFolder));
 
-                //      return new ChocolateyNuSpecContent{
-                //          Source = chSrcDir,
-                //          Target = chDstDir
-                //      };
-                //  }
+                foreach(var f in targetFiles)
+                {
+                    Verbose(String.Format("     - resolving file:[{0}]", f)); 
 
-                var fileFullPath = System.IO.Path.Combine(defaultSolutionDirectory, f);
+                    if(f.Contains("**")) {
 
-                Verbose(String.Format("- resolving file:[{0}]", fileFullPath));
+                        var dstFolder = f.Replace("**", String.Empty).TrimEnd('\\').Replace('\\', '/');
+                        var srcFolder = System.IO.Path.GetFullPath(
+                                                System.IO.Path.Combine(defaultSolutionDirectory,
+                                                    System.IO.Path.Combine(targetFilesFolder, dstFolder)));
 
-                return new ChocolateyNuSpecContent{
-                    Source = fileFullPath,
-                    Target = "lib/metapack"
-                };
+                        if(!System.IO.Directory.Exists(srcFolder))
+                            throw new Exception(String.Format("Directory does not exist: [{0}]"));
+
+                        var chAbsSrcDir = srcFolder +  @"\**";
+                        var chDstDir = targetName + "/" + dstFolder.TrimEnd('/');
+
+                        Verbose(String.Format("     - resolved as:[{0}]", chAbsSrcDir)); 
+
+                        result1.Add( new ChocolateyNuSpecContent{
+                            Source = chAbsSrcDir,
+                            Target = chDstDir
+                        });
+                    }
+                    else{
+                        
+                        
+                        var singleFileAbsolutePath = System.IO.Path.GetFullPath(System.IO.Path.Combine(absFileFolder, f));
+                        
+                        Verbose(String.Format("     - resolved as:[{0}]", singleFileAbsolutePath)); 
+
+                        if(!System.IO.File.Exists(singleFileAbsolutePath))
+                            throw new Exception(String.Format("File does not exist: [{0}]", singleFileAbsolutePath));
+
+                        result1.Add( new ChocolateyNuSpecContent{
+                            Source = singleFileAbsolutePath,
+                            Target = targetName
+                        });
+                    }
+                }
+
+                return result1;
 
             }).ToList();
 
@@ -448,6 +483,10 @@ var defaultEnvironmentVariables =  jsonConfig["defaultEnvironmentVariables"].Sel
 // refine defaultBuildDirs - everything with *.csprj in the folder + /bin
 //effectively, looking for all cs projects within solution
 defaultBuildDirs.AddRange(GetAllProjectDirectories(defaultSolutionDirectory));
+
+// default dirs for chocol and nuget packages
+defaultBuildDirs.Add(ResolveFullPathFromSolutionRelativePath(defaultChocolateyPackagesDirectory));
+defaultBuildDirs.Add(ResolveFullPathFromSolutionRelativePath(defaultNuGetPackagesDirectory));
 
 Information("Starting build...");
 Information(string.Format(" -target:[{0}]",target));
