@@ -2,33 +2,206 @@
     "defaultSolutionDirectory" : "./../",
     "defaultSolutionFilePath" : "./../MetaPack.sln",
     
-    "defaultNuGetPackagesDirectory" : "./packages",
+    "defaultNuGetPackagesDirectory" : "./out-nuget-packages",
+    "defaultChocolateyPackagesDirectory" : "./out-chocolatey-packages",
 
-    "defaultNuspecVersion" : "1.2.100.0",
-
+    "defaultNuspecVersion" : "0.1.0",
     "defaultTestCategories": [
         "CI.Core"
     ],
 
+    "customNuspecs" : [
+        {
+            "Id" : "MetaPack.Core",
+            "Version"  : "0.1.0",
+            "Dependencies" : [
+
+            ],
+            "LicenseUrl" : "http://docs.subpointsolutions.com/metapack/license",
+            "ProjectUrl" :  "https://github.com/SubPointSolutions/metapack",
+            "IconUrl"    : "https://raw.githubusercontent.com/SubPointSolutions/spmeta2/dev/SPMeta2/SPMeta2.Dependencies/Images/SPMeta2_64_64.png",
+            "Description" : "MetaPack CLI. Provides a command line interface to manage matapack packages.",
+            "Copyright" : "Copyright 2016",
+            "Tags" : [ 
+                "SPMeta2",
+                "Provision", 
+                "SharePoint", 
+                "Office365Dev", 
+                "Office365", 
+                "metapack", 
+                "nuget" 
+            ]
+        },
+        {
+            "Id" : "MetaPack.NuGet",
+            "Version"  : "0.1.0",
+            "Dependencies" : [
+                {
+                    "Id" : "MetaPack.Core",
+                    "Version" : "0.1.0"
+                },
+                {
+                    "Id" : "NuGet.Core",
+                    "Version" : "2.12.0"
+                },
+                {
+                    "Id" : "AppDomainToolkit",
+                    "Version" : "1.0.4.3"
+                }
+            ],
+            "LicenseUrl" : "http://docs.subpointsolutions.com/metapack/license",
+            "ProjectUrl" :  "https://github.com/SubPointSolutions/metapack",
+            "IconUrl"    : "https://raw.githubusercontent.com/SubPointSolutions/spmeta2/dev/SPMeta2/SPMeta2.Dependencies/Images/SPMeta2_64_64.png",
+            "Description" : "MetaPack CLI. Provides a command line interface to manage matapack packages.",
+            "Copyright" : "Copyright 2016",
+            "Tags" : [ 
+                "SPMeta2",
+                "Provision", 
+                "SharePoint", 
+                "Office365Dev", 
+                "Office365", 
+                "metapack", 
+                "nuget" 
+            ]
+        },
+
+        {
+            "Id" : "MetaPack.SPMeta2",
+            "Version"  : "0.1.0",
+            "Dependencies" : [
+                {
+                    "Id" : "MetaPack.Core",
+                    "Version" : "0.1.0"
+                },
+                {
+                    "Id" : "MetaPack.NuGet",
+                    "Version" : "0.1.0"
+                }
+            ],
+            "LicenseUrl" : "http://docs.subpointsolutions.com/metapack/license",
+            "ProjectUrl" :  "https://github.com/SubPointSolutions/metapack",
+            "IconUrl"    : "https://raw.githubusercontent.com/SubPointSolutions/spmeta2/dev/SPMeta2/SPMeta2.Dependencies/Images/SPMeta2_64_64.png",
+            "Description" : "MetaPack CLI. Provides a command line interface to manage matapack packages.",
+            "Copyright" : "Copyright 2016",
+            "Tags" : [ 
+                "SPMeta2",
+                "Provision", 
+                "SharePoint", 
+                "Office365Dev", 
+                "Office365", 
+                "metapack", 
+                "nuget" 
+            ]
+        },
+
+         {
+            "Id" : "MetaPack.SharePointPnP",
+            "Version"  : "0.1.0",
+            "Dependencies" : [
+                {
+                    "Id" : "MetaPack.Core",
+                    "Version" : "0.1.0"
+                },
+                {
+                    "Id" : "MetaPack.NuGet",
+                    "Version" : "0.1.0"
+                }
+            ],
+            "LicenseUrl" : "http://docs.subpointsolutions.com/metapack/license",
+            "ProjectUrl" :  "https://github.com/SubPointSolutions/metapack",
+            "IconUrl"    : "https://raw.githubusercontent.com/SubPointSolutions/spmeta2/dev/SPMeta2/SPMeta2.Dependencies/Images/SPMeta2_64_64.png",
+            "Description" : "MetaPack CLI. Provides a command line interface to manage matapack packages.",
+            "Copyright" : "Copyright 2016",
+            "Tags" : [ 
+                "SPMeta2",
+                "Provision", 
+                "SharePoint", 
+                "Office365Dev", 
+                "Office365", 
+                "metapack", 
+                "nuget" 
+            ]
+        },
+
+         {
+            "Id" : "MetaPack.Client.Common",
+            "Version"  : "0.1.0",
+            "Dependencies" : [
+                {
+                    "Id" : "MetaPack.Core",
+                    "Version" : "0.1.0"
+                },
+                {
+                    "Id" : "MetaPack.NuGet",
+                    "Version" : "0.1.0"
+                }
+            ],
+            "LicenseUrl" : "http://docs.subpointsolutions.com/metapack/license",
+            "ProjectUrl" :  "https://github.com/SubPointSolutions/metapack",
+            "IconUrl"    : "https://raw.githubusercontent.com/SubPointSolutions/spmeta2/dev/SPMeta2/SPMeta2.Dependencies/Images/SPMeta2_64_64.png",
+            "Description" : "MetaPack CLI. Provides a command line interface to manage matapack packages.",
+            "Copyright" : "Copyright 2016",
+            "Tags" : [ 
+                "SPMeta2",
+                "Provision", 
+                "SharePoint", 
+                "Office365Dev", 
+                "Office365", 
+                "metapack", 
+                "nuget" 
+            ]
+        }
+    ],       
+    
+    "customChocolateySpecs": [
+        {
+            "Id" : "MetaPack",
+            "Version"  : "0.1.0",
+
+            "LicenseUrl" : "http://docs.subpointsolutions.com/metapack/license",
+            "ProjectUrl" :  "https://github.com/SubPointSolutions/metapack",
+            "IconUrl"    : "https://raw.githubusercontent.com/SubPointSolutions/spmeta2/dev/SPMeta2/SPMeta2.Dependencies/Images/SPMeta2_64_64.png",
+            "Description" : "MetaPack CLI. Provides a command line interface to manage matapack packages.",
+            "Copyright" : "Copyright 2016",
+            "Tags" : [ 
+                "SPMeta2",
+                "Provision", 
+                "SharePoint", 
+                "Office365Dev", 
+                "Office365", 
+                "metapack", 
+                "nuget" 
+            ],
+
+            "RequireLicenseAcceptance" : false,
+
+            "Files": [
+                "MetaPack.Client.Console/bin/debug/metapack.exe",
+                "MetaPack.Client.Console/bin/debug/metapack.exe.config",
+
+                "MetaPack.Client.Console/bin/debug/CommandLine.dll",
+
+                "MetaPack.Client.Console/bin/debug/MetaPack.Core.dll",
+                "MetaPack.Client.Console/bin/debug/MetaPack.NuGet.dll",
+
+                "MetaPack.Client.Console/bin/debug/NuGet.Core.dll",
+                "MetaPack.Client.Console/bin/debug/Microsoft.Web.XmlTransform.dll",
+                "MetaPack.Client.Console/bin/debug/AppDomainToolkit.dll",
+
+                "MetaPack.Client.Console/bin/debug/MetaPack.Client.Common.dll",
+                "MetaPack.Client.Console/bin/debug/deps/sp2013-csom/**"
+            ]
+        }
+    ],
+
     "defaultTestAssemblyPaths": [
-       "./../MetaPack.Tests/bin/debug/MetaPack.Tests.dll",
-       "./../MetaPack.Client.Console.Tests/bin/debug/MetaPack.Client.Console.Tests.dll",
-       "./../MetaPack.Client.Common.Tests/bin/debug/MetaPack.Client.Common.Tests.dll"
+       "MetaPack.Tests/bin/debug/MetaPack.Tests.dll",
+       "MetaPack.Client.Console.Tests/bin/debug/MetaPack.Client.Console.Tests.dll",
+       "MetaPack.Client.Common.Tests/bin/debug/MetaPack.Client.Common.Tests.dll"
     ],
 
     "defaultBuildDirs": [
-      "./../MetaPack.Core/bin/",
-      "./../MetaPack.NuGet/bin/",
-
-      "./../MetaPack.SPMeta2/bin/",
-      "./../MetaPack.SharePointPnP/bin/",
-
-      "./../MetaPack.Client.Common/bin/",
-      "./../MetaPack.Client.Console/bin/",
-
-      "./../MetaPack.Tests/bin/",
-      "./../MetaPack.Client.Console.Tests/bin/",
-      "./../MetaPack.Client.Common.Tests/bin/"
+      
     ],
 
     "defaultEnvironmentVariables" : [
