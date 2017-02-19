@@ -1,8 +1,8 @@
 // common tooling
 // always version to avoid breaking change with new releases
-#addin nuget:?package=Cake.Powershell&Version=0.2.9
-#addin nuget:?package=newtonsoft.json&Version=9.0.1
-#addin nuget:?package=NuGet.Core&Version=2.12.0
+#addin nuget:https://www.nuget.org/api/v2/?package=Cake.Powershell&Version=0.2.9
+#addin nuget:https://www.nuget.org/api/v2/?package=newtonsoft.json&Version=9.0.1
+#addin nuget:https://www.nuget.org/api/v2/?package=NuGet.Core&Version=2.12.0
 
 // variables
 // * defaultXXX - shared, common settings from json config
