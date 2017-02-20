@@ -27,6 +27,10 @@ namespace MetaPack.Client.Console
         public MetaPackConsoleClient()
         {
             ConsoleTraceService = new ConsoleTraceService();
+            CmdParser = new Parser(settings =>
+            {
+                settings.IgnoreUnknownArguments = true;
+            });
         }
 
         #endregion
@@ -38,6 +42,8 @@ namespace MetaPack.Client.Console
         #endregion
 
         #region properties
+
+        protected Parser CmdParser { get; set; }
 
         protected string WorkingDirectory { get; set; }
 
@@ -72,7 +78,7 @@ namespace MetaPack.Client.Console
             var result = 0;
             var options = new DefaultOptions();
 
-            if (!Parser.Default.ParseArguments(args, options, (verb, subOption) =>
+            if (!CmdParser.ParseArguments(args, options, (verb, subOption) =>
             {
                 if (options.List != null)
                     result = HandleListCommand(args, options);
@@ -168,7 +174,7 @@ namespace MetaPack.Client.Console
         protected virtual void HandleWrongArgumentParsing()
         {
             Info("Cannot find arguments. Exiting.");
-            //Environment.Exit(Parser.DefaultExitCodeFail);
+            //Environment.Exit(CmdParserExitCodeFail);
         }
 
         protected virtual int HandleMissedCommand(DefaultOptions options)
@@ -184,7 +190,7 @@ namespace MetaPack.Client.Console
 
             ConfigureServices(op);
 
-            if (!Parser.Default.ParseArguments(args, op))
+            if (!CmdParser.ParseArguments(args, op))
                 return 1;
 
             Info(string.Format("Resolving package path [{0}]", op.Package));
@@ -218,7 +224,7 @@ namespace MetaPack.Client.Console
 
             ConfigureServices(op);
 
-            if (!Parser.Default.ParseArguments(args, op))
+            if (!CmdParser.ParseArguments(args, op))
                 return 1;
 
             var command = new DefaultUpdateCommand
@@ -253,7 +259,7 @@ namespace MetaPack.Client.Console
 
             ConfigureServices(op);
 
-            if (!Parser.Default.ParseArguments(args, op))
+            if (!CmdParser.ParseArguments(args, op))
                 return 1;
 
             var sources = new List<string>();
@@ -298,7 +304,7 @@ namespace MetaPack.Client.Console
 
             ConfigureServices(op);
 
-            if (!Parser.Default.ParseArguments(args, op))
+            if (!CmdParser.ParseArguments(args, op))
                 return 1;
 
             var command = new NuGetListCommand
