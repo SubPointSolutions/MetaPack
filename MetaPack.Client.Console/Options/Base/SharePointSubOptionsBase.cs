@@ -27,6 +27,7 @@ namespace MetaPack.Client.Console.Options.Base
         [Option("prerelease", HelpText = "Include pre-release versions of packages")]
         public bool PreRelease { get; set; }
 
+        
         #endregion
 
         #region help

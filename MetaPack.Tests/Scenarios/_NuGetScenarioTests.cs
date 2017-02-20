@@ -8,7 +8,6 @@ using MetaPack.Core.Services;
 using MetaPack.NuGet.Services;
 using MetaPack.SPMeta2.Services;
 using MetaPack.Tests.Base;
-using MetaPack.Tests.Common;
 using MetaPack.Tests.Extensions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NuGet;

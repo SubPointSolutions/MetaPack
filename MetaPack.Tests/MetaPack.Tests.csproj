@@ -105,7 +105,6 @@
   </Choose>
   <ItemGroup>
     <Compile Include="Base\MetaPackScenarioTestBase.cs" />
-    <Compile Include="Common\SolutionPackageType.cs" />
     <Compile Include="Consts\RegConsts.cs" />
     <Compile Include="Extensions\IPackageRepositoryExtensions.cs" />
     <Compile Include="Scenarios\_ApiSamplesTests.cs" />

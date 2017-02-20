@@ -29,6 +29,8 @@ namespace MetaPack.Client.Common.Commands
         public string Id { get; set; }
         public string Version { get; set; }
 
+        public bool Force { get; set; }
+
         #endregion
 
         #region methods
@@ -92,55 +94,111 @@ namespace MetaPack.Client.Common.Commands
                     MetaPackTrace.Info("Installing package to SharePoint web site...");
 
                     // create manager with repo and current web site
-                    MetaPackSolutionPackageManagerBase packageManager = new DefaultMetaPackSolutionPackageManager(repo, context);
-
-                    // TODO, transform command options to SolutionOptions
-
-                    // add options
-                    packageManager.SolutionOptions.Add(DefaultOptions.SharePoint.Api.CSOM);
-                    packageManager.SolutionOptions.Add(DefaultOptions.SharePoint.Edition.Foundation);
-                    packageManager.SolutionOptions.Add(DefaultOptions.SharePoint.Version.O365);
-
-                    packageManager.SolutionOptions.Add(new OptionValue
-                    {
-                        Name = DefaultOptions.Site.Url.Id,
-                        Value = context.Url
-                    });
-
-                    if (IsSharePointOnline)
-                    {
-                        // if o365 - add user name and password
-                        packageManager.SolutionOptions.Add(new OptionValue
-                        {
-                            Name = DefaultOptions.User.Name.Id,
-                            Value = UserName
-                        });
-
-                        packageManager.SolutionOptions.Add(new OptionValue
-                        {
-                            Name = DefaultOptions.User.Password.Id,
-                            Value = UserPassword
-                        });
-                    }
-
-                    if (!string.IsNullOrEmpty(ToolId))
-                    {
-                        packageManager.SolutionToolPackage = new SolutionToolPackage
-                        {
-                            Id = ToolId,
-                            Version = ToolVersion
-                        };
-                    }
+                    var packageManager = CreatePackageManager(repo, context);
 
                     // install package
-                    packageManager.InstallPackage(package, false, PreRelease);
+                    if (Force)
+                    {
+                        MetaPackTrace.Info("Force flag is true. Looking for existing package...");
 
+                        var currentPackage = packageManager.LocalRepository.FindPackage(
+                            package.Id,
+                            package.Version,
+                            this.PreRelease,
+                            true);
+
+                        if (currentPackage != null)
+                        {
+                            MetaPackTrace.Info(string.Format(
+                                "Package [{0}] version [{1}] already exists. Uninstalling...",
+                                currentPackage.Id,
+                                currentPackage.Version));
+
+                            packageManager.UninstallPackage(package);
+
+                            // we need a fresh start due to cached nuet packages
+                            // TODO - rewrite SharePointCSOMFileSystem to support deletions better
+                            packageManager = CreatePackageManager(repo, context);
+                        }
+                        else
+                        {
+                            MetaPackTrace.Info(string.Format(
+                                "Package [{0}] version [{1}] does not exist. It will be deployed.",
+                                package.Id,
+                                package.Version));
+                        }
+                    }
+                    else
+                    {
+                        var currentPackage = packageManager.LocalRepository.FindPackage(
+                                                package.Id,
+                                                package.Version,
+                                                this.PreRelease,
+                                                true);
+
+                        if (currentPackage != null)
+                        {
+                            MetaPackTrace.Info(string.Format(
+                                "Package [{0}] version [{1}] already exists. Use --force flag to redeploy it.",
+                                currentPackage.Id,
+                                currentPackage.Version));
+
+                            return;
+                        }
+                    }
+
+                    packageManager.InstallPackage(package, false, PreRelease);
                     MetaPackTrace.Info("Completed installation. All good!");
                 });
 
             return null;
         }
 
+        protected virtual MetaPackSolutionPackageManagerBase CreatePackageManager(IPackageRepository repo, ClientContext context)
+        {
+            var packageManager = new DefaultMetaPackSolutionPackageManager(repo, context);
+
+            // add options
+            packageManager.SolutionOptions.Add(DefaultOptions.SharePoint.Api.CSOM);
+            packageManager.SolutionOptions.Add(DefaultOptions.SharePoint.Edition.Foundation);
+            packageManager.SolutionOptions.Add(DefaultOptions.SharePoint.Version.O365);
+
+            packageManager.SolutionOptions.Add(new OptionValue
+            {
+                Name = DefaultOptions.Site.Url.Id,
+                Value = context.Url
+            });
+
+            if (IsSharePointOnline)
+            {
+                // if o365 - add user name and password
+                packageManager.SolutionOptions.Add(new OptionValue
+                {
+                    Name = DefaultOptions.User.Name.Id,
+                    Value = UserName
+                });
+
+                packageManager.SolutionOptions.Add(new OptionValue
+                {
+                    Name = DefaultOptions.User.Password.Id,
+                    Value = UserPassword
+                });
+            }
+
+            if (!string.IsNullOrEmpty(ToolId))
+            {
+                packageManager.SolutionToolPackage = new SolutionToolPackage
+                {
+                    Id = ToolId,
+                    Version = ToolVersion
+                };
+            }
+
+            return packageManager;
+        }
+
         #endregion
     }
+
+
 }

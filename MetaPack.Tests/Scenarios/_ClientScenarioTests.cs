@@ -11,7 +11,6 @@ using MetaPack.Core;
 using MetaPack.NuGet.Services;
 using MetaPack.SPMeta2.Services;
 using MetaPack.Tests.Base;
-using MetaPack.Tests.Common;
 using MetaPack.Tests.Extensions;
 using Microsoft.SharePoint.Client;
 using Microsoft.VisualStudio.TestTools.UnitTesting;

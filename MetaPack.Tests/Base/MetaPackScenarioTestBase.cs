@@ -3,7 +3,6 @@ using System.Security;
 using MetaPack.Core.Packaging;
 using MetaPack.Core.Services;
 using MetaPack.SPMeta2;
-using MetaPack.Tests.Common;
 using MetaPack.Tests.Consts;
 using MetaPack.Tests.Utils;
 using Microsoft.SharePoint.Client;
@@ -425,13 +424,6 @@ namespace MetaPack.Tests.Base
                 }
 
                 m2package.ModelFolders.Add(tmpFolder);
-
-                m2package.AdditionalOptions.Add(new OptionValue
-                {
-                    Name = DefaultOptions.SolutionToolPackage.PackageId.Id,
-                    Value = "MetaPack.SPMeta2"
-                });
-
                 solutionPackage = m2package;
             }
 
@@ -463,11 +455,7 @@ namespace MetaPack.Tests.Base
 
                 pnpPackage.ProvisioningTemplateOpenXmlPackageFolders.Add(@"Data/PnPTemplates/OpenXML");
 
-                pnpPackage.AdditionalOptions.Add(new OptionValue
-                {
-                    Name = DefaultOptions.SolutionToolPackage.PackageId.Id,
-                    Value = "MetaPack.SharePointPnP"
-                });
+               
 
                 solutionPackage = pnpPackage;
             }

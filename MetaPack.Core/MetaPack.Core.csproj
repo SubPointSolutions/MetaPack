@@ -54,6 +54,7 @@
     <Compile Include="Packaging\SolutionPackageProvisionOptions.cs" />
     <Compile Include="Packaging\SolutionPackageProvisionOptionsExtensions.cs" />
     <Compile Include="Services\DefaultXMLSerializationService.cs" />
+    <Compile Include="Services\SolutionRepositoryServiceBase.cs" />
     <Compile Include="Services\SerializationServiceBase.cs" />
     <Compile Include="Services\SolutionPackageDeploymentServiceBase.cs" />
     <Compile Include="Services\SolutionPackageServiceBase.cs" />

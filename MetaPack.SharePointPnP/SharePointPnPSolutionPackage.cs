@@ -4,6 +4,7 @@ using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
+using MetaPack.Core.Common;
 using MetaPack.Core.Packaging;
 
 namespace MetaPack.SharePointPnP
@@ -18,6 +19,12 @@ namespace MetaPack.SharePointPnP
         {
             ProvisioningTemplateFolders = new List<string>();
             ProvisioningTemplateOpenXmlPackageFolders = new List<string>();
+
+            AdditionalOptions.Add(new OptionValue
+            {
+                Name = DefaultOptions.SolutionToolPackage.PackageId.Id,
+                Value = "MetaPack.SharePointPnP"
+            });
         }
 
         #endregion

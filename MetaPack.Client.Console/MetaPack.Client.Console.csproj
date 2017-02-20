@@ -28,6 +28,10 @@
     <BootstrapperEnabled>true</BootstrapperEnabled>
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
     <RestorePackages>true</RestorePackages>
+    <UpdateAssemblyVersion>False</UpdateAssemblyVersion>
+    <UpdateAssemblyFileVersion>True</UpdateAssemblyFileVersion>
+    <UpdateAssemblyInfoVersion>False</UpdateAssemblyInfoVersion>
+    <AssemblyFileVersionSettings>None.None.DateStamp.TimeStamp</AssemblyFileVersionSettings>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -93,6 +97,7 @@
     <Compile Include="Options\Base\SharePointSubOptionsBase.cs" />
     <Compile Include="Options\Base\MetaPackSubOptionsBase.cs" />
     <Compile Include="Options\DefaultOptions.cs" />
+    <Compile Include="Options\VersionSubOptions.cs" />
     <Compile Include="Options\PushSubOptions.cs" />
     <Compile Include="Options\ListSubOptions.cs" />
     <Compile Include="Options\UpdateSubOptions.cs" />

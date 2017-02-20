@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Runtime.Serialization;
 using MetaPack.Core;
 using MetaPack.Core.Packaging;
+using MetaPack.Core.Common;
 //using SPMeta2.Models;
 
 namespace MetaPack.SPMeta2
@@ -19,6 +20,12 @@ namespace MetaPack.SPMeta2
         public SPMeta2SolutionPackage()
         {
             ModelFolders = new List<string>();
+
+            AdditionalOptions.Add(new OptionValue
+            {
+                Name = DefaultOptions.SolutionToolPackage.PackageId.Id,
+                Value = "MetaPack.SPMeta2"
+            });
         }
 
         #endregion
@@ -31,7 +38,7 @@ namespace MetaPack.SPMeta2
         [IgnoreDataMember]
         public List<string> ModelFolders { get; set; }
 
-       
+
         #endregion
 
         #region methods
