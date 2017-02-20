@@ -931,5 +931,5 @@ var taskDefaultCI = Task("Default-CI")
     .IsDependentOn("Default-Run-UnitTests")
     .IsDependentOn("Action-API-NuGet-Packaging")
     .IsDependentOn("Action-CLI-Zip-Packaging")
-    .IsDependentOn("Action-CLI-Chocolatey-Packaging");
+    .IsDependentOn("Action-CLI-Chocolatey-Packaging")
 	.IsDependentOn("Action-Docs-Merge");
