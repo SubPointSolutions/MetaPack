@@ -4,7 +4,6 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using MetaPack.Core.Services.Base;
 using MetaPack.Core.Utils;
 
 namespace MetaPack.Core.Services
@@ -62,7 +61,7 @@ namespace MetaPack.Core.Services
 
         #region utils
 
-        protected virtual void TraceEvent(int id, TraceEventType messageType, object message, Exception exception)
+        protected virtual string GetTraceEventString(int id, TraceEventType messageType, object message, Exception exception)
         {
             var traceString = string.Empty;
             var messageString = message == null ? string.Empty : message.ToString();
@@ -85,6 +84,13 @@ namespace MetaPack.Core.Services
 
                 traceString = string.Format("{0}", subMessage);
             }
+
+            return traceString;
+        }
+
+        protected virtual void TraceEvent(int id, TraceEventType messageType, object message, Exception exception)
+        {
+            var traceString = GetTraceEventString(id, messageType, message, exception);
 
             TraceSource.TraceEvent(messageType, id, traceString);
             TraceSource.Flush();

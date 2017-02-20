@@ -8,16 +8,27 @@ using MetaPack.Core.Packaging;
 using MetaPack.Core.Services;
 using MetaPack.NuGet.Services;
 using NuGet;
+using MetaPack.Core.Consts;
+using MetaPack.Core.Utils;
 
 namespace MetaPack.SPMeta2.Services
 {
+    /// <summary>
+    /// Solution packaging service implementation for SPMeta2 models
+    /// </summary>
     public class SPMeta2SolutionPackageService : NuGetSolutionPackageService
     {
         #region contructors
         public SPMeta2SolutionPackageService()
         {
-
+            ModelFoldersPath = "Models";
         }
+
+        #endregion
+
+        #region properties
+
+        public string ModelFoldersPath { get; set; }
 
         #endregion
 
@@ -25,131 +36,60 @@ namespace MetaPack.SPMeta2.Services
 
         public override Stream Pack(SolutionPackageBase package, SolutionPackageOptions options)
         {
-            var result = new MemoryStream();
-            var hasResult = false;
+            MetaPackTrace.Verbose("Packing solution package...");
 
-            var metadata = new ManifestMetadata()
-            {
-                Title = package.Title,
-                Description = package.Description,
-                Id = package.Id,
-                Authors = package.Authors,
+            var typedPackage = package as SPMeta2SolutionPackage;
 
-                Version = package.Version,
-                Owners = package.Owners,
+            if (typedPackage == null)
+                throw new ArgumentNullException(string.Format("package must be of type: [{0}]", typeof(SPMeta2SolutionPackage)));
 
-                ReleaseNotes = package.ReleaseNotes,
-                Summary = package.Summary,
+            // create result stream and NuGet package
+            var resultStream = new MemoryStream();
+            var metadata = GetManifestMetadata(package);
 
-                ProjectUrl = package.ProjectUrl,
-                IconUrl = package.IconUrl,
-                LicenseUrl = package.LicenseUrl,
-                Copyright = package.Copyright,
-                Tags = package.Tags
-            };
-
-            if (package.Dependencies.Any())
-            {
-                if (metadata.DependencySets == null)
-                    metadata.DependencySets = new List<ManifestDependencySet>();
-
-                var dependencySet = new ManifestDependencySet
-                {
-                    Dependencies = new List<ManifestDependency>()
-                };
-
-                foreach (var dependency in package.Dependencies)
-                {
-                    dependencySet.Dependencies.Add(new ManifestDependency
-                    {
-                        Id = dependency.Id,
-                        Version = dependency.Version
-                    });
-                }
-
-                metadata.DependencySets.Add(dependencySet);
-            }
-
-            var builder = new PackageBuilder();
+            var nugetPackageBuilder = new PackageBuilder();
 
             var solutionPackageManifestFile = new ManifestFile();
+            var solutionFilePath = SaveMetaPackSolutionFile<SPMeta2SolutionPackage>(solutionPackageManifestFile, typedPackage);
 
-            var solutionFileContent = SerializationService.SerializeSolutionPackage(package);
-            var solutionFilePath = Path.Combine(Path.GetTempPath(),
-                                                string.Format("{0}.xml", Guid.NewGuid().ToString("N")));
+            nugetPackageBuilder.PopulateFiles("", new[] { solutionPackageManifestFile });
+            nugetPackageBuilder.Populate(metadata);
 
-            solutionPackageManifestFile.Source = solutionFilePath;
-            solutionPackageManifestFile.Target = "SolutionPackage.xml";
+            // add models folders
+            foreach (var srcFolder in typedPackage.ModelFolders)
+                AddFolderToPackage(nugetPackageBuilder, srcFolder, ModelFoldersPath);
 
-            try
-            {
-                File.WriteAllText(solutionFilePath, solutionFileContent);
+            // save nuget package into the final stream
+            nugetPackageBuilder.Save(resultStream);
 
-                builder.PopulateFiles("", new[] { solutionPackageManifestFile });
-                builder.Populate(metadata);
+            resultStream.Position = 0;
 
-                builder.Save(result);
+            MetaPackTrace.Verbose("Packing solution package completed...");
 
-                result.Position = 0;
-
-                hasResult = true;
-
-                return result;
-            }
-            finally
-            {
-                if (!hasResult)
-                {
-                    try
-                    {
-                        if (result != null)
-                        {
-                            result.Dispose();
-                            result = null;
-                        }
-                    }
-                    catch
-                    {
-
-                    }
-                }
-
-                if (File.Exists(solutionFilePath))
-                {
-                    try
-                    {
-                        File.Delete(solutionFilePath);
-                    }
-                    catch { }
-                }
-            }
+            return resultStream;
         }
 
         public override SolutionPackageBase Unpack(Stream package, SolutionPackageOptions options)
         {
-            SolutionPackageBase result = null;
-
             package.Position = 0;
-            var packageReader = new ZipPackage(package);
 
-            var files = packageReader.GetFiles();
-            var solutionPackageFile = files.FirstOrDefault(f => f.Path.ToUpper() == "SOLUTIONPACKAGE.XML");
+            var zipPackage = new ZipPackage(package);
+            var solutionPackageFile = FindSolutionPackageFile(zipPackage);
 
-            if (solutionPackageFile == null)
-            {
-                throw new ArgumentNullException(
-                    string.Format("Cannot find SolutionPackage.xml in the provided NuGet package"));
-            }
+            SerializationService.RegisterKnownType(typeof(SolutionPackageBase));
+            SerializationService.RegisterKnownType(typeof(SPMeta2SolutionPackage));
 
             using (var streamReader = new StreamReader(solutionPackageFile.GetStream()))
             {
                 var solutionFileContent = streamReader.ReadToEnd();
-                var solutionPackage = SerializationService.DeserializeSolutionPackage(solutionFileContent);
+                var typedPackage = SerializationService.Deserialize(typeof(SPMeta2SolutionPackage), solutionFileContent) as SPMeta2SolutionPackage;
 
-                return solutionPackage;
+                // unpack models
+                UnpackFoldersPackage(zipPackage, ModelFoldersPath, typedPackage.ModelFolders);
+
+                return typedPackage;
             }
         }
-
 
         #endregion
     }

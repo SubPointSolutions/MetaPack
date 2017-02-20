@@ -3,11 +3,9 @@ using System.Diagnostics;
 using System.Linq;
 using MetaPack.Client.Common.Commands.Base;
 using MetaPack.Client.Common.Services;
-using MetaPack.SPMeta2.Services;
+using MetaPack.NuGet.Services;
 using Microsoft.SharePoint.Client;
 using NuGet;
-using SPMeta2.CSOM.Standard.Services;
-using SPMeta2.Diagnostic;
 
 namespace MetaPack.Client.Common.Commands
 {
@@ -26,6 +24,8 @@ namespace MetaPack.Client.Common.Commands
         public string Source { get; set; }
         public string Id { get; set; }
         public string Version { get; set; }
+
+        public bool Force { get; set; }
 
         #endregion
 
@@ -86,7 +86,7 @@ namespace MetaPack.Client.Common.Commands
 
                     Console.WriteLine("Checking local package [{0}]", Id);
                     // create manager with repo and current web site
-                    var packageManager = new SPMeta2SolutionPackageManager(repo, context);
+                    var packageManager = new DefaultMetaPackSolutionPackageManager(repo, context);
 
                     //var localPackage = packageManager.LocalRepository.FindPackage(package.Id, package.Version, true, true);
                     var localPackages = packageManager.LocalRepository.FindPackagesById(package.Id);
@@ -122,30 +122,28 @@ namespace MetaPack.Client.Common.Commands
                     Console.WriteLine("Installing package [{0}] to SharePoint web site...",
                                     package.GetFullName());
 
-                    var m2runtime = SPMeta2Diagnostic.GetDiagnosticInfo();
-                    Console.WriteLine("SPMeta2 runtime:[{0}]", m2runtime);
+                    // TODO
 
-                    Console.WriteLine("Using StandardCSOMProvisionService...");
-                    // setup provision services
-                    packageManager.ProvisionService = new StandardCSOMProvisionService();
-                    packageManager.ProvisionServiceHost = context;
+                    //// setup provision services
+                    //packageManager.ProvisionService = new StandardCSOMProvisionService();
+                    //packageManager.ProvisionServiceHost = context;
 
-                    // SPMeta2 provision tracing
-                    packageManager.ProvisionService.OnModelNodeProcessed += (sender, args) =>
-                    {
-                        var msg = string.Format(" Provisioning: [{0}/{1}] - [{2}%] - [{3}] [{4}]",
-                            new object[]
-                            {
-                                args.ProcessedModelNodeCount,
-                                args.TotalModelNodeCount,
-                                100d*(double) args.ProcessedModelNodeCount/(double) args.TotalModelNodeCount,
-                                args.CurrentNode.Value.GetType().Name,
-                                args.CurrentNode.Value
-                            });
+                    //// SPMeta2 provision tracing
+                    //packageManager.ProvisionService.OnModelNodeProcessed += (sender, args) =>
+                    //{
+                    //    var msg = string.Format(" Provisioning: [{0}/{1}] - [{2}%] - [{3}] [{4}]",
+                    //        new object[]
+                    //        {
+                    //            args.ProcessedModelNodeCount,
+                    //            args.TotalModelNodeCount,
+                    //            100d*(double) args.ProcessedModelNodeCount/(double) args.TotalModelNodeCount,
+                    //            args.CurrentNode.Value.GetType().Name,
+                    //            args.CurrentNode.Value
+                    //        });
 
-                        Trace.WriteLine(msg);
-                        Console.WriteLine(msg);
-                    };
+                    //    Trace.WriteLine(msg);
+                    //    Console.WriteLine(msg);
+                    //};
 
                     // install package
                     packageManager.InstallPackage(package, false, PreRelease);

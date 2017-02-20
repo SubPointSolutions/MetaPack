@@ -3,7 +3,7 @@ using System.Diagnostics;
 using System.Linq;
 using MetaPack.Client.Common.Commands.Base;
 using MetaPack.Client.Common.Services;
-using MetaPack.SPMeta2.Services;
+using MetaPack.NuGet.Services;
 using Microsoft.SharePoint.Client;
 using NuGet;
 
@@ -50,7 +50,7 @@ namespace MetaPack.Client.Common.Commands
                     var repo = PackageRepositoryFactory.Default.CreateRepository(repoFolder);
 
                     // create manager with empty repo to avoid connectivity
-                    var packageManager = new SPMeta2SolutionPackageManager(repo, context);
+                    var packageManager = new DefaultMetaPackSolutionPackageManager(repo, context);
 
                     //var packages = packageManager.LocalRepository.GetPackages();
                     var packages = packageManager.LocalRepository.Search(

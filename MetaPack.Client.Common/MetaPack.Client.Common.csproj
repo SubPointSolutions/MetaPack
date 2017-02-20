@@ -11,6 +11,8 @@
     <AssemblyName>MetaPack.Client.Common</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -20,6 +22,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Debug\MetaPack.Client.Common.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -41,24 +44,8 @@
     <Reference Include="Microsoft.Web.XmlTransform">
       <HintPath>..\packages\Microsoft.Web.Xdt.2.1.1\lib\net40\Microsoft.Web.XmlTransform.dll</HintPath>
     </Reference>
-    <Reference Include="NuGet.Core, Version=2.11.1.812, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\NuGet.Core.2.11.1\lib\net40-Client\NuGet.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="SPMeta2, Version=1.0.0.0, Culture=neutral, PublicKeyToken=d71faae3bf28531a, processorArchitecture=MSIL">
-      <HintPath>..\packages\SPMeta2.Core.1.2.95-beta1\lib\net45\SPMeta2.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="SPMeta2.CSOM, Version=1.0.0.0, Culture=neutral, PublicKeyToken=d71faae3bf28531a, processorArchitecture=MSIL">
-      <HintPath>..\packages\SPMeta2.CSOM.Foundation.1.2.95-beta1\lib\net45\SPMeta2.CSOM.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="SPMeta2.CSOM.Standard, Version=1.0.0.0, Culture=neutral, PublicKeyToken=d71faae3bf28531a, processorArchitecture=MSIL">
-      <HintPath>..\packages\SPMeta2.CSOM.Standard.1.2.95-beta1\lib\net45\SPMeta2.CSOM.Standard.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="SPMeta2.Standard, Version=1.0.0.0, Culture=neutral, PublicKeyToken=d71faae3bf28531a, processorArchitecture=MSIL">
-      <HintPath>..\packages\SPMeta2.Core.Standard.1.2.95-beta1\lib\net45\SPMeta2.Standard.dll</HintPath>
+    <Reference Include="NuGet.Core, Version=2.12.0.817, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\NuGet.Core.2.12.0\lib\net40-Client\NuGet.Core.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
@@ -71,10 +58,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Commands\Base\CommandBase.cs" />
+    <Compile Include="Commands\DefaultNuGetPushCommand.cs" />
     <Compile Include="Commands\DefaultUpdateCommand.cs" />
     <Compile Include="Commands\DefaultInstallCommand.cs" />
     <Compile Include="Commands\DefaultListCommand.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\ConsoleTraceService.cs" />
     <Compile Include="Services\SharePointService.cs" />
   </ItemGroup>
   <ItemGroup />
@@ -87,15 +76,18 @@
       <Project>{a15f8430-15f3-4e25-aa60-221d244ea2fd}</Project>
       <Name>MetaPack.NuGet</Name>
     </ProjectReference>
-    <ProjectReference Include="..\MetaPack.SPMeta2\MetaPack.SPMeta2.csproj">
-      <Project>{C7E76DE7-4CA9-43B6-8DDD-78928F4267BB}</Project>
-      <Name>MetaPack.SPMeta2</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('$(SolutionDir)\.nuget\NuGet.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\.nuget\NuGet.targets'))" />
+  </Target>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

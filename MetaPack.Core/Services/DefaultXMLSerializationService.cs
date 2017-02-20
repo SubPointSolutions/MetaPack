@@ -1,16 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Runtime.Serialization;
-using System.Text;
-using System.Threading.Tasks;
-using MetaPack.Core.Packaging;
 
 namespace MetaPack.Core.Services
 {
+    /// <summary>
+    /// Default, DataContractSerializer baseds service for XML serialization.
+    /// Based on DataContractSerializer 
     public class DefaultXMLSerializationService : SerializationServiceBase
     {
+        #region methods
+
         public override string Serialize(object obj)
         {
             var serializer = new DataContractSerializer(obj.GetType(), KnownTypes);
@@ -66,5 +66,7 @@ namespace MetaPack.Core.Services
                     stream.Dispose();
             }
         }
+
+        #endregion
     }
 }

@@ -5,6 +5,7 @@ using System.Net;
 using System.Security;
 using System.Text;
 using System.Threading.Tasks;
+using MetaPack.Core.Utils;
 using Microsoft.SharePoint.Client;
 
 namespace MetaPack.Client.Common.Services
@@ -18,13 +19,13 @@ namespace MetaPack.Client.Common.Services
             bool isSharePointOnline,
             Action<ClientContext> action)
         {
-            Console.WriteLine("Connecting to SharePoint web site:[{0}]", url);
+            MetaPackTrace.Info("Connecting to SharePoint web site:[{0}]", url);
 
             using (var context = new ClientContext(url))
             {
                 if (!string.IsNullOrEmpty(userName) && !string.IsNullOrEmpty(userPassword))
                 {
-                    Console.WriteLine("Using username:[{0}]", userName);
+                    MetaPackTrace.Info("Using username:[{0}]", userName);
 
                     var securePassword = new SecureString();
 
@@ -33,12 +34,12 @@ namespace MetaPack.Client.Common.Services
 
                     if (isSharePointOnline)
                     {
-                        Console.WriteLine("Using O365 runtime and SharePointOnlineCredentials");
+                        MetaPackTrace.Info("Using O365 runtime and SharePointOnlineCredentials");
                         context.Credentials = new SharePointOnlineCredentials(userName, securePassword);
                     }
                     else
                     {
-                        Console.WriteLine("Using SP2013 runtime and NetworkCredential");
+                        MetaPackTrace.Info("Using SP2013 runtime and NetworkCredential");
                         context.Credentials = new NetworkCredential(userName, securePassword);
                     }
                 }

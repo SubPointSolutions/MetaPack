@@ -8,6 +8,15 @@ namespace MetaPack.Client.Common.Commands.Base
 {
     public abstract class CommandBase
     {
+        #region constructros
+
+        protected CommandBase()
+        {
+            PackageSources = new List<string>();
+        }
+
+        #endregion
+
         #region properties
 
         public bool PreRelease { get; set; }
@@ -19,6 +28,11 @@ namespace MetaPack.Client.Common.Commands.Base
         public string UserPassword { get; set; }
 
         public bool IsSharePointOnline { get; set; }
+
+        public List<string> PackageSources { get; set; }
+
+        public string ToolId { get; set; }
+        public string ToolVersion { get; set; }
 
         #endregion
 

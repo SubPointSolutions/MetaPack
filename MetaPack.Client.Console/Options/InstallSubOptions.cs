@@ -10,6 +10,9 @@ namespace MetaPack.Client.Console.Options
 {
     public class InstallSubOptions : InstallOperationSubOptionBase
     {
-        
+        #region propeties
+        [Option("force", HelpText = "Force install package if package already exists")]
+        public bool Force { get; set; }
+        #endregion
     }
 }

@@ -6,11 +6,23 @@ using System.Threading.Tasks;
 
 namespace MetaPack.Client.Console.Consts
 {
-    internal static class DefaultValues
+    public static class DefaultValues
     {
+        #region static
+
+        static DefaultValues()
+        {
+            DefaultNuGetRepositories = new List<string>();
+            DefaultNuGetRepositories.Clear();
+
+            DefaultNuGetRepositories.Add("http://metapackgallery.com/api/v2");
+        }
+
+        #endregion
+
         #region properties
 
-        public static string DefaultNuGetRepository = "http://metapackgallery.com/api/v2";
+        public static List<string> DefaultNuGetRepositories { get; set; }
 
         #endregion
     }
