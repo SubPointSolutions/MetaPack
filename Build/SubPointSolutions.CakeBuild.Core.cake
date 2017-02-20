@@ -3,6 +3,7 @@
 #addin nuget:https://www.nuget.org/api/v2/?package=Cake.Powershell&Version=0.2.9
 #addin nuget:https://www.nuget.org/api/v2/?package=newtonsoft.json&Version=9.0.1
 #addin nuget:https://www.nuget.org/api/v2/?package=NuGet.Core&Version=2.12.0
+#addin nuget:https://www.nuget.org/api/v2/?package=Cake.Powershell&Version=0.2.9
 
 // variables
 // * defaultXXX - shared, common settings from json config
@@ -27,10 +28,16 @@ string GetGlobalEnvironmentVariable(string name) {
     return result;
 }
 
-string GetVersionForNuGetPackage(string id, string defaultVersion, string branch) {
+// get package id from json config
+// dev - [json-id.-alpha+year+DayOfYear+Hour+Minute]
+// beta - always from json config
+string GetVersionForNuGetPackage(string id) {
     
+    var branch = ciBranch;
+
     var resultVersion = string.Empty;
-    
+    var jsonPackageVersion = ResolveVersionForPackage(id); 
+
 	if(branch != "master" && branch != "beta")
 		branch = "dev";
 
@@ -40,6 +47,9 @@ string GetVersionForNuGetPackage(string id, string defaultVersion, string branch
 
     switch(branch) {
        
+        // dev always patches everything to alpha
+        // - package.0.1.0-alpha170510045.nupkg
+        // - package.0.1.0-alpha170510046.nupkg
         case "dev" : {
 
             var year = now.ToString("yy");
@@ -52,12 +62,8 @@ string GetVersionForNuGetPackage(string id, string defaultVersion, string branch
             if(String.IsNullOrEmpty(currentTimeStamp))
                 currentTimeStamp = stamp.ToString();
 
-            var latestNuGetPackageVersion = GetLatestPackageFromNuget(id);
-
-            if(String.IsNullOrEmpty(latestNuGetPackageVersion))
-                latestNuGetPackageVersion = defaultVersion;
-
-            Information(String.Format("- latest nuget package [{0}] version [{1}]", id, latestNuGetPackageVersion));
+            var latestNuGetPackageVersion = jsonPackageVersion;
+            Information(String.Format("- latest package [{0}] version [{1}]", id, latestNuGetPackageVersion));
 
             var versionParts = latestNuGetPackageVersion.Split('-');
 
@@ -92,87 +98,30 @@ string GetVersionForNuGetPackage(string id, string defaultVersion, string branch
 
         }; break;
 
+        // dev always gets the one from the jsonConfig
+        // - package.0.1.0-beta1.nupkg
+        // - package.0.1.0-beta2.nupkg
         case "beta" : {
 
-            var latestNuGetPackageVersion = GetLatestPackageFromNuget(id);
+            var latestNuGetPackageVersion = jsonPackageVersion;
 
-            if(String.IsNullOrEmpty(latestNuGetPackageVersion))
-                latestNuGetPackageVersion = defaultVersion;
+            Information(String.Format("- latest package [{0}] version [{1}]", id, latestNuGetPackageVersion));
+            resultVersion = latestNuGetPackageVersion;
 
-            Information(String.Format("- latest nuget package [{0}] version [{1}]", id, latestNuGetPackageVersion));
-
-            var versionParts = latestNuGetPackageVersion.Split('-');
-
-            var packageVersion = String.Empty;
-            var packageBetaVersion = 0;
-
-            if(versionParts.Count() > 1) {
-                packageVersion = versionParts[0];
-                packageBetaVersion = int.Parse(versionParts[1].Replace("beta", String.Empty));
-            } else {
-                packageVersion = versionParts[0];
-            }
-
-            var currentVersion = new Version(packageVersion);
-
-            Information(String.Format("- currentVersion package [{0}] version [{1}]", id, currentVersion));
-            Information(String.Format("- packageBetaVersion package [{0}] version [{1}]", id, packageBetaVersion));
-
-            var buildIncrement = 5;
-
-            if(packageBetaVersion == 1) {
-                resultVersion = string.Format("{0}.{1}.{2}",
-                        new object[] {
-                                currentVersion.Major,
-                                currentVersion.Minor,
-                                currentVersion.Build + buildIncrement
-                }); 
-            }
-
-            var packageSemanticVersion = packageVersion + "-beta" + (++packageBetaVersion);
-            resultVersion = packageSemanticVersion;
-
+            Information(String.Format("- currentVersion package [{0}] version [{1}]", id, resultVersion));
          }; break;
 
+         // master always buils the major version removing '-beta' postfix
+         // - package.0.1.0
+         // - package.0.1.1 and so on
          case "master" : {
 
-            var latestNuGetPackageVersion = GetLatestPackageFromNuget(id);
+            var latestNuGetPackageVersion = jsonPackageVersion;
 
-            if(String.IsNullOrEmpty(latestNuGetPackageVersion))
-                latestNuGetPackageVersion = defaultVersion;
+            Information(String.Format("- latest package [{0}] version [{1}]", id, latestNuGetPackageVersion));
+            resultVersion = latestNuGetPackageVersion.Split('-')[0];
 
-            Information(String.Format("- latest nuget package [{0}] version [{1}]", id, latestNuGetPackageVersion));
-
-            var versionParts = latestNuGetPackageVersion.Split('-');
-
-            var packageVersion = String.Empty;
-            var packageBetaVersion = 0;
-
-            if(versionParts.Count() > 1) {
-                packageVersion = versionParts[0];
-                packageBetaVersion = int.Parse(versionParts[1].Replace("beta", String.Empty));
-            } else {
-                packageVersion = versionParts[0];
-            }
-
-            var currentVersion = new Version(packageVersion);
-            
-            Information(String.Format("- currentVersion package [{0}] version [{1}]", id, currentVersion));
-            Information(String.Format("- packageBetaVersion package [{0}] version [{1}]", id, packageBetaVersion));
-
-            var buildIncrement = 5;
-
-            if(packageBetaVersion == 0)
-                buildIncrement = 10;
-            
-            resultVersion = string.Format("{0}.{1}.{2}",
-                        new object[] {
-                                currentVersion.Major,
-                                currentVersion.Minor,
-                                currentVersion.Build + buildIncrement
-            }); 
-
-            return resultVersion;
+            Information(String.Format("- currentVersion package [{0}] version [{1}]", id, resultVersion));
 
          }; break;
     }
@@ -238,7 +187,31 @@ string ResolveVersionForPackage(string id) {
         }
     }
 
-    throw new Exception(String.Format("Cannot resolve version for package:[{0}]", id));
+    // is it choco spec?
+    specs = jsonConfig["customChocolateySpecs"];
+
+    foreach(var spec in specs) {
+        var specId = (string)spec["Id"];
+
+        if(specId == id) {
+            return (string)spec["Version"];
+        }
+    }
+
+    throw new Exception(String.Format("Cannot resolve version for package:[{0}]. Neither customNuspecs nor customChocolateySpecs has it", id));
+}
+
+bool IsLocalNuGetPackage(string id) {
+    
+    var specs = jsonConfig["customNuspecs"];
+
+    foreach(var spec in specs) {
+
+        if(id == (string)spec["Id"])
+            return true;
+    }
+
+    return false;
 }
 
 ChocolateyPackSettings[] ResolveChocolateyPackSettings() {
@@ -254,6 +227,8 @@ ChocolateyPackSettings[] ResolveChocolateyPackSettings() {
 
         packSettings.Id = (string)spec["Id"];
         packSettings.Version = (string)spec["Version"];
+
+        
 
         if(spec["Authors"] == null)
             packSettings.Authors =  new [] { "SubPoint Solutions" };
@@ -307,8 +282,8 @@ ChocolateyPackSettings[] ResolveChocolateyPackSettings() {
                                                 System.IO.Path.Combine(defaultSolutionDirectory,
                                                     System.IO.Path.Combine(targetFilesFolder, dstFolder)));
 
-                        if(!System.IO.Directory.Exists(srcFolder))
-                            throw new Exception(String.Format("Directory does not exist: [{0}]"));
+                        //if(!System.IO.Directory.Exists(srcFolder))
+                        //    throw new Exception(String.Format("Directory does not exist: [{0}]"));
 
                         var chAbsSrcDir = srcFolder +  @"\**";
                         var chDstDir = targetName + "/" + dstFolder.TrimEnd('/');
@@ -327,8 +302,8 @@ ChocolateyPackSettings[] ResolveChocolateyPackSettings() {
                         
                         Verbose(String.Format("     - resolved as:[{0}]", singleFileAbsolutePath)); 
 
-                        if(!System.IO.File.Exists(singleFileAbsolutePath))
-                            throw new Exception(String.Format("File does not exist: [{0}]", singleFileAbsolutePath));
+                        //if(!System.IO.File.Exists(singleFileAbsolutePath))
+                        //    throw new Exception(String.Format("File does not exist: [{0}]", singleFileAbsolutePath));
 
                         result1.Add( new ChocolateyNuSpecContent{
                             Source = singleFileAbsolutePath,
@@ -342,6 +317,9 @@ ChocolateyPackSettings[] ResolveChocolateyPackSettings() {
             }).ToList();
 
         packSettings.OutputDirectory = new DirectoryPath(defaultChocolateyPackagesDirectory);
+
+        // patch package versions 
+        packSettings.Version = GetVersionForNuGetPackage(packSettings.Id); 
 
         result.Add(packSettings);
     }
@@ -405,6 +383,14 @@ NuGetPackSettings[] ResolveNuGetPackSettings() {
 
         packSettings.OutputDirectory = new DirectoryPath(defaultNuGetPackagesDirectory);
 
+        // patch package versions for dev build
+        packSettings.Version = GetVersionForNuGetPackage(packSettings.Id); 
+
+       foreach(var dep in packSettings.Dependencies){
+           if(IsLocalNuGetPackage(dep.Id))
+               dep.Version = GetVersionForNuGetPackage(packSettings.Id); 
+        }
+
         result.Add(packSettings);
     }
 
@@ -451,8 +437,6 @@ var ciBranch = GetGlobalEnvironmentVariable("ci.activebranch") ?? "dev";
 var ciBranchOverride = GetGlobalEnvironmentVariable("APPVEYOR_REPO_BRANCH");
 if(!String.IsNullOrEmpty(ciBranchOverride))
 	ciBranch = ciBranchOverride;
-
-ciBranch = "dev";
 
 var ciNuGetSource = GetGlobalEnvironmentVariable("ci.nuget.source") ?? String.Empty;
 var ciNuGetKey = GetGlobalEnvironmentVariable("ci.nuget.key") ?? String.Empty;
@@ -573,15 +557,6 @@ Task("Action-API-NuGet-Packaging")
 
     foreach(var nuspec in defaultNuspecs)
     {   
-        nuspec.Version = GetVersionForNuGetPackage(nuspec.Id, defaultNuspecVersion, ciBranch);
-
-        // update deps versions to a correct one during build
-        foreach(var dep in nuspec.Dependencies) {
-            if(dep.Id.StartsWith("MetaPack")) {
-                dep.Version = GetVersionForNuGetPackage(dep.Id, defaultNuspecVersion, ciBranch); 
-            }
-        }
-
         Information(string.Format("[{2}/{3}] - Creating NuGet package for [{0}] of version:[{1}]", 
         new object[] {
                 nuspec.Id, 
@@ -652,7 +627,7 @@ Task("Action-API-NuGet-Publishing")
 
       foreach(var chocoSpec in defaulChocolateySpecs) {
 
-           chocoSpec.Version = GetVersionForNuGetPackage(chocoSpec.Id, defaultNuspecVersion, ciBranch);
+           chocoSpec.Version = GetVersionForNuGetPackage(chocoSpec.Id);
 
            Information(string.Format("Creating Chocolatey package [{0}] version:[{1}]", chocoSpec.Id, chocoSpec.Version));
            ChocolateyPack(chocoSpec);
@@ -666,101 +641,113 @@ Task("Action-CLI-Zip-Packaging")
 {
       Information("Building CLI - Zip package...");
 
-      var cliId = String.Empty;
-      var cliVersion = String.Empty;
-
       foreach(var chocoSpec in defaulChocolateySpecs) {
 
-           cliVersion = GetVersionForNuGetPackage(chocoSpec.Id, defaultNuspecVersion, ciBranch);
-           cliId = chocoSpec.Id;
-           break;
+           var cliId = chocoSpec.Id;
+           var cliVersion = chocoSpec.Version;
+
+           Information("Building Zip package for chocolatey spec:[{0}] version:[{1}]", cliId, cliVersion);
+
+           var tmpFolderPath = System.IO.Path.Combine( System.IO.Path.GetTempPath(), Guid.NewGuid().ToString("N"));
+           System.IO.Directory.CreateDirectory(tmpFolderPath);
+           
+           var files = new List<string>();
+
+           foreach(var contentSpec in chocoSpec.Files)
+           {
+               var f = contentSpec.Source;
+
+               if(f.Contains("**")) {
+
+                    var dstFolder = f.Replace("**", String.Empty).TrimEnd('\\').Replace('\\', '/');
+                    files.AddRange(System.IO.Directory.GetFiles(dstFolder, "*.*").Select(fl => System.IO.Path.GetFullPath(fl)));
+               }
+               else{
+                   files.Add(f);
+               }
+           }
+           
+           var originalFileBase = System.IO.Path.GetDirectoryName(files.FirstOrDefault(f => f.Contains(".exe")));
+
+           Verbose(String.Format("- base folder:[{0}]",originalFileBase));
+           foreach(var f in files)
+           Verbose(String.Format(" - file:[{0}]", f));
+           
+           Information(string.Format("Copying distr files to TMP folder [{0}]", tmpFolderPath));
+
+            foreach(var filePath in files) {
+
+                Information(string.Format("src file:[{0}]", filePath));    
+                
+                    var absPath = filePath
+                                    .Replace(originalFileBase, "")
+                                    .Replace(System.IO.Path.GetFileName(filePath), "")
+                                    .Trim('\\')
+                                    .Trim('/');
+                    
+                    var dstDirectory = System.IO.Path.Combine(tmpFolderPath, absPath);
+                    var dstFilePath = System.IO.Path.Combine(dstDirectory,  System.IO.Path.GetFileName(filePath));
+
+                    System.IO.Directory.CreateDirectory(dstDirectory);
+
+                    Information("- copy from: " + filePath);
+                    Information("- copy to  : " + dstFilePath);
+                    System.IO.File.Copy(filePath, dstFilePath);
+                }
+
+                //packaging
+                  var cliZipPackageFileName =  String.Format("{0}.{1}.zip", cliId, cliVersion);
+                  var cliZipPackageFilePath = System.IO.Path.Combine(defaultChocolateyPackagesDirectory, cliZipPackageFileName);
+
+                  Information(string.Format("Creating ZIP file [{0}]", cliZipPackageFileName));
+                  Zip(tmpFolderPath, cliZipPackageFilePath);
+
+                  Information(string.Format("Calculating checksum..."));
+
+                  var md5 = CalculateFileHash(cliZipPackageFilePath, HashAlgorithm.MD5);
+                  var sha256 = CalculateFileHash(cliZipPackageFilePath, HashAlgorithm.SHA256);
+                  var sha512 = CalculateFileHash(cliZipPackageFilePath, HashAlgorithm.SHA512);
+
+                  Information(string.Format("-md5    :{0}", md5.ToHex()));
+                  Information(string.Format("-sha256 :{0}", sha256.ToHex()));
+                  Information(string.Format("-sha512 :{0}", sha512.ToHex()));
+
+                  var md5FileName = cliZipPackageFileName + ".MD5SUM";
+                  var sha256FileName = cliZipPackageFileName  + ".SHA256SUM";
+                  var sha512FileName = cliZipPackageFileName  + ".SHA512SUM";
+
+                  var md5FilePath = cliZipPackageFilePath + ".MD5SUM";
+                  var sha256FilePath = cliZipPackageFilePath  + ".SHA256SUM";
+                  var sha512FilePath = cliZipPackageFilePath  + ".SHA512SUM";
+
+                  System.IO.File.WriteAllLines(md5FilePath, new string[]{
+                      String.Format("{0} {1}", md5.ToHex(), md5FileName)
+                  });
+
+                  System.IO.File.WriteAllLines(sha256FilePath, new string[]{
+                      String.Format("{0} {1}", sha256.ToHex(), sha256FileName)
+                  });
+
+                  System.IO.File.WriteAllLines(sha512FilePath, new string[]{
+                      String.Format("{0} {1}", sha512.ToHex(), sha512FileName)
+                  });
+
+                  var distrFiles = new string[] {
+                      cliZipPackageFilePath,
+                      md5FilePath,
+                      sha256FilePath,
+                      sha512FilePath
+                  };
+
+                  Information("Final distributive:");
+                  foreach(var filePath in distrFiles)
+                  {
+                      Information(string.Format("- {0}", filePath));
+                  }
+
       }
 
-      var tmpFolderPath = System.IO.Path.Combine( System.IO.Path.GetTempPath(), Guid.NewGuid().ToString("N"));
-      System.IO.Directory.CreateDirectory(tmpFolderPath);
-
-    //   var cliFilePaths = prjMetaPackCLIFiles.SelectMany(f => {
-                
-    //              if(f.Contains("**")) {
-
-    //                   var dstFolder = f.Replace("**", String.Empty).TrimEnd('\\').Replace('\\', '/');
-    //                   return System.IO.Directory.GetFiles(System.IO.Path.GetFullPath(prjMetaPackCLIBinPath + @"\" + dstFolder), "*.*");
-    //              }
-
-    //            return new []{ System.IO.Path.GetFullPath(prjMetaPackCLIBinPath + @"\" + f) };
-
-    //         }).ToList();
-
-   
-
-    //   Information(string.Format("Creating CLI Zip package [{0}] version:[{1}]", cliId, cliVersion));
-
-    //   var originalFileBase = System.IO.Path.GetFullPath(prjMetaPackCLIBinPath);
-
-    //   Information(string.Format("Copying distr files to TMP folder [{0}]", tmpFolderPath));
-
-    //   foreach(var filePath in cliFilePaths) {
-        
-    //     Information(string.Format("src file:[{0}]", filePath));    
-        
-    //     var absPath = filePath
-    //                     .Replace(originalFileBase, "")
-    //                     .Replace(System.IO.Path.GetFileName(filePath), "")
-    //                     .Trim('\\')
-    //                     .Trim('/');
-        
-    //     var dstDirectory = System.IO.Path.Combine(tmpFolderPath, absPath);
-    //     var dstFilePath = System.IO.Path.Combine(dstDirectory,  System.IO.Path.GetFileName(filePath));
-
-    //     System.IO.Directory.CreateDirectory(dstDirectory);
-
-    //     Information("- copy from: " + filePath);
-    //     Information("- copy to  : " + dstFilePath);
-    //     System.IO.File.Copy(filePath, dstFilePath);
-    //   }
-
-    //   var cliZipPackageFileName = String.Format("{0}.{1}.zip", cliId, cliVersion);
-    //   Information(string.Format("Creating ZIP file [{0}]", cliZipPackageFileName));
-    //   Zip(tmpFolderPath, cliZipPackageFileName);
-
-    //   Information(string.Format("Calculating checksum..."));
-
-    //   var md5 = CalculateFileHash(cliZipPackageFileName, HashAlgorithm.MD5);
-    //   var sha256 = CalculateFileHash(cliZipPackageFileName, HashAlgorithm.SHA256);
-    //   var sha512 = CalculateFileHash(cliZipPackageFileName, HashAlgorithm.SHA512);
-
-    //   Information(string.Format("-md5    :{0}", md5.ToHex()));
-    //   Information(string.Format("-sha256 :{0}", sha256.ToHex()));
-    //   Information(string.Format("-sha512 :{0}", sha512.ToHex()));
-
-    //   var md5File = cliZipPackageFileName + ".MD5SUM";
-    //   var sha256File = cliZipPackageFileName + ".SHA256SUM";
-    //   var sha512File = cliZipPackageFileName + ".SHA512SUM";
-
-    //   System.IO.File.WriteAllLines(cliZipPackageFileName + ".MD5SUM", new string[]{
-    //       String.Format("{0} {1}", md5.ToHex(), md5File)
-    //   });
-
-    //   System.IO.File.WriteAllLines(cliZipPackageFileName + ".SHA256SUM", new string[]{
-    //       String.Format("{0} {1}", sha256.ToHex(), sha256File)
-    //   });
-
-    //   System.IO.File.WriteAllLines(cliZipPackageFileName + ".SHA512SUM", new string[]{
-    //       String.Format("{0} {1}", sha512.ToHex(), sha512File)
-    //   });
-
-    //   var distrFiles = new string[] {
-    //       cliZipPackageFileName,
-    //       md5File,
-    //       sha256File,
-    //       sha512File
-    //   };
-
-    //   Information("Final distributive:");
-    //   foreach(var filePath in distrFiles)
-    //   {
-    //       Information(string.Format("- {0}", filePath));
-    //   }
+    
 });
 
 // Action-XXX - common tasks
