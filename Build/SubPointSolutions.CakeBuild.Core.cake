@@ -749,6 +749,113 @@ Task("Action-CLI-Zip-Packaging")
     
 });
 
+
+Task("Action-Docs-Merge")
+    .Does(() =>
+{
+    Information("Building documentation merge...");
+
+    var defaultDocsViewFolder = (string)jsonConfig["defaultDocsViewFolder"];
+    if(String.IsNullOrEmpty(defaultDocsViewFolder))
+        throw new Exception("defaultDocsViewFolder is null or empty. Update json config");
+
+     var defaultDocsRepoFolder = (string)jsonConfig["defaultDocsRepoFolder"];
+    if(String.IsNullOrEmpty(defaultDocsRepoFolder))
+        throw new Exception("defaultDocsRepoFolder is null or empty. Update json config");
+
+    var srcDocsPath = System.IO.Path.GetFullPath(System.IO.Path.Combine(defaultSolutionDirectory,defaultDocsViewFolder ));
+    Information(String.Format("Merging from folder [{0}]", srcDocsPath));
+
+    if(!System.IO.Directory.Exists(srcDocsPath))
+        throw new Exception(String.Format("Directory does not exist - [{0}]", srcDocsPath));
+
+        // because of some long names files - always in the root
+     var tmpDocsFolder = System.IO.Path.Combine("c:/","__m2docs");
+
+    var docsRepoFolder = System.IO.Path.GetFullPath(string.Format(@"{0}/{1}",  tmpDocsFolder, defaultDocsRepoFolder));
+    var docsRepoUrl = @"https://github.com/SubPointSolutions/subpointsolutions-docs";
+
+    var dstDocsPath = string.Format(@"{0}/subpointsolutions-docs/SubPointSolutions.Docs/Views", docsRepoFolder);
+
+    var docsEnvironmentVars = new [] {
+        "ci.docs.username",
+        "ci.docs.userpassword",
+    };
+
+    foreach(var name in docsEnvironmentVars)
+    {
+        Information(string.Format("HasEnvironmentVariable - [{0}]", name));
+
+        var value = GetGlobalEnvironmentVariable(name);
+        
+        if(String.IsNullOrEmpty(name)) {
+            Information(string.Format("Cannot find environment variable:[{0}]", name));
+            throw new ArgumentException(string.Format("Cannot find environment variable:[{0}]", name));
+        }
+    }
+
+     var docsRepoUserName = GetGlobalEnvironmentVariable("ci.docs.username");
+	 var docsRepoUserPassword = GetGlobalEnvironmentVariable("ci.docs.userpassword");
+     var docsRepoPushUrl = string.Format(@"https://{0}:{1}@github.com/SubPointSolutions/subpointsolutions-docs", docsRepoUserName, docsRepoUserPassword);
+
+     var commitName = string.Format(@"MetaPack - CI docs merge {0}", DateTime.Now.ToString("yyyyMMdd_HHmmssfff"));
+
+     Information(string.Format("Merging documentation with commit:[{0}]", commitName));
+
+     Information(string.Format("Cloning repo [{0}] to [{1}]", docsRepoUrl, docsRepoFolder));
+
+     if(!System.IO.Directory.Exists(docsRepoFolder))
+     {   
+        System.IO.Directory.CreateDirectory(docsRepoFolder);   
+
+        var cloneCmd = new []{
+            string.Format("cd '{0}'", docsRepoFolder),
+            string.Format("git clone -b wyam-dev {0}", docsRepoUrl)
+        };
+
+        StartPowershellScript(string.Join(Environment.NewLine, cloneCmd));  
+     }                            
+
+     docsRepoFolder = docsRepoFolder + "/subpointsolutions-docs"; 
+
+     Information(string.Format("Checkout..."));
+     var checkoutCmd = new []{
+            string.Format("cd '{0}'", docsRepoFolder),
+            string.Format("git checkout wyam-dev"),
+            string.Format("git pull")
+      };
+
+      StartPowershellScript(string.Join(Environment.NewLine, checkoutCmd));  
+
+      Information(string.Format("Merge and commit..."));
+      var mergeCmd = new []{
+            string.Format("cd '{0}'", docsRepoFolder),
+            string.Format("copy-item  '{0}' '{1}' -Recurse -Force", srcDocsPath,  dstDocsPath),
+            string.Format("git add *.md"),
+            string.Format("git add *.cs"),
+			string.Format("git add *.cshtml"),
+            string.Format("git commit -m '{0}'", commitName),
+      };
+
+      StartPowershellScript(string.Join(Environment.NewLine, mergeCmd)); 
+
+      Information(string.Format("Push to the main repo..."));
+      var pushCmd = new []{
+            string.Format("cd '{0}'", docsRepoFolder),
+            string.Format("git config http.sslVerify false"),
+            string.Format("git push {0}", docsRepoPushUrl)
+      };
+
+      var res = StartPowershellScript(string.Join(Environment.NewLine, pushCmd), new PowershellSettings()
+      {
+            LogOutput = false,
+            OutputToAppConsole  = false
+      });
+
+      Information(string.Format("Completed docs merge.")); 
+});
+
+
 // Action-XXX - common tasks
 // * Action-Validate-Environment
 // * Action-Clean

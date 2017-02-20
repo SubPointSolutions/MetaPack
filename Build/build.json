@@ -4,6 +4,9 @@
     "defaultNuGetPackagesDirectory": "./build-artifact-nuget-packages",
     "defaultChocolateyPackagesDirectory": "./build-artifact-cli-packages",
     "defaultNuspecVersion": "0.1.0",
+    "defaultDocsViewFolder" : "SubPointSolutions.Docs/Views/metapack",
+    "defaultDocsRepoFolder" : "m2-mp",
+    
     "defaultTestCategories": [
         "CI.Core"
     ],
