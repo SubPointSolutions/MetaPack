@@ -9,7 +9,7 @@ TileDescription: 'The package manager for SPMeta2 based SharePoint customization
 ---
 
 # MetaPack
-The package manager for SharePoint customizations....
+The package manager for SharePoint customizations. 2
 
 Deploying, updating and managing SharePoint customizations takes effort. Not only deployment but also versioning, modularization and dependency management require too much effort slowing down development, expanding cost and the delivery dates. Time spent on writing plumbing code, scripts or other means to handle all these areas should be spend on really important things. 
 

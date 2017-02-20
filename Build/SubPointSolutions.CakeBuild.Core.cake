@@ -769,6 +769,17 @@ Task("Action-Docs-Merge")
     if(!System.IO.Directory.Exists(srcDocsPath))
         throw new Exception(String.Format("Directory does not exist - [{0}]", srcDocsPath));
 
+    var defaultDocsBranch = (string)jsonConfig["defaultDocsBranch"];
+    if(String.IsNullOrEmpty(defaultDocsBranch))
+        throw new Exception("defaultDocsBranch is null or empty. Update json config");
+
+    var defaultDocsFileExtensions = jsonConfig["defaultDocsFileExtensions"]
+                                        .Select(f => (string)f)
+                                        .ToList().OrderBy(a => a);
+
+    if(defaultDocsFileExtensions.Count() == 0)
+        throw new Exception("defaultDocsFileExtensions is null or empty. Update json config with array of extensions to be added to docs");
+
         // because of some long names files - always in the root
      var tmpDocsFolder = System.IO.Path.Combine("c:/","__m2docs");
 
@@ -788,7 +799,7 @@ Task("Action-Docs-Merge")
 
         var value = GetGlobalEnvironmentVariable(name);
         
-        if(String.IsNullOrEmpty(name)) {
+        if(String.IsNullOrEmpty(value)) {
             Information(string.Format("Cannot find environment variable:[{0}]", name));
             throw new ArgumentException(string.Format("Cannot find environment variable:[{0}]", name));
         }
@@ -802,7 +813,8 @@ Task("Action-Docs-Merge")
 
      Information(string.Format("Merging documentation with commit:[{0}]", commitName));
 
-     Information(string.Format("Cloning repo [{0}] to [{1}]", docsRepoUrl, docsRepoFolder));
+     Information(string.Format("Cloning repo [{0}] with branch [{2}] to [{1}]", 
+                docsRepoUrl, docsRepoFolder, defaultDocsBranch));
 
      if(!System.IO.Directory.Exists(docsRepoFolder))
      {   
@@ -810,7 +822,7 @@ Task("Action-Docs-Merge")
 
         var cloneCmd = new []{
             string.Format("cd '{0}'", docsRepoFolder),
-            string.Format("git clone -b wyam-dev {0}", docsRepoUrl)
+            string.Format("git clone -b {1} {0}", docsRepoUrl, defaultDocsBranch)
         };
 
         StartPowershellScript(string.Join(Environment.NewLine, cloneCmd));  
@@ -818,24 +830,27 @@ Task("Action-Docs-Merge")
 
      docsRepoFolder = docsRepoFolder + "/subpointsolutions-docs"; 
 
-     Information(string.Format("Checkout..."));
+     Information(string.Format("Checkout docs branch:[{0}]", defaultDocsBranch));
      var checkoutCmd = new []{
             string.Format("cd '{0}'", docsRepoFolder),
-            string.Format("git checkout wyam-dev"),
+            string.Format("git checkout {0}", defaultDocsBranch),
             string.Format("git pull")
       };
 
       StartPowershellScript(string.Join(Environment.NewLine, checkoutCmd));  
 
       Information(string.Format("Merge and commit..."));
-      var mergeCmd = new []{
-            string.Format("cd '{0}'", docsRepoFolder),
-            string.Format("copy-item  '{0}' '{1}' -Recurse -Force", srcDocsPath,  dstDocsPath),
-            string.Format("git add *.md"),
-            string.Format("git add *.cs"),
-			string.Format("git add *.cshtml"),
-            string.Format("git commit -m '{0}'", commitName),
-      };
+      var mergeCmd = new List<String>();
+      
+      mergeCmd.Add(string.Format("cd '{0}'", docsRepoFolder));
+      mergeCmd.Add(string.Format("copy-item  '{0}' '{1}' -Recurse -Force", srcDocsPath,  dstDocsPath));
+
+      foreach(var defaultDocsFileExtension in defaultDocsFileExtensions) {
+        Verbose(String.Format(" - adding extension:[{0}]",defaultDocsFileExtension));
+        mergeCmd.Add(string.Format("git add {0} -f", defaultDocsFileExtension));
+      }
+
+      mergeCmd.Add(string.Format("git commit -m '{0}'", commitName));
 
       StartPowershellScript(string.Join(Environment.NewLine, mergeCmd)); 
 
@@ -854,7 +869,6 @@ Task("Action-Docs-Merge")
 
       Information(string.Format("Completed docs merge.")); 
 });
-
 
 // Action-XXX - common tasks
 // * Action-Validate-Environment
