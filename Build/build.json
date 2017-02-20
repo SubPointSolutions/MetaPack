@@ -147,7 +147,7 @@
     "customChocolateySpecs": [
         {
             "Id": "MetaPack",
-            "Version": "0.1.0",
+            "Version": "0.1.0-beta1",
             "LicenseUrl": "http://docs.subpointsolutions.com/metapack/license",
             "ProjectUrl": "https://github.com/SubPointSolutions/metapack",
             "IconUrl": "https://raw.githubusercontent.com/SubPointSolutions/spmeta2/dev/SPMeta2/SPMeta2.Dependencies/Images/SPMeta2_64_64.png",
