@@ -29,5 +29,9 @@ Task("Action-CLI-Pester")
 
     });
 
+// Pester testing for CLI is in R&D yet
+//taskDefaultCI
+//    .IsDependentOn("Action-CLI-Pester");
+
 // default targets
 RunTarget(target);

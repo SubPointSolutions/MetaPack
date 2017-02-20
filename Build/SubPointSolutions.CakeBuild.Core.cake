@@ -887,33 +887,36 @@ Task("Action-Docs-Merge")
 // * Action-CLI-Chocolatey-Publishing
 
 // basic common targets
-Task("Default")
+// expose them as global vars by naming conventions
+// later, a particular build script can 'attach' additional tasks
+// such as Pester regression testing on console app and so on
+var taskDefault = Task("Default")
     .IsDependentOn("Default-Run-UnitTests");
 
-Task("Default-Clean")
+var taskDefaultClean = Task("Default-Clean")
     .IsDependentOn("Action-Validate-Environment")
     .IsDependentOn("Action-Clean");
 
-Task("Default-Build")
+var taskDefaultBuild = Task("Default-Build")
     .IsDependentOn("Default-Clean")
     .IsDependentOn("Action-Build");
 
-Task("Default-Run-UnitTests")
+var taskDefaultRunUnitTests = Task("Default-Run-UnitTests")
     .IsDependentOn("Default-Build")
     .IsDependentOn("Action-Run-UnitTests");    
 
 // API related targets
-Task("Default-API-NuGet-Packaging")
+var taskDefaultAPINuGetPackaging = Task("Default-API-NuGet-Packaging")
     .IsDependentOn("Default-Run-UnitTests")
     .IsDependentOn("Action-API-NuGet-Packaging");
 
-Task("Default-API-NuGet-Publishing")
+var taskDefaultAPINuGetPublishing = Task("Default-API-NuGet-Publishing")
     .IsDependentOn("Default-Run-UnitTests")
     .IsDependentOn("Action-API-NuGet-Packaging")
     .IsDependentOn("Action-API-NuGet-Publishing");  
 
 // CLI related targets
-Task("Default-CLI-Packaging")
+var taskDefaultCLIPackaging = Task("Default-CLI-Packaging")
     .IsDependentOn("Default-Run-UnitTests")
     .IsDependentOn("Action-API-NuGet-Packaging")
 
@@ -924,9 +927,9 @@ Task("Default-CLI-Publishing")
     .IsDependentOn("Default-CLI-Packaging");
 
 // CI related targets
-Task("Default-CI")
+var taskDefaultCI = Task("Default-CI")
     .IsDependentOn("Default-Run-UnitTests")
     .IsDependentOn("Action-API-NuGet-Packaging")
     .IsDependentOn("Action-CLI-Zip-Packaging")
-    .IsDependentOn("Action-CLI-Chocolatey-Packaging")
+    .IsDependentOn("Action-CLI-Chocolatey-Packaging");
 	.IsDependentOn("Action-Docs-Merge");
