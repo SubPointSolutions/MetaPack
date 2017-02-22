@@ -40,7 +40,7 @@ namespace MetaPack.Tests.Base
             MetaPackServiceContainer.Instance.ReplaceService(typeof(TraceServiceBase), regressionTraceService);
 
             var useSPMeta2 = true;
-            var usePnP = false;
+            var usePnP = true;
 
             UseLocaNuGet = true;
 
@@ -458,7 +458,12 @@ namespace MetaPack.Tests.Base
 
                 // TODO
                 // Zip up and set the model type
-                foreach (var templateFolder in Directory.GetDirectories(@"Data/PnPTemplates/Folders"))
+                var asmFolder = Path.GetDirectoryName(GetType().Assembly.Location);
+
+                var foldersPath = Path.Combine(asmFolder, @"Data/PnPTemplates/Folders");
+                var openXmlFolderPath = Path.Combine(asmFolder, @"Data/PnPTemplates/OpenXML");
+
+                foreach (var templateFolder in Directory.GetDirectories(foldersPath))
                 {
                     // package up into zip
                     var templateFolderZipFile = GetTempZipFilePath();
@@ -479,7 +484,9 @@ namespace MetaPack.Tests.Base
                 }
 
 
-                var openXmlPackages = Directory.GetFiles(@"Data/PnPTemplates/OpenXML", "*.pnp");
+
+
+                var openXmlPackages = Directory.GetFiles(openXmlFolderPath, "*.pnp");
 
                 foreach (var file in openXmlPackages)
                 {
