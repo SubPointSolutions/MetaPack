@@ -8,6 +8,9 @@ namespace MetaPack.Core.Packaging
     /// <summary>
     /// A high level abstraction for solution package.
     /// Follows NuGet spec design - https://docs.nuget.org/ndocs/schema/nuspec
+    /// 
+    /// Solution package is a container for SERIALIZED models.
+    /// It means that solution package does not depend on a particular API/assembly preferring adding / finding models in serialazable, platform and api independent way.
     /// </summary>
     [Serializable]
     [DataContract]
@@ -19,6 +22,8 @@ namespace MetaPack.Core.Packaging
         {
             Dependencies = new List<SolutionPackageDependency>();
             AdditionalOptions = new List<OptionValue>();
+
+
         }
 
         #endregion
@@ -140,6 +145,7 @@ namespace MetaPack.Core.Packaging
         #endregion
 
         #region additional props
+
         /// <summary>
         /// Additional data accosiated with the solution package
         /// </summary>
@@ -158,8 +164,50 @@ namespace MetaPack.Core.Packaging
 
             if (Dependencies == null)
                 Dependencies = new List<SolutionPackageDependency>();
+
+            if(_models == null)
+                _models = new List<ModelContainerBase>();
         }
 
         #endregion
+
+        #region methods
+
+        private List<ModelContainerBase> _models = new List<ModelContainerBase>();
+
+        public virtual IEnumerable<ModelContainerBase> GetModels()
+        {
+            return _models;
+        }
+
+        public virtual void AddModel(ModelContainerBase modelContainer)
+        {
+            AddModelInternal(modelContainer);
+        }
+
+        protected virtual void AddModelInternal(ModelContainerBase modelContainer)
+        {
+            ProcessModelContainerMetadata(modelContainer);
+
+            _models.Add(modelContainer);
+        }
+
+        private void ProcessModelContainerMetadata(ModelContainerBase modelContainer)
+        {
+            // TODO
+            var isRestoreOperation = false;
+
+            if (isRestoreOperation)
+            {
+                // nothing
+            }
+            else
+            {
+                // fill out MD5 and other things
+            }
+        }
+
+        #endregion
+
     }
 }

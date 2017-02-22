@@ -49,6 +49,8 @@
     <Compile Include="Common\OptionValue.cs" />
     <Compile Include="Consts\MetaPackConsts.cs" />
     <Compile Include="Exceptions\MetaPackException.cs" />
+    <Compile Include="Packaging\ModelContainerBase.cs" />
+    <Compile Include="Packaging\SolutionPackageBaseExtensions.cs" />
     <Compile Include="Packaging\SolutionPackageDependency.cs" />
     <Compile Include="MetaPackServiceContainer.cs" />
     <Compile Include="Packaging\SolutionPackageProvisionOptions.cs" />

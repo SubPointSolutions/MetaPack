@@ -15,6 +15,7 @@ using MetaPack.NuGet.Services;
 using MetaPack.SPMeta2.Services;
 using System.Diagnostics;
 using System.IO;
+using System.Text;
 using MetaPack.Core;
 using MetaPack.NuGet.Common;
 using MetaPack.SharePointPnP;
@@ -384,7 +385,7 @@ namespace MetaPack.Tests.Base
 
             if (service is SPMeta2SolutionPackageService)
             {
-                var m2package = new SPMeta2SolutionPackage();
+                var m2package = new SolutionPackageBase();
 
                 m2package.Name = "SPMeta2 CI Package Name";
                 m2package.Title = "SPMeta2 CI Package Title";
@@ -411,19 +412,16 @@ namespace MetaPack.Tests.Base
                     SPMeta2Model.NewWebModel(web => { }),
                 };
 
-                var tmpFolder = GetTempFolderPath();
-
                 foreach (var model in models)
                 {
                     var xmlContext = SPMeta2Model.ToXML(model);
 
-                    var tmpFileName = GetTempXmlFileName();
-                    var tmpFilePath = Path.Combine(tmpFolder, tmpFileName);
-
-                    System.IO.File.WriteAllText(tmpFilePath, xmlContext);
+                    m2package.AddModel(new ModelContainerBase
+                    {
+                        Model = Encoding.UTF8.GetBytes(xmlContext)
+                    });
                 }
 
-                m2package.ModelFolders.Add(tmpFolder);
                 solutionPackage = m2package;
             }
 
@@ -455,7 +453,7 @@ namespace MetaPack.Tests.Base
 
                 pnpPackage.ProvisioningTemplateOpenXmlPackageFolders.Add(@"Data/PnPTemplates/OpenXML");
 
-               
+
 
                 solutionPackage = pnpPackage;
             }

@@ -21,6 +21,7 @@ using NuGet;
 using File = System.IO.File;
 using System.Diagnostics;
 using MetaPack.SharePointPnP;
+using MetaPack.SharePointPnP.Services;
 
 namespace MetaPack.Tests.Scenarios
 {
@@ -85,34 +86,19 @@ namespace MetaPack.Tests.Scenarios
                             Assert.AreEqual(dependency.Version, unpackedDependency.Version);
                         }
 
-                        // package specific tests
-                        if (solutionPackage is SPMeta2SolutionPackage)
+
+                        if (service.DeploymentService is SPMeta2SolutionPackageDeploymentService)
                         {
-                            var m2package = solutionPackage as SPMeta2SolutionPackage;
-                            var m2unpackedPackage = unpackedSolutionPackage as SPMeta2SolutionPackage;
+                            var m2package = solutionPackage as SolutionPackageBase;
+                            var m2unpackedPackage = unpackedSolutionPackage as SolutionPackageBase;
 
                             Assert.IsNotNull(m2package);
                             Assert.IsNotNull(m2unpackedPackage);
 
-                            Assert.AreEqual(m2package.ModelFolders.Count, m2unpackedPackage.ModelFolders.Count);
-
-                            // each folders should have the same amount of *.xml files
-                            foreach (var folderPath in m2package.ModelFolders)
-                            {
-                                var folderName = new DirectoryInfo(folderPath).Name;
-                                var srcFilesCount = Directory.GetFiles(folderPath).Length;
-
-                                var dstFolder = m2unpackedPackage.ModelFolders
-                                    .FirstOrDefault(f => f.EndsWith(folderName));
-
-                                Assert.IsNotNull(dstFolder);
-
-                                var dstFilesCount = Directory.GetFiles(dstFolder).Length;
-
-                                Assert.AreEqual(srcFilesCount, dstFilesCount);
-                            }
+                            Assert.AreEqual(m2package.GetModels().Count(), m2unpackedPackage.GetModels().Count());
                         }
-                        if (solutionPackage is SharePointPnPSolutionPackage)
+
+                        if (service.DeploymentService is SharePointPnPSolutionDeploymentService)
                         {
                             var pnpPackage = solutionPackage as SharePointPnPSolutionPackage;
                             var pnpUnpackedPackage = unpackedSolutionPackage as SharePointPnPSolutionPackage;
