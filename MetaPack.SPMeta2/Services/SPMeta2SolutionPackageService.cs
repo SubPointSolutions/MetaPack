@@ -21,22 +21,9 @@ namespace MetaPack.SPMeta2.Services
         #region contructors
         public SPMeta2SolutionPackageService()
         {
-            ModelFoldersPath = "Models";
+
         }
 
-        #endregion
-
-        #region properties
-
-        public string ModelFoldersPath { get; set; }
-
-        #endregion
-
-        #region methods
-
-        
-
-      
         #endregion
     }
 }

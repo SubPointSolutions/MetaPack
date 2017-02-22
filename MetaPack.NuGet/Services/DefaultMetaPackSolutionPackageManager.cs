@@ -147,8 +147,6 @@ namespace MetaPack.NuGet.Services
 
                                             .Replace(defNamespace, "http://schemas.datacontract.org/2004/07/MetaPack.Core.Packaging");
 
-
-
                         var typedPackage = serializationService.Deserialize(
                                             typeof(SolutionPackageBase), genericXmlDoc)
                                             as SolutionPackageBase;
@@ -238,7 +236,7 @@ namespace MetaPack.NuGet.Services
             if (toolResolver == null)
                 toolResolver = new ToolResolutionService();
 
-            var toolRepo = toolResolver.PackageManager.LocalRepository;
+            var toolRepo = toolResolver.ToolPackageManager.LocalRepository;
 
             MetaPackTrace.Info("Installing solution tool package...");
             toolResolver.InstallTool(toolPackage);
@@ -246,7 +244,7 @@ namespace MetaPack.NuGet.Services
             MetaPackTrace.Info("Resolving additional tooling for tool package [{0}]", toolPackage.Id);
 
             // resolve main assembly, resolve additional tooling
-            var toolNuGetPackage = toolResolver.PackageManager.LocalRepository.FindPackage(toolPackage.Id);
+            var toolNuGetPackage = toolResolver.ToolPackageManager.LocalRepository.FindPackage(toolPackage.Id);
 
             var assemblyHint = toolPackage.AssemblyNameHint ?? toolPackage.Id + ".dll";
             var additionalTools = toolResolver.ResolveAdditionalTooling(toolRepo, toolNuGetPackage, assemblyHint);

@@ -104,8 +104,6 @@ namespace MetaPack.SharePointPnP.Services
 
             MetaPackTrace.Verbose("Resolving provision class...");
 
-            throw new NotImplementedException();
-
 #if PACKAGING_V2
 
             var solutionPackage = options.SolutionPackage as _SharePointPnPSolutionPackage;

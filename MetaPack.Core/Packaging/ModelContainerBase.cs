@@ -23,6 +23,7 @@ namespace MetaPack.Core.Packaging
 
         #region properties
 
+        [DataMember]
         public byte[] Model { get; set; }
 
         [DataMember]

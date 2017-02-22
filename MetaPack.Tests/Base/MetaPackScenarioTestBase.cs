@@ -39,8 +39,8 @@ namespace MetaPack.Tests.Base
 
             MetaPackServiceContainer.Instance.ReplaceService(typeof(TraceServiceBase), regressionTraceService);
 
-            var useSPMeta2 = false;
-            var usePnP = true;
+            var useSPMeta2 = true;
+            var usePnP = false;
 
             UseLocaNuGet = true;
 
@@ -423,6 +423,12 @@ namespace MetaPack.Tests.Base
                     });
                 }
 
+                m2package.AdditionalOptions.Add(new OptionValue
+                {
+                    Name = DefaultOptions.SolutionToolPackage.PackageId.Id,
+                    Value = "MetaPack.SPMeta2"
+                });
+
                 solutionPackage = m2package;
             }
 
@@ -490,6 +496,12 @@ namespace MetaPack.Tests.Base
 
                     pnpPackage.AddModel(modelContainer);
                 }
+
+                pnpPackage.AdditionalOptions.Add(new OptionValue
+                {
+                    Name = DefaultOptions.SolutionToolPackage.PackageId.Id,
+                    Value = "MetaPack.SharePointPnP"
+                });
 
                 solutionPackage = pnpPackage;
             }

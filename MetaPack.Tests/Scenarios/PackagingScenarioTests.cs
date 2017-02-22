@@ -96,6 +96,12 @@ namespace MetaPack.Tests.Scenarios
                             Assert.IsNotNull(m2unpackedPackage);
 
                             Assert.AreEqual(m2package.GetModels().Count(), m2unpackedPackage.GetModels().Count());
+
+                            foreach (var modelContainer in m2unpackedPackage.GetModels())
+                            {
+                                Assert.IsNotNull(modelContainer.Model);
+                                Assert.IsNotNull(modelContainer.AdditionalOptions);
+                            }
                         }
 
                         if (service.DeploymentService is SharePointPnPSolutionDeploymentService)
@@ -109,6 +115,12 @@ namespace MetaPack.Tests.Scenarios
                             Assert.IsNotNull(pnpUnpackedPackage);
 
                             Assert.AreEqual(pnpPackage.GetModels().Count(), pnpUnpackedPackage.GetModels().Count());
+
+                            foreach (var modelContainer in pnpUnpackedPackage.GetModels())
+                            {
+                                Assert.IsNotNull(modelContainer.Model);
+                                Assert.IsNotNull(modelContainer.AdditionalOptions);
+                            }
 
                             // TODO
 

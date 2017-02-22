@@ -22,8 +22,6 @@ namespace MetaPack.Core.Packaging
         {
             Dependencies = new List<SolutionPackageDependency>();
             AdditionalOptions = new List<OptionValue>();
-
-
         }
 
         #endregion
