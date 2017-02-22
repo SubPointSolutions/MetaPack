@@ -104,7 +104,11 @@ namespace MetaPack.SharePointPnP.Services
 
             MetaPackTrace.Verbose("Resolving provision class...");
 
-            var solutionPackage = options.SolutionPackage as SharePointPnPSolutionPackage;
+            throw new NotImplementedException();
+
+#if PACKAGING_V2
+
+            var solutionPackage = options.SolutionPackage as _SharePointPnPSolutionPackage;
 
             MetaPackTrace.Verbose(string.Format("Found [{0}] provision templates", solutionPackage.ProvisioningTemplateFolders.Count));
 
@@ -253,6 +257,8 @@ namespace MetaPack.SharePointPnP.Services
                     }
                 }
             }
+
+#endif
         }
 
         public enum tt

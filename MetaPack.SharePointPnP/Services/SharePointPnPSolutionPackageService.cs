@@ -35,66 +35,66 @@ namespace MetaPack.SharePointPnP.Services
 
         #region methods
 
-        public override Stream Pack(SolutionPackageBase package, SolutionPackageOptions options)
-        {
-            var typedPackage = package as SharePointPnPSolutionPackage;
+        //public override Stream Pack(SolutionPackageBase package, SolutionPackageOptions options)
+        //{
+        //    var typedPackage = package as _SharePointPnPSolutionPackage;
 
-            if (typedPackage == null)
-                throw new ArgumentNullException(string.Format("package must be of type: [{0}]", typeof(SharePointPnPSolutionPackage)));
+        //    if (typedPackage == null)
+        //        throw new ArgumentNullException(string.Format("package must be of type: [{0}]", typeof(_SharePointPnPSolutionPackage)));
 
-            // create result stream and NuGet package
-            var resultStream = new MemoryStream();
-            var metadata = GetManifestMetadata(package);
+        //    // create result stream and NuGet package
+        //    var resultStream = new MemoryStream();
+        //    var metadata = GetManifestMetadata(package);
 
-            var nugetPackageBuilder = new PackageBuilder();
+        //    var nugetPackageBuilder = new PackageBuilder();
 
-            var solutionPackageManifestFile = new ManifestFile();
-            var solutionFilePath = SaveMetaPackSolutionFile<SharePointPnPSolutionPackage>(solutionPackageManifestFile, typedPackage);
+        //    var solutionPackageManifestFile = new ManifestFile();
+        //    var solutionFilePath = SaveMetaPackSolutionFile<_SharePointPnPSolutionPackage>(solutionPackageManifestFile, typedPackage);
 
-            nugetPackageBuilder.PopulateFiles("", new[] { solutionPackageManifestFile });
-            nugetPackageBuilder.Populate(metadata);
+        //    nugetPackageBuilder.PopulateFiles("", new[] { solutionPackageManifestFile });
+        //    nugetPackageBuilder.Populate(metadata);
 
-            // add PnP folder-based tenmplates
-            foreach (var srcFolder in typedPackage.ProvisioningTemplateFolders)
-                AddFolderToPackage(nugetPackageBuilder, srcFolder, TemplateFoldersPath);
+        //    // add PnP folder-based tenmplates
+        //    foreach (var srcFolder in typedPackage.ProvisioningTemplateFolders)
+        //        AddFolderToPackage(nugetPackageBuilder, srcFolder, TemplateFoldersPath);
 
-            // add PnP OpenXml packages
-            foreach (var srcFolder in typedPackage.ProvisioningTemplateOpenXmlPackageFolders)
-                AddFolderToPackage(nugetPackageBuilder, srcFolder, this.TemplateOpenXmlFoldersPath);
+        //    // add PnP OpenXml packages
+        //    foreach (var srcFolder in typedPackage.ProvisioningTemplateOpenXmlPackageFolders)
+        //        AddFolderToPackage(nugetPackageBuilder, srcFolder, this.TemplateOpenXmlFoldersPath);
 
-            nugetPackageBuilder.Save(resultStream);
+        //    nugetPackageBuilder.Save(resultStream);
 
-            resultStream.Position = 0;
+        //    resultStream.Position = 0;
 
-            return resultStream;
-        }
+        //    return resultStream;
+        //}
 
-        public override SolutionPackageBase Unpack(Stream package, SolutionPackageOptions options)
-        {
-            package.Position = 0;
+        //public override SolutionPackageBase Unpack(Stream package, SolutionPackageOptions options)
+        //{
+        //    package.Position = 0;
 
-            var zipPackage = new ZipPackage(package);
-            var solutionPackageFile = FindSolutionPackageFile(zipPackage);
+        //    var zipPackage = new ZipPackage(package);
+        //    var solutionPackageFile = FindSolutionPackageFile(zipPackage);
 
-            SerializationService.RegisterKnownType(typeof(SolutionPackageBase));
-            SerializationService.RegisterKnownType(typeof(SharePointPnPSolutionPackage));
+        //    SerializationService.RegisterKnownType(typeof(SolutionPackageBase));
+        //    SerializationService.RegisterKnownType(typeof(_SharePointPnPSolutionPackage));
 
-            using (var streamReader = new StreamReader(solutionPackageFile.GetStream()))
-            {
-                var solutionFileContent = streamReader.ReadToEnd();
-                var typedPackage = SerializationService.Deserialize(
-                                    typeof(SharePointPnPSolutionPackage), solutionFileContent)
-                                    as SharePointPnPSolutionPackage;
+        //    using (var streamReader = new StreamReader(solutionPackageFile.GetStream()))
+        //    {
+        //        var solutionFileContent = streamReader.ReadToEnd();
+        //        var typedPackage = SerializationService.Deserialize(
+        //                            typeof(_SharePointPnPSolutionPackage), solutionFileContent)
+        //                            as _SharePointPnPSolutionPackage;
 
-                // unpack PnP folder-based tenmplates
-                UnpackFoldersPackage(zipPackage, TemplateFoldersPath, typedPackage.ProvisioningTemplateFolders);
+        //        // unpack PnP folder-based tenmplates
+        //        UnpackFoldersPackage(zipPackage, TemplateFoldersPath, typedPackage.ProvisioningTemplateFolders);
 
-                // unpack PnP OpenXml packages
-                UnpackFoldersPackage(zipPackage, TemplateOpenXmlFoldersPath, typedPackage.ProvisioningTemplateOpenXmlPackageFolders);
+        //        // unpack PnP OpenXml packages
+        //        UnpackFoldersPackage(zipPackage, TemplateOpenXmlFoldersPath, typedPackage.ProvisioningTemplateOpenXmlPackageFolders);
 
-                return typedPackage;
-            }
-        }
+        //        return typedPackage;
+        //    }
+        //}
 
         #endregion
     }

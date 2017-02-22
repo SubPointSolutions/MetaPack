@@ -38,8 +38,8 @@ namespace MetaPack.Tests.Base
 
             MetaPackServiceContainer.Instance.ReplaceService(typeof(TraceServiceBase), regressionTraceService);
 
-            var useSPMeta2 = true;
-            var usePnP = false;
+            var useSPMeta2 = false;
+            var usePnP = true;
 
             UseLocaNuGet = true;
 
@@ -427,7 +427,7 @@ namespace MetaPack.Tests.Base
 
             if (service is SharePointPnPSolutionPackageService)
             {
-                var pnpPackage = new SharePointPnPSolutionPackage();
+                var pnpPackage = new SolutionPackageBase();
 
                 pnpPackage.Name = "SharePointPnP CI Package Name";
                 pnpPackage.Title = "SharePointPnP Package Title";
@@ -448,12 +448,27 @@ namespace MetaPack.Tests.Base
                 pnpPackage.Copyright = "Some copyright here";
                 pnpPackage.Tags = "CI SPMeta2 MetaPack Tags";
 
-                foreach (var folder in Directory.GetDirectories(@"Data/PnPTemplates/Folders"))
-                    pnpPackage.ProvisioningTemplateFolders.Add(folder);
 
-                pnpPackage.ProvisioningTemplateOpenXmlPackageFolders.Add(@"Data/PnPTemplates/OpenXML");
+                // TODO
+                // Zip up and set the model type
+                //foreach (var folder in Directory.GetDirectories(@"Data/PnPTemplates/Folders"))
+                //    pnpPackage.ProvisioningTemplateFolders.Add(folder);
 
+                var openXmlPackages = Directory.GetFiles(@"Data/PnPTemplates/OpenXML", "*.pnp");
 
+                foreach (var file in openXmlPackages)
+                {
+                    var modelContainer = new ModelContainerBase
+                    {
+                        Model = System.IO.File.ReadAllBytes(file),
+                    };
+
+                    // TODO
+                    // add model type here to recon PnP or Folder based templates
+                    //modelContainer.AdditionalOptions
+
+                    pnpPackage.AddModel(modelContainer);
+                }
 
                 solutionPackage = pnpPackage;
             }
