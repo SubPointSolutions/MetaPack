@@ -24,6 +24,7 @@ using MetaPack.Core.Common;
 using MetaPack.Tests.Extensions;
 using MetaPack.Tests.Services;
 using NuGet;
+using System.IO.Compression;
 
 namespace MetaPack.Tests.Base
 {
@@ -451,8 +452,26 @@ namespace MetaPack.Tests.Base
 
                 // TODO
                 // Zip up and set the model type
-                //foreach (var folder in Directory.GetDirectories(@"Data/PnPTemplates/Folders"))
-                //    pnpPackage.ProvisioningTemplateFolders.Add(folder);
+                foreach (var templateFolder in Directory.GetDirectories(@"Data/PnPTemplates/Folders"))
+                {
+                    // package up into zip
+                    var templateFolderZipFile = GetTempZipFilePath();
+                    ZipFile.CreateFromDirectory(templateFolder, templateFolderZipFile);
+
+                    var modelContainer = new ModelContainerBase
+                    {
+                        Model = System.IO.File.ReadAllBytes(templateFolderZipFile),
+                    };
+
+                    modelContainer.AdditionalOptions.Add(new OptionValue
+                    {
+                        Name = DefaultOptions.Model.Type.Id,
+                        Value = "SharePointPnP.FolderZip"
+                    });
+
+                    pnpPackage.AddModel(modelContainer);
+                }
+
 
                 var openXmlPackages = Directory.GetFiles(@"Data/PnPTemplates/OpenXML", "*.pnp");
 
@@ -463,9 +482,11 @@ namespace MetaPack.Tests.Base
                         Model = System.IO.File.ReadAllBytes(file),
                     };
 
-                    // TODO
-                    // add model type here to recon PnP or Folder based templates
-                    //modelContainer.AdditionalOptions
+                    modelContainer.AdditionalOptions.Add(new OptionValue
+                    {
+                        Name = DefaultOptions.Model.Type.Id,
+                        Value = "SharePointPnP.OpenXml"
+                    });
 
                     pnpPackage.AddModel(modelContainer);
                 }
@@ -508,6 +529,11 @@ namespace MetaPack.Tests.Base
         protected virtual string GetTempXmlFilePath()
         {
             return Path.Combine(GetTempFolderPath(), GetTempXmlFileName());
+        }
+
+        protected virtual string GetTempZipFilePath()
+        {
+            return Path.Combine(GetTempFolderPath(), string.Format("{0}.zip", Guid.NewGuid().ToString("N")));
         }
 
         protected virtual string GetTempNuGetFileName()

@@ -45,6 +45,14 @@ namespace MetaPack.Core.Common
             }
         }
 
+        public static class Model
+        {
+            public static class Type
+            {
+                public const string Id = "_metapack.model.type";
+            }
+        }
+
         public static class SharePoint
         {
             public static class Api

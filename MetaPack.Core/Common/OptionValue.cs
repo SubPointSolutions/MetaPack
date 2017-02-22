@@ -16,5 +16,17 @@ namespace MetaPack.Core.Common
         public string Value { get; set; }
 
         #endregion
+
+        #region methods
+
+        public override string ToString()
+        {
+            if (!string.IsNullOrEmpty(Name))
+                return string.Format("[{0}] - [{1}]", Name, Value);
+
+            return base.ToString();
+        }
+
+        #endregion
     }
 }
