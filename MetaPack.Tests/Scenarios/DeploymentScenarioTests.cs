@@ -38,7 +38,7 @@ namespace MetaPack.Tests.Scenarios
         #region spmeta2
 
         [TestMethod]
-        [TestCategory("Metapack.Deployment.RootWeb")]
+        [TestCategory("Metapack.Core.Deployment.RootWeb")]
         //[TestCategory("CI.Core")]
         public void Can_Deploy_Solution_Package_To_Root_Web()
         {
@@ -46,7 +46,7 @@ namespace MetaPack.Tests.Scenarios
         }
 
         [TestMethod]
-        [TestCategory("Metapack.Deployment.RootWeb")]
+        [TestCategory("Metapack.Core.Deployment.RootWeb")]
         //[TestCategory("CI.Core")]
         public void Can_Deploy_Solution_Package_To_Root_Web_Twice()
         {
@@ -54,7 +54,7 @@ namespace MetaPack.Tests.Scenarios
         }
 
         [TestMethod]
-        [TestCategory("Metapack.Deployment.RootWeb")]
+        [TestCategory("Metapack.Core.Deployment.RootWeb")]
         //[TestCategory("CI.Core")]
         public void Can_Deploy_Solution_Package_To_Root_Web_With_Dependencies()
         {
@@ -62,7 +62,7 @@ namespace MetaPack.Tests.Scenarios
         }
 
         [TestMethod]
-        [TestCategory("Metapack.Deployment.RootWeb")]
+        [TestCategory("Metapack.Core.Deployment.RootWeb")]
         //[TestCategory("CI.Core")]
         public void Can_Deploy_Solution_Package_To_Root_Web_With_Dependencies_Twice()
         {
@@ -70,7 +70,7 @@ namespace MetaPack.Tests.Scenarios
         }
 
         [TestMethod]
-        [TestCategory("Metapack.Deployment.SubWeb")]
+        [TestCategory("Metapack.Core.Deployment.SubWeb")]
         //[TestCategory("CI.Core")]
         public void Can_Deploy_Solution_Package_To_Sub_Web()
         {
@@ -78,7 +78,7 @@ namespace MetaPack.Tests.Scenarios
         }
 
         [TestMethod]
-        [TestCategory("Metapack.Deployment.SubWeb")]
+        [TestCategory("Metapack.Core.Deployment.SubWeb")]
         //[TestCategory("CI.Core")]
         public void Can_Deploy_Solution_Package_To_Sub_Web_Twice()
         {
@@ -87,7 +87,7 @@ namespace MetaPack.Tests.Scenarios
 
 
         [TestMethod]
-        [TestCategory("Metapack.Deployment.SubWeb")]
+        [TestCategory("Metapack.Core.Deployment.SubWeb")]
         //[TestCategory("CI.Core")]
         public void Can_Deploy_Solution_Package_To_Sub_Web_With_Dependencies()
         {
@@ -95,7 +95,7 @@ namespace MetaPack.Tests.Scenarios
         }
 
         [TestMethod]
-        [TestCategory("Metapack.Deployment.SubWeb")]
+        [TestCategory("Metapack.Core.Deployment.SubWeb")]
         //[TestCategory("CI.Core")]
         public void Can_Deploy_Solution_Package_To_Sub_Web_With_Dependencies_Twice()
         {

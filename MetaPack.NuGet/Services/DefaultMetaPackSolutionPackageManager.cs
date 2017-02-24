@@ -110,7 +110,7 @@ namespace MetaPack.NuGet.Services
 
                 if (!string.IsNullOrEmpty(packageId))
                 {
-                    MetaPackTrace.Verbose("Found tool. ToolId:[{0}] ToolVersion:[{1}]", packageId, packageVersion);
+                    MetaPackTrace.Verbose(String.Format("Found tool. ToolId:[{0}] ToolVersion:[{1}]", packageId, packageVersion));
 
                     result = new SolutionToolPackage
                     {
