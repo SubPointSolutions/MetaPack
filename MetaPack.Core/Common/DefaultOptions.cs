@@ -51,6 +51,11 @@ namespace MetaPack.Core.Common
             {
                 public const string Id = "_metapack.model.type";
             }
+
+            public static class Order
+            {
+                public const string Id = "_metapack.model.order";
+            }
         }
 
         public static class SharePoint

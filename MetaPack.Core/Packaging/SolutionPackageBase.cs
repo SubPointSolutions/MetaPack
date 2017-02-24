@@ -1,7 +1,9 @@
 ﻿using MetaPack.Core.Common;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.Serialization;
+using MetaPack.Core.Utils;
 
 namespace MetaPack.Core.Packaging
 {
@@ -163,7 +165,7 @@ namespace MetaPack.Core.Packaging
             if (Dependencies == null)
                 Dependencies = new List<SolutionPackageDependency>();
 
-            if(_models == null)
+            if (_models == null)
                 _models = new List<ModelContainerBase>();
         }
 
@@ -175,12 +177,35 @@ namespace MetaPack.Core.Packaging
 
         public virtual IEnumerable<ModelContainerBase> GetModels()
         {
-            return _models;
+            // sort by the order
+            return _models.OrderBy(m =>
+            {
+                var result = -1;
+
+                var orderOption =
+                    m.AdditionalOptions.FirstOrDefault(v => v.Name.ToUpper() == DefaultOptions.Model.Order.Id.ToUpper());
+
+                if (orderOption != null)
+                {
+                    var tmpInt = ConvertUtils.ToInt(orderOption.Value);
+
+                    if (tmpInt.HasValue)
+                        result = tmpInt.Value;
+                }
+
+                return result;
+            });
         }
 
         public virtual void AddModel(ModelContainerBase modelContainer)
         {
             AddModelInternal(modelContainer);
+        }
+
+        public virtual void RemoveModel(ModelContainerBase modelContainer)
+        {
+            if (_models.Contains(modelContainer))
+                _models.Remove(modelContainer);
         }
 
         protected virtual void AddModelInternal(ModelContainerBase modelContainer)

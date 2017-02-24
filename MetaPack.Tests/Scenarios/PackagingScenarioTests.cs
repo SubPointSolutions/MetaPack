@@ -20,6 +20,7 @@ using NuGet;
 
 using File = System.IO.File;
 using System.Diagnostics;
+using MetaPack.Core.Common;
 using MetaPack.SharePointPnP;
 using MetaPack.SharePointPnP.Services;
 
@@ -28,7 +29,7 @@ namespace MetaPack.Tests.Scenarios
     [TestClass]
     public class PackagingScenarioTests : MetaPackScenarioTestBase
     {
-        #region spmeta2
+        #region core packaging
 
         [TestMethod]
         [TestCategory("Metapack.Core.Packaging")]
@@ -178,6 +179,84 @@ namespace MetaPack.Tests.Scenarios
 
         #endregion
 
+        #region extended api
+
+        [TestMethod]
+        [TestCategory("Metapack.Core.Packaging.ModelOrder")]
+        [TestCategory("CI.Core")]
+        public void Can_Unpack_Solution_Package_WithOrderedModels()
+        {
+            WithMetaPackServices(service =>
+            {
+                Can_Unpack_Internal(service.PackagingService,
+                        prePackagedSolution =>
+                        {
+                            // clean models
+                            var models = prePackagedSolution.GetModels().ToArray();
+
+                            foreach (var model in models)
+                                prePackagedSolution.RemoveModel(model);
+
+
+                            var firstModel = new ModelContainerBase();
+                            firstModel.AdditionalOptions.Add(new OptionValue
+                            {
+                                Name = DefaultOptions.Model.Order.Id,
+                                Value = "100"
+                            });
+
+                            var secondModel = new ModelContainerBase();
+                            secondModel.AdditionalOptions.Add(new OptionValue
+                            {
+                                Name = DefaultOptions.Model.Order.Id,
+                                Value = "200"
+                            });
+
+                            var thirdModel = new ModelContainerBase();
+                            thirdModel.AdditionalOptions.Add(new OptionValue
+                            {
+                                Name = DefaultOptions.Model.Order.Id,
+                                Value = "300"
+                            });
+
+                            prePackagedSolution.AddModel(secondModel);
+                            prePackagedSolution.AddModel(firstModel);
+                            prePackagedSolution.AddModel(thirdModel);
+
+                        },
+                        (rawPackage, unpackedPackage) =>
+                        {
+                            var solutionPackage = rawPackage as SolutionPackageBase;
+                            var unpackedSolutionPackage = unpackedPackage as SolutionPackageBase;
+
+                            Assert.IsNotNull(solutionPackage);
+
+                            // these should be ordred by Order flag
+                            var models = unpackedPackage.GetModels();
+
+                            var orderValues = models.Select(m =>
+                            {
+                                var orderValue = m.AdditionalOptions
+                                    .FirstOrDefault(o => o.Name == DefaultOptions.Model.Order.Id);
+
+                                return int.Parse(orderValue.Value);
+                            }).ToArray();
+
+                            for (var index = 0; index < orderValues.Count() - 1; index++)
+                            {
+                                var firstOrder = orderValues[index];
+                                var secondOrder = orderValues[index + 1];
+
+                                Assert.IsTrue(firstOrder <= secondOrder);
+                            }
+
+                            // must be array of int-s 
+                        });
+            });
+        }
+
+        #endregion
+
         #region internal tests impl
 
         private void Can_Pack_Internal(NuGetSolutionPackageService packagingService)
@@ -199,7 +278,19 @@ namespace MetaPack.Tests.Scenarios
             NuGetSolutionPackageService packagingService,
             Action<SolutionPackageBase, SolutionPackageBase> action)
         {
+            Can_Unpack_Internal(packagingService, null, action);
+        }
+
+        private void Can_Unpack_Internal(
+            NuGetSolutionPackageService packagingService,
+            Action<SolutionPackageBase> basePackageAction,
+            Action<SolutionPackageBase, SolutionPackageBase> action)
+        {
             var solutionPackage = CreateNewSolutionPackage(packagingService);
+
+            if (basePackageAction != null)
+                basePackageAction(solutionPackage);
+
             var nuGetPackage = packagingService.Pack(solutionPackage);
 
             Assert.IsNotNull(nuGetPackage);
