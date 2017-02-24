@@ -219,6 +219,9 @@ namespace MetaPack.SPMeta2.Services
 
             foreach (var modelContainer in models)
             {
+                if (modelContainer.Model == null)
+                    throw new MetaPackException("model is null or empty");
+
                 var modelContent = UTF8Encoding.UTF8.GetString(modelContainer.Model);
 
                 var model = fromXMLMethod.Invoke(null, new object[] { modelContent });

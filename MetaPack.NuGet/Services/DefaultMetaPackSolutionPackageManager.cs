@@ -156,7 +156,7 @@ namespace MetaPack.NuGet.Services
 
                         if (!string.IsNullOrEmpty(packageIdFromPackage))
                         {
-                            MetaPackTrace.Verbose("Found tool. ToolId:[{0}] ToolVersion:[{1}]", packageId, packageVersion);
+                            MetaPackTrace.Verbose(string.Format("Found tool. ToolId:[{0}] ToolVersion:[{1}]", packageIdFromPackage, packageVersionFromPackage));
 
                             result = new SolutionToolPackage
                             {
@@ -239,6 +239,10 @@ namespace MetaPack.NuGet.Services
             var toolRepo = toolResolver.ToolPackageManager.LocalRepository;
 
             MetaPackTrace.Info("Installing solution tool package...");
+
+            foreach (var packageSource in toolResolver.PackageSources)
+                MetaPackTrace.Verbose(string.Format(" - using repo:[{0}]", packageSource));
+
             toolResolver.InstallTool(toolPackage);
 
             MetaPackTrace.Info("Resolving additional tooling for tool package [{0}]", toolPackage.Id);

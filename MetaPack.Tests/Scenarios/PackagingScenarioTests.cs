@@ -102,6 +102,14 @@ namespace MetaPack.Tests.Scenarios
                             {
                                 Assert.IsNotNull(modelContainer.Model);
                                 Assert.IsNotNull(modelContainer.AdditionalOptions);
+
+                                // we should be able o unpack it
+                                var modelXml = Encoding.UTF8.GetString(modelContainer.Model);
+
+                                Assert.IsTrue(!string.IsNullOrEmpty(modelXml));
+
+                                var m2model = SPMeta2Model.FromXML(modelXml);
+                                Assert.IsNotNull(m2model);
                             }
                         }
 

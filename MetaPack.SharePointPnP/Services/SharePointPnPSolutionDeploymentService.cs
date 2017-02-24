@@ -104,11 +104,10 @@ namespace MetaPack.SharePointPnP.Services
 
             MetaPackTrace.Verbose("Resolving provision class...");
 
-#if PACKAGING_V2
+            var solutionPackage = options.SolutionPackage as SolutionPackageBase;
+            var solutionModels = solutionPackage.GetModels();
 
-            var solutionPackage = options.SolutionPackage as _SharePointPnPSolutionPackage;
-
-            MetaPackTrace.Verbose(string.Format("Found [{0}] provision templates", solutionPackage.ProvisioningTemplateFolders.Count));
+            MetaPackTrace.Verbose(string.Format("Found [{0}] models", solutionModels.Count()));
 
             var siteToTemplateConversionType = "OfficeDevPnP.Core.Framework.Provisioning.ObjectHandlers.SiteToTemplateConversion";
             var fileSystemConnectorType = "OfficeDevPnP.Core.Framework.Provisioning.Connectors.FileSystemConnector";
@@ -116,11 +115,26 @@ namespace MetaPack.SharePointPnP.Services
             var provisioningTemplateApplyingInformationType = "OfficeDevPnP.Core.Framework.Provisioning.ObjectHandlers.ProvisioningTemplateApplyingInformation";
             var openXmlConnectorType = "OfficeDevPnP.Core.Framework.Provisioning.Connectors.OpenXMLConnector";
 
-            foreach (var templateFolder in solutionPackage.ProvisioningTemplateOpenXmlPackageFolders)
-            {
-                MetaPackTrace.Verbose(string.Format("Deploying OpenXML package from path: [{0}]", templateFolder));
+            var currentModelIndex = 0;
+            var allModelsCount = solutionModels.Count();
 
-                var allPackages = Directory.GetFiles(templateFolder, "*.pnp");
+            foreach (var modelContainer in solutionModels)
+            {
+                currentModelIndex++;
+
+                MetaPackTrace.Verbose(string.Format(" - deploying model [{0}/{1}]", currentModelIndex, allModelsCount));
+
+                // "SharePointPnP.FolderZip"
+                // "SharePointPnP.OpenXml"
+
+                var modelType = "SharePointPnP.OpenXml";
+                var modelTypeOption = modelContainer.AdditionalOptions
+                                                    .FirstOrDefault(o => o.Name.ToUpper() == DefaultOptions.Model.Type.Id);
+
+                if (modelTypeOption != null)
+                    modelType = modelTypeOption.Value;
+
+                MetaPackTrace.Verbose(string.Format(" - model type: [{0}]", modelType));
 
                 MetaPackTrace.Verbose(string.Format("Detected CSOM provision."));
 
@@ -182,8 +196,15 @@ namespace MetaPack.SharePointPnP.Services
                     }
                 }
 
-                foreach (var pnpPackage in allPackages)
+                if (modelType.ToUpper() == "SharePointPnP.OpenXml".ToUpper())
                 {
+                    var tmpFileFolder = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString("N"));
+                    Directory.CreateDirectory(tmpFileFolder);
+                    var tmpFilePath = Path.Combine(tmpFileFolder, Guid.NewGuid().ToString("N") + ".pnp");
+
+                    System.IO.File.WriteAllBytes(tmpFilePath, modelContainer.Model);
+                    var pnpPackage = tmpFilePath;
+
                     var filConnectorPath = Path.GetDirectoryName(pnpPackage);
                     var fileSystemConnectorInstance = pnpAssembly.CreateInstance(fileSystemConnectorType,
                         true, BindingFlags.CreateInstance, null,
@@ -208,19 +229,31 @@ namespace MetaPack.SharePointPnP.Services
                      CultureInfo.CurrentCulture,
                      null);
 
+                    MetaPackTrace.Verbose(string.Format("Fetching templates..."));
                     var provider = providerInstance;
                     var getTemplatesMethod = provider.GetType().GetMethods()
                                                      .FirstOrDefault(m => m.Name == "GetTemplates" && m.GetParameters().Length == 0);
 
                     var templates = getTemplatesMethod.Invoke(provider, null) as IEnumerable;
 
+                    var templatesCount = 0;
+
+                    foreach (var template in templates)
+                        templatesCount++;
+
+                    MetaPackTrace.Verbose(string.Format("Found [{0}] templates", templatesCount));
+
                     var providerConnector = ReflectionUtils.GetPropertyValue(provider, "Connector");
+
+                    var currentTemplateIndex = 0;
 
                     foreach (var template in templates)
                     {
+                        currentTemplateIndex++;
+
                         ReflectionUtils.SetPropertyValue(template, "Connector", providerConnector);
 
-                        MetaPackTrace.Verbose(string.Format("Deploying template:"));
+                        MetaPackTrace.Verbose(string.Format("Deploying template [{0}/{1}]", currentTemplateIndex, templatesCount));
                         var templateId = ReflectionUtils.GetPropertyValue(template, "Id");
                         MetaPackTrace.Verbose(string.Format(" -ID:[{0}]", templateId));
 
@@ -254,9 +287,14 @@ namespace MetaPack.SharePointPnP.Services
                         });
                     }
                 }
-            }
+                else
+                {
+                    var errMesssage = string.Format("Deloyment models of type [{0}] is not supported yet", modelType);
 
-#endif
+                    MetaPackTrace.Info(errMesssage);
+                    throw new MetaPackException(errMesssage);
+                }
+            }
         }
 
         public enum tt
