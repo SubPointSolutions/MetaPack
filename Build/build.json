@@ -4,16 +4,16 @@
     "defaultNuGetPackagesDirectory": "./build-artifact-nuget-packages",
     "defaultChocolateyPackagesDirectory": "./build-artifact-cli-packages",
     "defaultNuspecVersion": "0.1.0",
-    
-    "defaultDocsViewFolder" : "SubPointSolutions.Docs/Views/metapack",
-    "defaultDocsRepoFolder" : "m2-mp",
-    "defaultDocsBranch" : "wyam-dev",
-    "defaultDocsFileExtensions" : [
+
+    "defaultDocsViewFolder": "SubPointSolutions.Docs/Views/metapack",
+    "defaultDocsRepoFolder": "m2-mp",
+    "defaultDocsBranch": "wyam-dev",
+    "defaultDocsFileExtensions": [
         "*.md",
         "*.cs",
         "*.cshtml"
     ],
-    
+
     "defaultTestCategories": [
         "CI.Core"
     ],
@@ -35,7 +35,8 @@
                 "Office365",
                 "metapack",
                 "nuget"
-            ]
+            ],
+            Files: [ ]
         },
         {
             "Id": "MetaPack.NuGet",
@@ -67,7 +68,8 @@
                 "Office365",
                 "metapack",
                 "nuget"
-            ]
+            ],
+            Files: [ ]
         },
         {
             "Id": "MetaPack.SPMeta2",
@@ -95,7 +97,8 @@
                 "Office365",
                 "metapack",
                 "nuget"
-            ]
+            ],
+            Files: [ ]
         },
         {
             "Id": "MetaPack.SharePointPnP",
@@ -123,7 +126,8 @@
                 "Office365",
                 "metapack",
                 "nuget"
-            ]
+            ],
+            Files: [ ]
         },
         {
             "Id": "MetaPack.Client.Common",
@@ -151,7 +155,8 @@
                 "Office365",
                 "metapack",
                 "nuget"
-            ]
+            ],
+            Files: [ ]
         }
     ],
     "customChocolateySpecs": [

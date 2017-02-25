@@ -39,8 +39,8 @@ namespace MetaPack.Tests.Base
 
             MetaPackServiceContainer.Instance.ReplaceService(typeof(TraceServiceBase), regressionTraceService);
 
-            var useSPMeta2 = false;
-            var usePnP = true;
+            var useSPMeta2 = true;
+            var usePnP = false;
 
             UseLocaNuGet = true;
 

@@ -1,5 +1,5 @@
 ﻿// load up common tools
-#load SubPointSolutions.CakeBuild.Core.cake
+#load tools/SubPointSolutions.CakeBuildTools/scripts/SubPointSolutions.CakeBuild.Core.cake
 
 Task("Action-CLI-Pester")
     .Does(() => {
