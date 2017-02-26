@@ -17,6 +17,7 @@ using MetaPack.NuGet.Common;
 using MetaPack.NuGet.Services;
 using MetaPack.NuGet.Utils;
 using MetaPack.Core.Utils;
+using System.Net;
 
 namespace MetaPack.SPMeta2.Services
 {
@@ -25,6 +26,11 @@ namespace MetaPack.SPMeta2.Services
     /// </summary>
     public class SPMeta2SolutionPackageDeploymentService : SolutionPackageDeploymentService
     {
+        private bool Compare(string v1, string v2, bool irnoreCase)
+        {
+            return string.Compare(v1, v2, true) == 0;
+        }
+
         public override IEnumerable<SolutionToolPackage> GetAdditionalToolPackages(SolutionPackageProvisionOptions options)
         {
             var result = new List<SolutionToolPackage>();
@@ -36,21 +42,33 @@ namespace MetaPack.SPMeta2.Services
             var spApi = options.GetOptionValue(DefaultOptions.SharePoint.Api.Id);
 
             // ensure m2 assemblies
-            if (spApi == DefaultOptions.SharePoint.Api.CSOM.Value)
+            if (Compare(spApi, DefaultOptions.SharePoint.Api.CSOM.Value, true))
                 mainToolPackageId += ".CSOM";
-            else if (spApi == DefaultOptions.SharePoint.Api.SSOM.Value)
+            else if (Compare(spApi, DefaultOptions.SharePoint.Api.SSOM.Value, true))
                 mainToolPackageId += ".SSOM";
             else
                 throw new MetaPackException(String.Format("Unsuported SharePoint Api:[{0}]", spApi));
 
-            if (spEdition == DefaultOptions.SharePoint.Edition.Foundation.Value)
+            if (Compare(spEdition, DefaultOptions.SharePoint.Edition.Foundation.Value, true))
                 mainToolPackageId += ".Foundation";
-            else if (spEdition == DefaultOptions.SharePoint.Edition.Standard.Value)
+            else if (Compare(spEdition, DefaultOptions.SharePoint.Edition.Standard.Value, true))
+            {
                 mainToolPackageId += ".Standard";
+
+                if (Compare(spApi, DefaultOptions.SharePoint.Api.CSOM.Value, true))
+                {
+                    // adding main toolpackage
+                    result.Add(new SolutionToolPackage
+                    {
+                        Id = "SPMeta2.CSOM.Foundation",
+                        AssemblyNameHint = "SPMeta2.CSOM.dll"
+                    });
+                }
+            }
             else
                 throw new MetaPackException(String.Format("Unsuported SharePoint Edition:[{0}]", spEdition));
 
-            if (spVersion == DefaultOptions.SharePoint.Version.O365.Value)
+            if (Compare(spVersion, DefaultOptions.SharePoint.Version.O365.Value, true))
             {
                 mainToolPackageId += "-v16";
 
@@ -67,11 +85,32 @@ namespace MetaPack.SPMeta2.Services
                     AssemblyNameHint = "Microsoft.SharePoint.Client.Runtime.dll"
                 });
             }
-            else if (spVersion == DefaultOptions.SharePoint.Version.SP2013.Value)
+            else if (Compare(spVersion, DefaultOptions.SharePoint.Version.SP2013.Value, true))
             {
-                // nothing
+                // download stuff from NuGet
+                // loading from GAC is not suported yet
+
+                // ideally we'd like to get SP1 version
+
+                // 15.0.4569.1000*	​Service Pack 1	​SharePoint Foundation 2013	​KB2817439	​Download	​Bugs, Notes, and Regressions
+                // ​15.0.4711.1000	​April 2015 CU	​SharePoint Foundation 2013	​KB2965261	​Download	​Bugs, Notes, and Regressions
+
+                // adding main toolpackage
+                result.Add(new SolutionToolPackage
+                {
+                    Id = "Microsoft.SharePoint2013.CSOM",
+                    Version = "15.0.4711.1000",
+                    AssemblyNameHint = "Microsoft.SharePoint.Client.dll"
+                });
+
+                result.Add(new SolutionToolPackage
+                {
+                    Id = "Microsoft.SharePoint2013.CSOM",
+                    Version = "15.0.4711.1000",
+                    AssemblyNameHint = "Microsoft.SharePoint.Client.Runtime.dll"
+                });
             }
-            else if (spVersion == DefaultOptions.SharePoint.Version.SP2016.Value)
+            else if (Compare(spVersion, DefaultOptions.SharePoint.Version.SP2016.Value, true))
             {
                 // nothing
             }
@@ -97,20 +136,20 @@ namespace MetaPack.SPMeta2.Services
             var spEdition = options.GetOptionValue(DefaultOptions.SharePoint.Edition.Id);
             var spApi = options.GetOptionValue(DefaultOptions.SharePoint.Api.Id);
 
-            if (spEdition == DefaultOptions.SharePoint.Edition.Foundation.Value)
+            if (Compare(spEdition, DefaultOptions.SharePoint.Edition.Foundation.Value, true))
             {
-                if (spApi == DefaultOptions.SharePoint.Api.CSOM.Value)
+                if (Compare(spApi, DefaultOptions.SharePoint.Api.CSOM.Value, true))
                     provisionServiceClassName = "SPMeta2.CSOM.Services.CSOMProvisionService";
-                else if (spApi == DefaultOptions.SharePoint.Api.SSOM.Value)
+                else if (Compare(spApi, DefaultOptions.SharePoint.Api.SSOM.Value, true))
                     provisionServiceClassName = "SPMeta2.SSOM.Services.SSOMProvisionService";
                 else
                     throw new MetaPackException(String.Format("Unsuported SharePoint Api:[{0}]", spApi));
             }
-            else if (spEdition == DefaultOptions.SharePoint.Edition.Foundation.Value)
+            else if (Compare(spEdition, DefaultOptions.SharePoint.Edition.Standard.Value, true))
             {
-                if (spApi == DefaultOptions.SharePoint.Api.CSOM.Value)
+                if (Compare(spApi, DefaultOptions.SharePoint.Api.CSOM.Value, true))
                     provisionServiceClassName = "SPMeta2.CSOM.Standard.Services.StandardCSOMProvisionService";
-                else if (spApi == DefaultOptions.SharePoint.Api.SSOM.Value)
+                else if (Compare(spApi, DefaultOptions.SharePoint.Api.SSOM.Value, true))
                     provisionServiceClassName = "SPMeta2.SSOM.Standard.Services.StandardSSOMProvisionService";
                 else
                     throw new MetaPackException(String.Format("Unsuported SharePoint Api:[{0}]", spApi));
@@ -126,8 +165,14 @@ namespace MetaPack.SPMeta2.Services
         {
             Type modelHostType = null;
 
-            if (spApi == DefaultOptions.SharePoint.Api.SSOM.Value)
+            MetaPackTrace.Verbose(string.Format(
+                        "Revolving model host for API:[{0}] and root definition:[{1}]",
+                        spApi, rootDefinitionClassName));
+
+            if (Compare(spApi, DefaultOptions.SharePoint.Api.SSOM.Value, true))
             {
+                MetaPackTrace.Verbose("Searching for SSOM impl...");
+
                 if (rootDefinitionClassName == "FarmDefinition")
                     modelHostType = allClasses.FirstOrDefault(t => t.FullName == "SPMeta2.SSOM.ModelHosts.FarmModelHost");
                 else if (rootDefinitionClassName == "WebApplicationDefinition")
@@ -143,8 +188,10 @@ namespace MetaPack.SPMeta2.Services
                         rootDefinitionClassName));
                 }
             }
-            else if (spApi == DefaultOptions.SharePoint.Api.CSOM.Value)
+            else if (Compare(spApi, DefaultOptions.SharePoint.Api.CSOM.Value, true))
             {
+                MetaPackTrace.Verbose("Searching for CSOM impl...");
+
                 if (rootDefinitionClassName == "SiteDefinition")
                     modelHostType = allClasses.FirstOrDefault(t => t.FullName == "SPMeta2.CSOM.ModelHosts.SiteModelHost");
                 else if (rootDefinitionClassName == "WebDefinition")
@@ -156,6 +203,14 @@ namespace MetaPack.SPMeta2.Services
                         rootDefinitionClassName));
                 }
             }
+
+            if (modelHostType == null)
+            {
+                throw new MetaPackException(string.Format(
+                        "Cannot find model host for API:[{0}] and root definition:[{1}]",
+                        spApi, rootDefinitionClassName));
+            }
+
 
             return modelHostType;
         }
@@ -211,7 +266,7 @@ namespace MetaPack.SPMeta2.Services
             MetaPackTrace.Verbose(string.Format("spEdition:[{0}]", spEdition));
             MetaPackTrace.Verbose(string.Format("spApi:[{0}]", spApi));
 
-            if (spApi != DefaultOptions.SharePoint.Api.CSOM.Value)
+            if (!Compare(spApi, DefaultOptions.SharePoint.Api.CSOM.Value, true))
                 throw new NotSupportedException(string.Format("SharePoint API [{0}] is not supported yet", spApi));
 
             var models = solutionPackage.GetModels();
@@ -231,13 +286,16 @@ namespace MetaPack.SPMeta2.Services
                 var rootDefinitionClassName = rootDefinitionValue.GetType().Name;
 
                 MetaPackTrace.Verbose(string.Format("Provisioning model [{0}]", rootDefinitionValue.GetType().Name));
-                MetaPackTrace.Verbose(string.Format("Resoling model host type..."));
+                MetaPackTrace.Verbose(string.Format("Resolving model host type..."));
 
                 var modelHostType = ResolveModelHostType(allClasses, rootDefinitionClassName, spApi);
 
                 MetaPackTrace.Verbose(string.Format("Resolved as [{0}]", modelHostType));
 
-                if (spApi == DefaultOptions.SharePoint.Api.CSOM.Value)
+                if (modelHostType == null)
+                    throw new MetaPackException(string.Format("Cannot resolve model host type"));
+
+                if (Compare(spApi, DefaultOptions.SharePoint.Api.CSOM.Value, true))
                 {
                     MetaPackTrace.Verbose(string.Format("Detected CSOM provision."));
 
@@ -261,8 +319,9 @@ namespace MetaPack.SPMeta2.Services
                     if (clientContextInstance == null)
                         throw new MetaPackException(string.Format("Cannot create client context"));
 
-                    if (spVersion == DefaultOptions.SharePoint.Version.O365.Value)
+                    if (Compare(spVersion, DefaultOptions.SharePoint.Version.O365.Value, true))
                     {
+                        // O365 creds
                         MetaPackTrace.Verbose(string.Format("O365 API detected"));
 
                         if (!string.IsNullOrEmpty(userName) && !string.IsNullOrEmpty(userPassword))
@@ -272,7 +331,7 @@ namespace MetaPack.SPMeta2.Services
                                     DefaultOptions.User.Password.Id
                                 ));
 
-                            MetaPackTrace.Verbose(string.Format("Creating Credentials for web site:[{0}]", siteUrl));
+                            MetaPackTrace.Verbose(string.Format("Creating SharePointOnlineCredentials for web site:[{0}]", siteUrl));
                             var spCredentialsClass = ReflectionUtils.FindTypeByName(allClasses, "SharePointOnlineCredentials");
 
                             if (spCredentialsClass == null)
@@ -298,6 +357,30 @@ namespace MetaPack.SPMeta2.Services
                                 DefaultOptions.User.Name.Id,
                                 DefaultOptions.User.Password.Id
                             ));
+                        }
+                    }
+                    else
+                    {
+                        MetaPackTrace.Verbose(string.Format("On-premises CSOM API is detected"));
+
+                        // local network creds
+                        if (!string.IsNullOrEmpty(userName) && !string.IsNullOrEmpty(userPassword))
+                        {
+                            MetaPackTrace.Verbose(string.Format("[{0}] and [{1}] aren't null.",
+                                    DefaultOptions.User.Name.Id,
+                                    DefaultOptions.User.Password.Id
+                                ));
+
+                            MetaPackTrace.Verbose(string.Format("Creating NetworkCredential for web site:[{0}]", siteUrl));
+
+                            var spCredentialsInstance = new NetworkCredential(userName, userPassword);
+
+                            MetaPackTrace.Verbose(string.Format("Setting up credentials..."));
+                            ReflectionUtils.SetPropertyValue(clientContextInstance, "Credentials", spCredentialsInstance);
+                        }
+                        else
+                        {
+                            MetaPackTrace.Verbose(string.Format("No username/userpassword were provided for site:[{0}]", siteUrl));
                         }
                     }
 

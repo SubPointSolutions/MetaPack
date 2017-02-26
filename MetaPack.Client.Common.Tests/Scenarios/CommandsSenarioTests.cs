@@ -21,11 +21,18 @@ namespace MetaPack.Client.Common.Tests.Scenarios
         [TestCategory("Metapack.Client.Commands.OnPremise")]
         public void Can_Call_List_Command_OnPremise()
         {
-            var webSiteUrl = EnvironmentUtils.GetEnvironmentVariable(RegConsts.OnPremis.RootWebUrl);
+            var webSiteUrl = EnvironmentUtils.GetEnvironmentVariable(RegConsts.SP2013.RootWebUrl);
 
             var command = new NuGetListCommand
             {
-                Url = webSiteUrl
+                Url = webSiteUrl,
+
+                SharePointApi = "CSOM",
+                SharePointEdition = "Standard",
+                SharePointVersion = "SP2013",
+
+                UserName = SP2013UserName,
+                UserPassword = SP2013UserPassword,
             };
 
             command.Execute();
@@ -48,7 +55,7 @@ namespace MetaPack.Client.Common.Tests.Scenarios
                 UserName = userName,
                 UserPassword = userPassword,
 
-                IsSharePointOnline = true
+                SharePointVersion = "o365"
             };
 
             command.Execute();
@@ -99,14 +106,14 @@ namespace MetaPack.Client.Common.Tests.Scenarios
                         UserName = userName,
                         UserPassword = userPassword,
 
-                        IsSharePointOnline = true,
+                        SharePointVersion = "o365",
 
                         PreRelease = true
                     };
 
                     command.PackageSources.Add(repoUrl);
 
-                    if(UseLocaNuGet)
+                    if (UseLocaNuGet)
                         command.PackageSources.Add(LocalNuGetRepositoryFolderPath);
 
                     command.Execute();

@@ -1,37 +1,43 @@
 ﻿// load up common tools
 #load tools/SubPointSolutions.CakeBuildTools/scripts/SubPointSolutions.CakeBuild.Core.cake
 
-Task("Action-CLI-Pester")
+Task("Action-CLI-Regression")
     .Does(() => {
 
-        Information("Running CLI Pester testing...");
+        Information("Running Pester testing...");
 
-        Information("- ensuring peter is installed...");
-        StartPowershellFile("Pester/_install.ps1", args =>
-        {
-            // args.Append("Username", "admin")
-            //     .AppendSecret("Password", "pass1");
-        });
+		var tmpPath = System.IO.Path.GetTempPath();
+		
+		var workingFolderName = string.Format("metapack-cli-{0}", Guid.NewGuid().ToString("N"));
+		var workingFolderPath = System.IO.Path.Combine(tmpPath, workingFolderName);
 
-        Information("- installing the latest Chocolatey package...");
+		System.IO.Directory.CreateDirectory(workingFolderPath);
+
+        // Information("- ensuring peter is installed...");
+        // StartPowershellFile("Pester/_install.ps1", args =>
+        // {
+        //      args.Append("WorkingFolderPath", workingFolderPath);
+        // });
+
+		Information("- installing the latest Chocolatey package...");
         StartPowershellFile("build-choco-install-local.ps1", args =>
         {
-            // args.Append("Username", "admin")
-            //     .AppendSecret("Password", "pass1");
+            args.Append("WorkingFolderPath", workingFolderPath);
         });
 
-        Information("- running CLI regression...");
-        StartPowershellFile("Pester/metapack.cli.Tests.ps1", args =>
+        Information("- running regression...");
+
+        StartPowershellFile("Pester/pester.run.ps1", args =>
         {
-            // args.Append("Username", "admin")
-            //     .AppendSecret("Password", "pass1");
+            args.Append("WorkingFolderPath", workingFolderPath);
         });
-
     });
 
-// Pester testing for CLI is in R&D yet
-//taskDefaultCI
-//    .IsDependentOn("Action-CLI-Pester");
+// add one more for taskDefaultCLIPackaging
+// testing that CLI from chocolatey works
+// https://github.com/SubPointSolutions/CakeBuildTools
+//taskDefaultCLIPackaging
+//    .IsDependentOn("Action-CLI-Regression");
 
 // default targets
 RunTarget(target);

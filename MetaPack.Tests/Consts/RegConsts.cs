@@ -24,13 +24,13 @@ namespace MetaPack.Tests.Consts
             public static string UserPassword = "MetaPack.SharePoint.O365.UserPassword";
         }
 
-        public static class OnPremis
+        public static class SP2013
         {
-            public static string RootWebUrl = "MetaPack.SharePoint.OnPremis.RootWebUrl";
-            public static string SubWebUrl = "MetaPack.SharePoint.OnPremis.SubWebUrl";
+            public static string RootWebUrl = "MetaPack.SharePoint.SP2013.RootWebUrl";
+            public static string SubWebUrl = "MetaPack.SharePoint.SP2013.SubWebUrl";
 
-            public static string UserName = "MetaPack.SharePoint.OnPremis.UserName";
-            public static string UserPassword = "MetaPack.SharePoint.OnPremis.UserPassword";
+            public static string UserName = "MetaPack.SharePoint.SP2013.UserName";
+            public static string UserPassword = "MetaPack.SharePoint.SP2013.UserPassword";
         }
     }
 }

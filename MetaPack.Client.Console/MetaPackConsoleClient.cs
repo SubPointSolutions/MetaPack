@@ -237,16 +237,15 @@ namespace MetaPack.Client.Console
                 UserName = op.UserName,
                 UserPassword = op.UserPassword,
 
+                SharePointVersion = op.SharePointVersion,
+                SharePointEdition = op.SharePointEdition,
+                SharePointApi = op.SharePointApi,
+
                 Force = op.Force
             };
 
-            if (!string.IsNullOrEmpty(op.SharePointVersion))
-            {
-                if (SharePointRuntimVersions.O365 == op.SharePointVersion.ToLower())
-                {
-                    command.IsSharePointOnline = true;
-                }
-            }
+            if (string.IsNullOrEmpty(op.SharePointVersion))
+                command.SharePointVersion = SharePointRuntimVersions.O365;
 
             command.Execute();
 
@@ -279,19 +278,18 @@ namespace MetaPack.Client.Console
                 UserName = op.UserName,
                 UserPassword = op.UserPassword,
 
+                SharePointVersion = op.SharePointVersion,
+                SharePointEdition = op.SharePointEdition,
+                SharePointApi = op.SharePointApi,
+
                 ToolId = op.ToolId,
                 ToolVersion = op.ToolVersion,
 
                 Force = op.Force
             };
 
-            if (!string.IsNullOrEmpty(op.SharePointVersion))
-            {
-                if (SharePointRuntimVersions.O365 == op.SharePointVersion.ToLower())
-                {
-                    command.IsSharePointOnline = true;
-                }
-            }
+            if (string.IsNullOrEmpty(op.SharePointVersion))
+                command.SharePointVersion = SharePointRuntimVersions.O365;
 
             command.Execute();
 
@@ -314,13 +312,8 @@ namespace MetaPack.Client.Console
                 UserPassword = op.UserPassword
             };
 
-            if (!string.IsNullOrEmpty(op.SharePointVersion))
-            {
-                if (SharePointRuntimVersions.O365 == op.SharePointVersion.ToLower())
-                {
-                    command.IsSharePointOnline = true;
-                }
-            }
+            if (string.IsNullOrEmpty(op.SharePointVersion))
+                command.SharePointVersion = SharePointRuntimVersions.O365;
 
             command.Execute();
 

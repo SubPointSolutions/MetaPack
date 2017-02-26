@@ -120,8 +120,11 @@ namespace MetaPack.Tests.Base
             O365RootWebUrl = EnvironmentUtils.GetEnvironmentVariable(RegConsts.O365.RootWebUrl);
             O365SubWebUrl = EnvironmentUtils.GetEnvironmentVariable(RegConsts.O365.SubWebUrl);
 
-            OnPremisRootWebUrl = EnvironmentUtils.GetEnvironmentVariable(RegConsts.OnPremis.RootWebUrl);
-            OnPremisSubWebUrl = EnvironmentUtils.GetEnvironmentVariable(RegConsts.OnPremis.SubWebUrl);
+            SP2013RootWebUrl = EnvironmentUtils.GetEnvironmentVariable(RegConsts.SP2013.RootWebUrl);
+            SP2013SubWebUrl = EnvironmentUtils.GetEnvironmentVariable(RegConsts.SP2013.SubWebUrl);
+
+            SP2013UserName = EnvironmentUtils.GetEnvironmentVariable(RegConsts.SP2013.UserName);
+            SP2013UserPassword = EnvironmentUtils.GetEnvironmentVariable(RegConsts.SP2013.UserPassword);
         }
 
         private static List<string> ResolveNuGetGalleryPaths(string value)
@@ -569,8 +572,12 @@ namespace MetaPack.Tests.Base
 
 
 
-        public string OnPremisRootWebUrl { get; set; }
+        public string SP2013RootWebUrl { get; set; }
 
-        public string OnPremisSubWebUrl { get; set; }
+        public string SP2013SubWebUrl { get; set; }
+
+        public string SP2013UserName { get; set; }
+
+        public string SP2013UserPassword { get; set; }
     }
 }

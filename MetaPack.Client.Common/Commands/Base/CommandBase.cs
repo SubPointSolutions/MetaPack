@@ -13,6 +13,10 @@ namespace MetaPack.Client.Common.Commands.Base
         protected CommandBase()
         {
             PackageSources = new List<string>();
+
+            SharePointVersion = "O365";
+            SharePointEdition = "Standard";
+            SharePointApi = "CSOM";
         }
 
         #endregion
@@ -27,16 +31,26 @@ namespace MetaPack.Client.Common.Commands.Base
         public string UserName { get; set; }
         public string UserPassword { get; set; }
 
-        public bool IsSharePointOnline { get; set; }
-
         public List<string> PackageSources { get; set; }
 
         public string ToolId { get; set; }
         public string ToolVersion { get; set; }
 
+        public string SharePointApi { get; set; }
+        public string SharePointVersion { get; set; }
+        public string SharePointEdition { get; set; }
+
         #endregion
 
         #region methods
+
+        protected virtual bool IsSharePointOnline
+        {
+            get
+            {
+                return SharePointVersion.ToUpper() == "O365";
+            }
+        }
 
         public abstract object Execute();
 
