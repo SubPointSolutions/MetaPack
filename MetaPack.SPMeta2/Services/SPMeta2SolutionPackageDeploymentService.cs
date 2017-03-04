@@ -57,11 +57,19 @@ namespace MetaPack.SPMeta2.Services
 
                 if (Compare(spApi, DefaultOptions.SharePoint.Api.CSOM.Value, true))
                 {
-                    // adding main toolpackage
                     result.Add(new SolutionToolPackage
                     {
                         Id = "SPMeta2.CSOM.Foundation",
                         AssemblyNameHint = "SPMeta2.CSOM.dll"
+                    });
+                }
+
+                if (Compare(spApi, DefaultOptions.SharePoint.Api.SSOM.Value, true))
+                {
+                    result.Add(new SolutionToolPackage
+                    {
+                        Id = "SPMeta2.SSOM.Foundation",
+                        AssemblyNameHint = "SPMeta2.SSOM.dll"
                     });
                 }
             }
@@ -266,9 +274,6 @@ namespace MetaPack.SPMeta2.Services
             MetaPackTrace.Verbose(string.Format("spEdition:[{0}]", spEdition));
             MetaPackTrace.Verbose(string.Format("spApi:[{0}]", spApi));
 
-            if (!Compare(spApi, DefaultOptions.SharePoint.Api.CSOM.Value, true))
-                throw new NotSupportedException(string.Format("SharePoint API [{0}] is not supported yet", spApi));
-
             var models = solutionPackage.GetModels();
             MetaPackTrace.Verbose(string.Format("Starting provision for [{0}] models", models.Count()));
 
@@ -297,141 +302,342 @@ namespace MetaPack.SPMeta2.Services
 
                 if (Compare(spApi, DefaultOptions.SharePoint.Api.CSOM.Value, true))
                 {
-                    MetaPackTrace.Verbose(string.Format("Detected CSOM provision."));
+                    ProcessCSOMDeployment(options,
+                                          provisionServiceClassName,
+                                          allAssemblies,
+                                          allClasses,
+                                          provisionService,
+                                          spVersion,
+                                          model,
+                                          modelHostType);
+                }
+                else
+                {
+                    ProcessSSOMDeployment(options,
+                                         provisionServiceClassName,
+                                         allAssemblies,
+                                         allClasses,
+                                         provisionService,
+                                         spVersion,
+                                         model,
+                                         modelHostType);
+                }
+            }
+        }
 
-                    var m2CSOMAssembly = ReflectionUtils.FindAssemblyByFullName(allAssemblies, "SPMeta2.CSOM, Version=1.0.0.0, Culture=neutral, PublicKeyToken=d71faae3bf28531a");
+        private void ProcessSSOMDeployment(SolutionPackageProvisionOptions options,
+            string provisionServiceClassName,
+            IEnumerable<Assembly> allAssemblies,
+            IEnumerable<Type> allClasses,
+            object provisionService,
+            string spVersion,
+            object model,
+            Type modelHostType)
+        {
+            MetaPackTrace.Verbose(string.Format("Detected SSOM provision."));
 
-                    if (m2CSOMAssembly == null)
-                        throw new MetaPackException(string.Format("Cannot find assembly:[SPMeta2.CSOM]"));
+            var m2SSOMAssembly = ReflectionUtils.FindAssemblyByFullName(allAssemblies, "SPMeta2.SSOM, Version=1.0.0.0, Culture=neutral, PublicKeyToken=d71faae3bf28531a");
 
-                    var userName = options.GetOptionValue(DefaultOptions.User.Name.Id);
-                    var userPassword = options.GetOptionValue(DefaultOptions.User.Password.Id);
+            if (m2SSOMAssembly == null)
+                throw new MetaPackException(string.Format("Cannot find assembly:[SPMeta2.SSOM]"));
 
-                    var siteUrl = options.GetOptionValue(DefaultOptions.Site.Url.Id);
-                    var clientContexClass = ReflectionUtils.FindTypeByName(allClasses, "ClientContext");
+            var siteUrl = options.GetOptionValue(DefaultOptions.Site.Url.Id);
 
-                    if (clientContexClass == null)
-                        throw new MetaPackException(string.Format("Cannot find class by name:[{0}]", "ClientContext"));
+            MethodInfo modelHostFromXXXMethod = null;
 
-                    MetaPackTrace.Verbose(string.Format("Creating ClientContext for web site:[{0}]", siteUrl));
-                    var clientContextInstance = Activator.CreateInstance(clientContexClass, new object[] { siteUrl });
+            if (modelHostType.Name == "SiteModelHost")
+                modelHostFromXXXMethod = modelHostType.GetMethod("FromSite");
+            else if (modelHostType.Name == "WebModelHost")
+                modelHostFromXXXMethod = modelHostType.GetMethod("FromWeb");
+            else if (modelHostType.Name == "WebApplicationModelHost")
+                modelHostFromXXXMethod = modelHostType.GetMethod("FromWebApplication");
+            else if (modelHostType.Name == "FarmModelHost")
+                modelHostFromXXXMethod = modelHostType.GetMethod("FromFarm");
+            else
+            {
+                throw new MetaPackException(string.Format("Unknown model host type:[{0}]", modelHostType.Name));
+            }
 
-                    if (clientContextInstance == null)
-                        throw new MetaPackException(string.Format("Cannot create client context"));
+            if (modelHostFromXXXMethod == null)
+                throw new MetaPackException(string.Format("Cannot find FromXXX for model host of type:[{0}]", modelHostType));
 
-                    if (Compare(spVersion, DefaultOptions.SharePoint.Version.O365.Value, true))
-                    {
-                        // O365 creds
-                        MetaPackTrace.Verbose(string.Format("O365 API detected"));
+            object spHost = new object();
 
-                        if (!string.IsNullOrEmpty(userName) && !string.IsNullOrEmpty(userPassword))
-                        {
-                            MetaPackTrace.Verbose(string.Format("[{0}] and [{1}] aren't null.",
-                                    DefaultOptions.User.Name.Id,
-                                    DefaultOptions.User.Password.Id
-                                ));
 
-                            MetaPackTrace.Verbose(string.Format("Creating SharePointOnlineCredentials for web site:[{0}]", siteUrl));
-                            var spCredentialsClass = ReflectionUtils.FindTypeByName(allClasses, "SharePointOnlineCredentials");
+            // load up sharepoint assembly if not there yet
+            var spAssembly = allAssemblies.FirstOrDefault(a => a.FullName.Contains("Microsoft.SharePoint,"));
 
-                            if (spCredentialsClass == null)
-                                throw new MetaPackException(string.Format("Cannot find class by name:[{0}]",
-                                    "SharePointOnlineCredentials"));
+            if (spAssembly == null)
+            {
+                // fall back t SP2010 but 15-16 must work as well
+                var spAssemblyName = "Microsoft.SharePoint, Version=14.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c";
+                spAssembly = Assembly.Load(spAssemblyName);
 
-                            var securePassword = new SecureString();
-                            foreach (char c in userPassword)
-                                securePassword.AppendChar(c);
+                if (spAssembly == null)
+                {
+                    throw new MetaPackException(
+                      string.Format("Cannot load assembly:[{0}]",
+                      spAssemblyName));
+                }
+            }
 
-                            var spCredentialsInstance = Activator.CreateInstance(spCredentialsClass, new object[]
+            if (modelHostType.Name == "FarmModelHost")
+            {
+                var spHostTypeName = "Microsoft.SharePoint.Administration.SPFarm";
+                var spHostType = spAssembly.GetType(spHostTypeName);
+
+                if (spHostType == null)
+                {
+                    throw new MetaPackException(
+                      string.Format("Cannot find type:[{0}]",
+                      spHostTypeName));
+                }
+
+                MetaPackTrace.Verbose(string.Format("SPFarm: creating new SharePoint host of type:[{0}]", spHostTypeName));
+                spHost = ReflectionUtils.GetStaticPropertyValue(spHostType, "Local");
+
+                if (spHost == null)
+                {
+                    throw new MetaPackException(
+                      string.Format("Cannot create spHost of type type:[{0}]",
+                      spHostType));
+                }
+            }
+            else if (modelHostType.Name == "WebApplicationModelHost")
+            {
+                var spHostTypeName = "Microsoft.SharePoint.Administration.SPWebApplication";
+                var spHostType = spAssembly.GetType(spHostTypeName);
+
+                if (spHostType == null)
+                {
+                    throw new MetaPackException(
+                      string.Format("Cannot find type:[{0}]",
+                      spHostTypeName));
+                }
+
+                MetaPackTrace.Verbose(string.Format("SPWebApplication: creating new SharePoint host of type:[{0}] for Url:[{1}]", spHostTypeName, siteUrl));
+
+                spHost = ReflectionUtils.InvokeStaticMethod(spHostType, "Lookup", new object[] { siteUrl });
+
+                if (spHost == null)
+                {
+                    throw new MetaPackException(
+                      string.Format("Cannot create spHost of type type:[{0}]",
+                      spHostType));
+                }
+            }
+            else if (modelHostType.Name == "SiteModelHost" || modelHostType.Name == "WebModelHost")
+            {
+                var spHostTypeName = "Microsoft.SharePoint.SPSite";
+                var spHostType = spAssembly.GetType(spHostTypeName);
+
+                if (spHostType == null)
+                {
+                    throw new MetaPackException(
+                      string.Format("Cannot find type:[{0}]",
+                      spHostTypeName));
+                }
+
+                MetaPackTrace.Verbose(string.Format("SPSite: new SharePoint host of type:[{0}] for Url:[{1}]", spHostTypeName, siteUrl));
+                spHost = Activator.CreateInstance(spHostType, siteUrl);
+
+                MetaPackTrace.Verbose("Created SPSite instance for Url:[{0}]", siteUrl);
+
+                if (modelHostType.Name == "WebModelHost")
+                {
+                    MetaPackTrace.Verbose("Opening SPWeb for instance Url:[{0}]", siteUrl);
+                    spHost = ReflectionUtils.InvokeMethod(spHost, "OpenWeb");
+                }
+
+                if (spHost == null)
+                {
+                    throw new MetaPackException(
+                      string.Format("Cannot create spHost of type type:[{0}]",
+                      spHostType));
+                }
+            }
+
+            MetaPackTrace.Verbose(string.Format("Creating model host instance of type:[{0}]", modelHostType));
+            object clientContextInstance = spHost;
+            var modelHostInstance = modelHostFromXXXMethod.Invoke(null, new object[] { clientContextInstance });
+
+            MetaPackTrace.Verbose(string.Format("Created model host instance of type:[{0}]", modelHostInstance));
+            var provisionMethod = ReflectionUtils.GetMethod(provisionService, "DeployModel");
+
+            if (provisionMethod == null)
+            {
+                throw new MetaPackException(
+                    string.Format("Cannot find 'DeployModel' on the provision service of type:[{0}]",
+                        provisionServiceClassName));
+            }
+            else
+            {
+                MetaPackTrace.Verbose(string.Format("Found .DeployModel method."));
+            }
+
+            // so much lazy to clean up that mess
+            var provisionServiceType = provisionService.GetType();
+
+            var onModelNodeProcessingEvent = provisionServiceType.GetField("OnModelNodeProcessing", BindingFlags.Public | BindingFlags.Instance);
+            var onModelNodeProcessingHandler = GetType().GetMethod("OnModelNodeProcessing");
+            var onModelNodeProcessingDelegate = Delegate.CreateDelegate(onModelNodeProcessingEvent.FieldType, this, onModelNodeProcessingHandler);
+
+            onModelNodeProcessingEvent.SetValue(provisionService, onModelNodeProcessingDelegate);
+
+            var onModelNodeProcessedEvent = provisionServiceType.GetField("OnModelNodeProcessed", BindingFlags.Public | BindingFlags.Instance);
+            var onModelNodeProcessedHandler = GetType().GetMethod("OnModelNodeProcessed");
+            var onModelNodeProcessedDelegate = Delegate.CreateDelegate(onModelNodeProcessingEvent.FieldType, this, onModelNodeProcessedHandler);
+
+            onModelNodeProcessedEvent.SetValue(provisionService, onModelNodeProcessedDelegate);
+
+            MetaPackTrace.Verbose(string.Format("Starting provision..."));
+            provisionMethod.Invoke(provisionService, new[] { modelHostInstance, model });
+
+            MetaPackTrace.Verbose(string.Format("Provision completed."));
+
+            if (spHost is IDisposable)
+            {
+                MetaPackTrace.Verbose(string.Format("Disposing spHost object of type:[{0}]", spHost.GetType()));
+
+                ((IDisposable)spHost).Dispose();
+                spHost = null;
+            }
+            else
+            {
+                MetaPackTrace.Verbose(string.Format("No need to dispose spHost object of type:[{0}]", spHost.GetType()));
+            }
+        }
+
+        private void ProcessCSOMDeployment(SolutionPackageProvisionOptions options, string provisionServiceClassName, IEnumerable<Assembly> allAssemblies, IEnumerable<Type> allClasses, object provisionService, string spVersion, object model, Type modelHostType)
+        {
+            MetaPackTrace.Verbose(string.Format("Detected CSOM provision."));
+
+            var m2CSOMAssembly = ReflectionUtils.FindAssemblyByFullName(allAssemblies, "SPMeta2.CSOM, Version=1.0.0.0, Culture=neutral, PublicKeyToken=d71faae3bf28531a");
+
+            if (m2CSOMAssembly == null)
+                throw new MetaPackException(string.Format("Cannot find assembly:[SPMeta2.CSOM]"));
+
+            var userName = options.GetOptionValue(DefaultOptions.User.Name.Id);
+            var userPassword = options.GetOptionValue(DefaultOptions.User.Password.Id);
+
+            var siteUrl = options.GetOptionValue(DefaultOptions.Site.Url.Id);
+            var clientContexClass = ReflectionUtils.FindTypeByName(allClasses, "ClientContext");
+
+            if (clientContexClass == null)
+                throw new MetaPackException(string.Format("Cannot find class by name:[{0}]", "ClientContext"));
+
+            MetaPackTrace.Verbose(string.Format("Creating ClientContext for web site:[{0}]", siteUrl));
+            var clientContextInstance = Activator.CreateInstance(clientContexClass, new object[] { siteUrl });
+
+            if (clientContextInstance == null)
+                throw new MetaPackException(string.Format("Cannot create client context"));
+
+            if (Compare(spVersion, DefaultOptions.SharePoint.Version.O365.Value, true))
+            {
+                // O365 creds
+                MetaPackTrace.Verbose(string.Format("O365 API detected"));
+
+                if (!string.IsNullOrEmpty(userName) && !string.IsNullOrEmpty(userPassword))
+                {
+                    MetaPackTrace.Verbose(string.Format("[{0}] and [{1}] aren't null.",
+                            DefaultOptions.User.Name.Id,
+                            DefaultOptions.User.Password.Id
+                        ));
+
+                    MetaPackTrace.Verbose(string.Format("Creating SharePointOnlineCredentials for web site:[{0}]", siteUrl));
+                    var spCredentialsClass = ReflectionUtils.FindTypeByName(allClasses, "SharePointOnlineCredentials");
+
+                    if (spCredentialsClass == null)
+                        throw new MetaPackException(string.Format("Cannot find class by name:[{0}]",
+                            "SharePointOnlineCredentials"));
+
+                    var securePassword = new SecureString();
+                    foreach (char c in userPassword)
+                        securePassword.AppendChar(c);
+
+                    var spCredentialsInstance = Activator.CreateInstance(spCredentialsClass, new object[]
                             {
                                 userName,
                                 securePassword
                             });
 
-                            MetaPackTrace.Verbose(string.Format("Setting up credentials..."));
-                            ReflectionUtils.SetPropertyValue(clientContextInstance, "Credentials", spCredentialsInstance);
-                        }
-                        else
-                        {
-                            throw new MetaPackException(string.Format("O365 provision requires [{0}] and [{1}] to be set.",
-                                DefaultOptions.User.Name.Id,
-                                DefaultOptions.User.Password.Id
-                            ));
-                        }
-                    }
-                    else
-                    {
-                        MetaPackTrace.Verbose(string.Format("On-premises CSOM API is detected"));
-
-                        // local network creds
-                        if (!string.IsNullOrEmpty(userName) && !string.IsNullOrEmpty(userPassword))
-                        {
-                            MetaPackTrace.Verbose(string.Format("[{0}] and [{1}] aren't null.",
-                                    DefaultOptions.User.Name.Id,
-                                    DefaultOptions.User.Password.Id
-                                ));
-
-                            MetaPackTrace.Verbose(string.Format("Creating NetworkCredential for web site:[{0}]", siteUrl));
-
-                            var spCredentialsInstance = new NetworkCredential(userName, userPassword);
-
-                            MetaPackTrace.Verbose(string.Format("Setting up credentials..."));
-                            ReflectionUtils.SetPropertyValue(clientContextInstance, "Credentials", spCredentialsInstance);
-                        }
-                        else
-                        {
-                            MetaPackTrace.Verbose(string.Format("No username/userpassword were provided for site:[{0}]", siteUrl));
-                        }
-                    }
-
-                    var modelHostFromClientContextMethod = modelHostType.GetMethod("FromClientContext");
-
-                    if (modelHostFromClientContextMethod == null)
-                        throw new MetaPackException("Cannot find FromClientContext method on model host");
-
-                    MetaPackTrace.Verbose(string.Format("Creating model host instance of type:[{0}]", modelHostType));
-                    var modelHostInstance = modelHostFromClientContextMethod.Invoke(null, new object[] { clientContextInstance });
-
-                    MetaPackTrace.Verbose(string.Format("Created model host instance of type:[{0}]", modelHostInstance));
-                    var provisionMethod = ReflectionUtils.GetMethod(provisionService, "DeployModel");
-
-                    if (provisionMethod == null)
-                    {
-                        throw new MetaPackException(
-                            string.Format("Cannot find 'DeployModel' on the provision service of type:[{0}]",
-                                provisionServiceClassName));
-                    }
-                    else
-                    {
-                        MetaPackTrace.Verbose(string.Format("Found .DeployModel method."));
-                    }
-
-                    // so much lazy to clean up that mess
-                    var provisionServiceType = provisionService.GetType();
-
-                    var onModelNodeProcessingEvent = provisionServiceType.GetField("OnModelNodeProcessing", BindingFlags.Public | BindingFlags.Instance);
-                    var onModelNodeProcessingHandler = GetType().GetMethod("OnModelNodeProcessing");
-                    var onModelNodeProcessingDelegate = Delegate.CreateDelegate(onModelNodeProcessingEvent.FieldType, this, onModelNodeProcessingHandler);
-
-                    onModelNodeProcessingEvent.SetValue(provisionService, onModelNodeProcessingDelegate);
-
-                    var onModelNodeProcessedEvent = provisionServiceType.GetField("OnModelNodeProcessed", BindingFlags.Public | BindingFlags.Instance);
-                    var onModelNodeProcessedHandler = GetType().GetMethod("OnModelNodeProcessed");
-                    var onModelNodeProcessedDelegate = Delegate.CreateDelegate(onModelNodeProcessingEvent.FieldType, this, onModelNodeProcessedHandler);
-
-                    onModelNodeProcessedEvent.SetValue(provisionService, onModelNodeProcessedDelegate);
-
-                    MetaPackTrace.Verbose(string.Format("Starting provision..."));
-                    provisionMethod.Invoke(provisionService, new[] { modelHostInstance, model });
-
-                    MetaPackTrace.Verbose(string.Format("Provision completed."));
+                    MetaPackTrace.Verbose(string.Format("Setting up credentials..."));
+                    ReflectionUtils.SetPropertyValue(clientContextInstance, "Credentials", spCredentialsInstance);
                 }
                 else
                 {
-                    // TODO
-                    throw new NotSupportedException(string.Format("SharePoint API [{0}] is not supported yet", spApi));
+                    throw new MetaPackException(string.Format("O365 provision requires [{0}] and [{1}] to be set.",
+                        DefaultOptions.User.Name.Id,
+                        DefaultOptions.User.Password.Id
+                    ));
                 }
             }
+            else
+            {
+                MetaPackTrace.Verbose(string.Format("On-premises CSOM API is detected"));
+
+                // local network creds
+                if (!string.IsNullOrEmpty(userName) && !string.IsNullOrEmpty(userPassword))
+                {
+                    MetaPackTrace.Verbose(string.Format("[{0}] and [{1}] aren't null.",
+                            DefaultOptions.User.Name.Id,
+                            DefaultOptions.User.Password.Id
+                        ));
+
+                    MetaPackTrace.Verbose(string.Format("Creating NetworkCredential for web site:[{0}]", siteUrl));
+
+                    var spCredentialsInstance = new NetworkCredential(userName, userPassword);
+
+                    MetaPackTrace.Verbose(string.Format("Setting up credentials..."));
+                    ReflectionUtils.SetPropertyValue(clientContextInstance, "Credentials", spCredentialsInstance);
+                }
+                else
+                {
+                    MetaPackTrace.Verbose(string.Format("No username/userpassword were provided for site:[{0}]", siteUrl));
+                }
+            }
+
+            var modelHostFromClientContextMethod = modelHostType.GetMethod("FromClientContext");
+
+            if (modelHostFromClientContextMethod == null)
+                throw new MetaPackException("Cannot find FromClientContext method on model host");
+
+            MetaPackTrace.Verbose(string.Format("Creating model host instance of type:[{0}]", modelHostType));
+            var modelHostInstance = modelHostFromClientContextMethod.Invoke(null, new object[] { clientContextInstance });
+
+            MetaPackTrace.Verbose(string.Format("Created model host instance of type:[{0}]", modelHostInstance));
+            var provisionMethod = ReflectionUtils.GetMethod(provisionService, "DeployModel");
+
+            if (provisionMethod == null)
+            {
+                throw new MetaPackException(
+                    string.Format("Cannot find 'DeployModel' on the provision service of type:[{0}]",
+                        provisionServiceClassName));
+            }
+            else
+            {
+                MetaPackTrace.Verbose(string.Format("Found .DeployModel method."));
+            }
+
+            // so much lazy to clean up that mess
+            var provisionServiceType = provisionService.GetType();
+
+            var onModelNodeProcessingEvent = provisionServiceType.GetField("OnModelNodeProcessing", BindingFlags.Public | BindingFlags.Instance);
+            var onModelNodeProcessingHandler = GetType().GetMethod("OnModelNodeProcessing");
+            var onModelNodeProcessingDelegate = Delegate.CreateDelegate(onModelNodeProcessingEvent.FieldType, this, onModelNodeProcessingHandler);
+
+            onModelNodeProcessingEvent.SetValue(provisionService, onModelNodeProcessingDelegate);
+
+            var onModelNodeProcessedEvent = provisionServiceType.GetField("OnModelNodeProcessed", BindingFlags.Public | BindingFlags.Instance);
+            var onModelNodeProcessedHandler = GetType().GetMethod("OnModelNodeProcessed");
+            var onModelNodeProcessedDelegate = Delegate.CreateDelegate(onModelNodeProcessingEvent.FieldType, this, onModelNodeProcessedHandler);
+
+            onModelNodeProcessedEvent.SetValue(provisionService, onModelNodeProcessedDelegate);
+
+            MetaPackTrace.Verbose(string.Format("Starting provision..."));
+            provisionMethod.Invoke(provisionService, new[] { modelHostInstance, model });
+
+            MetaPackTrace.Verbose(string.Format("Provision completed."));
         }
 
         protected virtual string GetOnModelNodeEventTraceString(object s)

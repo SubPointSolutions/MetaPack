@@ -40,7 +40,7 @@ namespace MetaPack.Tests.Base
             MetaPackServiceContainer.Instance.ReplaceService(typeof(TraceServiceBase), regressionTraceService);
 
             var useSPMeta2 = true;
-            var usePnP = false;
+            var usePnP = true;
 
             UseLocaNuGet = true;
 
@@ -281,6 +281,8 @@ namespace MetaPack.Tests.Base
         {
             var rootWebUrl = EnvironmentUtils.GetEnvironmentVariable(RegConsts.O365.RootWebUrl);
 
+
+
             if (string.IsNullOrEmpty(rootWebUrl))
                 throw new NullReferenceException("rootWebUrl");
 
@@ -416,14 +418,26 @@ namespace MetaPack.Tests.Base
                     SPMeta2Model.NewWebModel(web => { }),
                 };
 
+                var index = 0;
+
                 foreach (var model in models)
                 {
+                    index++;
+
                     var xmlContext = SPMeta2Model.ToXML(model);
 
-                    m2package.AddModel(new ModelContainerBase
+                    var modelContainer = new ModelContainerBase
                     {
-                        Model = Encoding.UTF8.GetBytes(xmlContext)
+                        Model = Encoding.UTF8.GetBytes(xmlContext),
+                    };
+
+                    modelContainer.AdditionalOptions.Add(new OptionValue
+                    {
+                        Name = DefaultOptions.Model.Order.Id,
+                        Value = index.ToString()
                     });
+
+                    m2package.AddModel(modelContainer);
                 }
 
                 m2package.AdditionalOptions.Add(new OptionValue

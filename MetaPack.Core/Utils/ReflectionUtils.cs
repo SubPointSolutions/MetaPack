@@ -174,6 +174,19 @@ namespace MetaPack.Core.Utils
             throw new NotImplementedException("GetExpressionValue");
         }
 
+        public static object GetStaticPropertyValue(Type type, string propName)
+        {
+            var prop = type.GetProperties(BindingFlags.Instance |
+                                                  BindingFlags.NonPublic |
+                                                  BindingFlags.Public)
+                                   .FirstOrDefault(p => p.Name.ToUpper() == propName.ToUpper());
+
+            if (prop == null)
+                throw new Exception(string.Format("Can't find prop: [{0}] in obj of type:[{1}]", propName, type));
+
+            return prop.GetValue(null, null);
+        }
+
         public static object GetPropertyValue(object obj, string propName)
         {
             var prop = obj.GetType().GetProperties(BindingFlags.Instance |
@@ -189,6 +202,23 @@ namespace MetaPack.Core.Utils
 
         // AddSupportedUILanguage
 
+        public static object InvokeStaticMethod(Type type, string methodName)
+        {
+            return InvokeStaticMethod(type, methodName, null);
+        }
+
+        public static object InvokeStaticMethod(Type type, string methodName, object[] parameters)
+        {
+            var method = type.GetMethod(methodName);
+
+            if (method == null)
+                throw new Exception(string.Format("Cannot find method by name:[{0}] on object of type:[{1}]",
+                    methodName, type));
+
+            return method.Invoke(null, parameters);
+
+        }
+
         public static object InvokeMethod(object obj, string methodName)
         {
             return InvokeMethod(obj, methodName, null);
@@ -196,7 +226,21 @@ namespace MetaPack.Core.Utils
 
         public static object InvokeMethod(object obj, string methodName, object[] parametes)
         {
-            var method = GetMethod(obj, methodName);
+            MethodInfo method = null;
+
+            if (parametes == null)
+            {
+                method = obj.GetType().GetMethods()
+                                      .FirstOrDefault(m => m.Name == methodName
+                                                    & m.GetParameters().Count() == 0);
+            }
+            else
+            {
+                method = obj.GetType().GetMethods()
+                                      .FirstOrDefault(m => m.Name == methodName
+                                                    & m.GetParameters().Count() == parametes.Count());
+            }
+
 
             if (method == null)
                 throw new Exception(string.Format("Cannot find method by name:[{0}] on object of type:[{1}]",

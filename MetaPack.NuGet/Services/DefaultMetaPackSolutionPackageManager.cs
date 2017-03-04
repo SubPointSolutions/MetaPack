@@ -243,6 +243,7 @@ namespace MetaPack.NuGet.Services
             foreach (var packageSource in toolResolver.PackageSources)
                 MetaPackTrace.Verbose(string.Format(" - using repo:[{0}]", packageSource));
 
+            toolResolver.ForceInstallPackages = ForceInstallToolPackages;
             toolResolver.InstallTool(toolPackage);
 
             MetaPackTrace.Info("Resolving additional tooling for tool package [{0}]", toolPackage.Id);
@@ -509,6 +510,13 @@ namespace MetaPack.NuGet.Services
                         MetaPackTrace.Verbose(string.Format("AppDomain assembly:[{0}]", eee.RequestingAssembly));
                         MetaPackTrace.Verbose(string.Format("Assembly requested:[{0}]", eee.Name));
 
+                        if (eee.Name.ToLower().Contains(".resources,"))
+                        {
+                            MetaPackTrace.Verbose("Resources assembly detected. Returnin NULL");
+                            return null;
+                        }
+
+                        MetaPackTrace.Verbose("Trying to load from local probing paths...");
                         var assemblyName = eee.Name.Split(',')[0] + ".dll";
 
                         foreach (var dir in ops.AssemblyProbingPaths)
@@ -522,7 +530,20 @@ namespace MetaPack.NuGet.Services
                             }
                         }
 
-                        MetaPackTrace.Verbose("Cannot find. Throwing exception.");
+                        MetaPackTrace.Verbose("Coudn't find assembly in local probing path. Trying to load from GAC.");
+
+                        //// GAC call?
+                        //if (eee.RequestingAssembly == null && !string.IsNullOrEmpty(eee.Name))
+                        //{
+                        //    var asm = Assembly.Load(eee.Name);
+
+                        //    if (asm != null)
+                        //        return asm;
+
+                        //    MetaPackTrace.Verbose("Coudn't find assembly in GAC");
+                        //}
+
+                        //MetaPackTrace.Verbose("Cannot resolve requested assembly. Throwing exception.");
 
                         throw new Exception(string.Format("Cannot load requested assembly [{0}]. Requested by [{1}]",
                             eee.Name,
@@ -598,5 +619,7 @@ namespace MetaPack.NuGet.Services
         }
 
         #endregion
+
+        public bool ForceInstallToolPackages { get; set; }
     }
 }
