@@ -38,7 +38,7 @@ namespace MetaPack.Client.Console.Tests.Scenarios
 
         [TestMethod]
         [TestCategory("Metapack.Client.Console")]
-        [TestCategory("CI.O365")]
+        //[TestCategory("CI.O365")]
         public void Can_Run_Install_Command_O365()
         {
             WithMetaPackServices(service =>
@@ -65,7 +65,7 @@ namespace MetaPack.Client.Console.Tests.Scenarios
 
         [TestMethod]
         [TestCategory("Metapack.Client.Console")]
-        [TestCategory("CI.O365")]
+        //[TestCategory("CI.O365")]
         public void Can_Run_Install_Command_O365_From_CustomSource()
         {
             WithMetaPackServices(service =>
@@ -97,7 +97,7 @@ namespace MetaPack.Client.Console.Tests.Scenarios
 
         [TestMethod]
         [TestCategory("Metapack.Client.Console")]
-        [TestCategory("CI.O365")]
+        //[TestCategory("CI.O365")]
         public void Can_Run_Install_Command_O365_Force()
         {
             WithMetaPackServices(service =>
@@ -130,7 +130,7 @@ namespace MetaPack.Client.Console.Tests.Scenarios
 
         [TestMethod]
         [TestCategory("Metapack.Client.Console")]
-        [TestCategory("CI.O365")]
+        //[TestCategory("CI.O365")]
 
         public void Can_Run_Install_Command_O365_WithCustomToolId()
         {
@@ -159,7 +159,7 @@ namespace MetaPack.Client.Console.Tests.Scenarios
 
         [TestMethod]
         [TestCategory("Metapack.Client.Console")]
-        [TestCategory("CI.O365")]
+        //[TestCategory("CI.O365")]
         [ExpectedException(typeof(MetaPackException))]
         public void Can_Run_Install_Command_O365_WithCustomToolIdAndVersion()
         {
@@ -191,7 +191,7 @@ namespace MetaPack.Client.Console.Tests.Scenarios
 
         [TestMethod]
         [TestCategory("Metapack.Client.Console")]
-        [TestCategory("CI.O365")]
+        //[TestCategory("CI.O365")]
         public void Can_Run_Install_Command_O365_WithCustomToolIdAndVersion_12100()
         {
             WithMetaPackServices(service =>
@@ -220,7 +220,7 @@ namespace MetaPack.Client.Console.Tests.Scenarios
 
         [TestMethod]
         [TestCategory("Metapack.Client.Console")]
-        [TestCategory("CI.OnPremis")]
+        //[TestCategory("CI.OnPremis")]
         public void Can_Run_Install_Command_OnPremis_With_CSOM()
         {
             WithMetaPackServices(service =>
@@ -247,7 +247,7 @@ namespace MetaPack.Client.Console.Tests.Scenarios
 
         [TestMethod]
         [TestCategory("Metapack.Client.Console")]
-        [TestCategory("CI.OnPremis")]
+        //[TestCategory("CI.OnPremis")]
         public void Can_Run_Install_Command_OnPremis_With_SSOM()
         {
             WithMetaPackServices(service =>

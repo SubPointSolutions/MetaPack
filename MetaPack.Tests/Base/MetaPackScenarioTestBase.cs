@@ -37,10 +37,10 @@ namespace MetaPack.Tests.Base
         {
             var regressionTraceService = new RegressionTraceService();
 
-            MetaPackServiceContainer.Instance.ReplaceService(typeof(TraceServiceBase), regressionTraceService);
+            SPMeta2SolutionPackagingService = new SPMeta2SolutionPackageService();
+            SharePointPnPSolutionPackagingService = new SharePointPnPSolutionPackageService();
 
-            var useSPMeta2 = true;
-            var usePnP = true;
+            MetaPackServiceContainer.Instance.ReplaceService(typeof(TraceServiceBase), regressionTraceService);
 
             UseLocaNuGet = true;
 
@@ -52,25 +52,20 @@ namespace MetaPack.Tests.Base
             // packaging
             MetaPackService = new List<MetaPackServiceContext>();
 
-            if (useSPMeta2)
+            MetaPackService.Add(new MetaPackServiceContext
             {
-                MetaPackService.Add(new MetaPackServiceContext
+                PackagingService = new SPMeta2SolutionPackageService(),
+                DeploymentService = new SPMeta2SolutionPackageDeploymentService(),
+
+                ToolPackage = new SolutionToolPackage
                 {
-                    PackagingService = new SPMeta2SolutionPackageService(),
-                    DeploymentService = new SPMeta2SolutionPackageDeploymentService(),
+                    Id = "MetaPack.SPMeta2"
+                },
 
-                    ToolPackage = new SolutionToolPackage
-                    {
-                        Id = "MetaPack.SPMeta2"
-                    },
+                CIPackageId = "MetaPack.SPMeta2.CI"
+            });
 
-                    CIPackageId = "MetaPack.SPMeta2.CI"
-                });
-            }
-
-            if (usePnP)
-            {
-                MetaPackService.Add(new MetaPackServiceContext
+            MetaPackService.Add(new MetaPackServiceContext
                 {
                     PackagingService = new SharePointPnPSolutionPackageService(),
                     DeploymentService = new SharePointPnPSolutionDeploymentService(),
@@ -82,9 +77,10 @@ namespace MetaPack.Tests.Base
 
                     CIPackageId = "MetaPack.SharePointPnP.CI"
                 });
-            }
 
-            var localNuGetFolder = Path.GetFullPath(@"..\..\..\Build\local-ci-packages");
+            var localAssemblyDirectoryPath = Path.GetDirectoryName(GetType().Assembly.Location);
+            var localNuGetFolder = Path.GetFullPath(localAssemblyDirectoryPath + @"\..\..\..\Build\local-ci-packages");
+
             LocalNuGetRepositoryFolderPath = localNuGetFolder;
 
             Directory.CreateDirectory(LocalNuGetRepositoryFolderPath);
@@ -169,6 +165,9 @@ namespace MetaPack.Tests.Base
         #endregion
 
         #region properties
+
+        public NuGetSolutionPackageService SharePointPnPSolutionPackagingService { get; set; }
+        public NuGetSolutionPackageService SPMeta2SolutionPackagingService { get; set; }
 
         public string O365UserName { get; set; }
         public string O365UserPassword { get; set; }

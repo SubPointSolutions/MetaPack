@@ -38,7 +38,7 @@ namespace MetaPack.Tests.Scenarios
         #region tests
 
         [TestMethod]
-        [TestCategory("Metapack.Core.DefaultMetaPackSolutionPackageManager.O365")]
+        [TestCategory("Metapack.API.Deployment")]
         //[TestCategory("CI.Core")]
         public void Can_Deploy()
         {
@@ -46,7 +46,7 @@ namespace MetaPack.Tests.Scenarios
         }
 
         [TestMethod]
-        [TestCategory("Metapack.Core.DefaultMetaPackSolutionPackageManager.O365")]
+        [TestCategory("Metapack.API.Deployment")]
         //[TestCategory("CI.Core")]
         public void Can_Deploy_To_WebApplication()
         {
