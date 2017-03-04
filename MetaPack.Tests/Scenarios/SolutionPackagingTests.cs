@@ -81,7 +81,6 @@ namespace MetaPack.Tests.Scenarios
         #region spmeta2
 
         [TestMethod]
-        [TestCategory("CI.Core")]
         [TestCategory("Metapack.API.Packaging.SPMeta2")]
         public void Can_Pack_Solution_Package_With_SPMeta2()
         {
@@ -91,7 +90,6 @@ namespace MetaPack.Tests.Scenarios
         }
 
         [TestMethod]
-        [TestCategory("CI.Core")]
         [TestCategory("Metapack.API.Packaging.SPMeta2")]
         public void Can_Unpack_Solution_Package_With_SPMeta2()
         {
@@ -101,7 +99,6 @@ namespace MetaPack.Tests.Scenarios
         }
 
         [TestMethod]
-        [TestCategory("CI.Core")]
         [TestCategory("Metapack.API.Packaging.SPMeta2")]
         public void Can_Push_Solution_Package_With_SPMeta2()
         {
@@ -111,7 +108,6 @@ namespace MetaPack.Tests.Scenarios
         }
 
         [TestMethod]
-        [TestCategory("CI.Core")]
         [TestCategory("Metapack.API.Packaging.SPMeta2")]
         public void Can_Unpack_Solution_Package_WithOrderedModels_With_SPMeta2()
         {
@@ -125,7 +121,6 @@ namespace MetaPack.Tests.Scenarios
         #region sharepoint pnp
 
         [TestMethod]
-        [TestCategory("CI.Core")]
         [TestCategory("Metapack.API.Packaging.SharePointPnP")]
         public void Can_Pack_Solution_Package_With_SharePointPnP()
         {
@@ -135,7 +130,6 @@ namespace MetaPack.Tests.Scenarios
         }
 
         [TestMethod]
-        [TestCategory("CI.Core")]
         [TestCategory("Metapack.API.Packaging.SharePointPnP")]
         public void Can_Unpack_Solution_Package_With_SharePointPnP()
         {
@@ -145,7 +139,6 @@ namespace MetaPack.Tests.Scenarios
         }
 
         [TestMethod]
-        [TestCategory("CI.Core")]
         [TestCategory("Metapack.API.Packaging.SharePointPnP")]
         public void Can_Push_Solution_Package_With_SharePointPnP()
         {
@@ -155,7 +148,6 @@ namespace MetaPack.Tests.Scenarios
         }
 
         [TestMethod]
-        [TestCategory("CI.Core")]
         [TestCategory("Metapack.API.Packaging.SharePointPnP")]
         public void Can_Unpack_Solution_Package_WithOrderedModels_With_SharePointPnP()
         {
