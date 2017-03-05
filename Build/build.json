@@ -5,6 +5,7 @@
     "defaultChocolateyPackagesDirectory": "./build-artifact-cli-packages",
     "defaultNuspecVersion": "0.1.0",
 
+    "defaultDocsBuildEnabled" :  true, 
     "defaultDocsViewFolder": "SubPointSolutions.Docs/Views/metapack",
     "defaultDocsRepoFolder": "m2-mp",
     "defaultDocsBranch": "wyam-dev",
