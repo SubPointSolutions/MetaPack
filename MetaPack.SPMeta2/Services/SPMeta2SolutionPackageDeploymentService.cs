@@ -95,28 +95,31 @@ namespace MetaPack.SPMeta2.Services
             }
             else if (Compare(spVersion, DefaultOptions.SharePoint.Version.SP2013.Value, true))
             {
-                // download stuff from NuGet
-                // loading from GAC is not suported yet
-
-                // ideally we'd like to get SP1 version
-
-                // 15.0.4569.1000*	​Service Pack 1	​SharePoint Foundation 2013	​KB2817439	​Download	​Bugs, Notes, and Regressions
-                // ​15.0.4711.1000	​April 2015 CU	​SharePoint Foundation 2013	​KB2965261	​Download	​Bugs, Notes, and Regressions
-
-                // adding main toolpackage
-                result.Add(new SolutionToolPackage
+                if (Compare(spApi, DefaultOptions.SharePoint.Api.CSOM.Value, true))
                 {
-                    Id = "Microsoft.SharePoint2013.CSOM",
-                    Version = "15.0.4711.1000",
-                    AssemblyNameHint = "Microsoft.SharePoint.Client.dll"
-                });
+                    // download stuff from NuGet
+                    // loading from GAC is not suported yet
 
-                result.Add(new SolutionToolPackage
-                {
-                    Id = "Microsoft.SharePoint2013.CSOM",
-                    Version = "15.0.4711.1000",
-                    AssemblyNameHint = "Microsoft.SharePoint.Client.Runtime.dll"
-                });
+                    // ideally we'd like to get SP1 version
+
+                    // 15.0.4569.1000*	​Service Pack 1	​SharePoint Foundation 2013	​KB2817439	​Download	​Bugs, Notes, and Regressions
+                    // ​15.0.4711.1000	​April 2015 CU	​SharePoint Foundation 2013	​KB2965261	​Download	​Bugs, Notes, and Regressions
+
+                    // adding main toolpackage
+                    result.Add(new SolutionToolPackage
+                    {
+                        Id = "Microsoft.SharePoint2013.CSOM",
+                        Version = "15.0.4711.1000",
+                        AssemblyNameHint = "Microsoft.SharePoint.Client.dll"
+                    });
+
+                    result.Add(new SolutionToolPackage
+                    {
+                        Id = "Microsoft.SharePoint2013.CSOM",
+                        Version = "15.0.4711.1000",
+                        AssemblyNameHint = "Microsoft.SharePoint.Client.Runtime.dll"
+                    });
+                }
             }
             else if (Compare(spVersion, DefaultOptions.SharePoint.Version.SP2016.Value, true))
             {
