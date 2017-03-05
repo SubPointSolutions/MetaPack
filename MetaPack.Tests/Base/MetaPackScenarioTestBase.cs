@@ -84,7 +84,7 @@ namespace MetaPack.Tests.Base
             MetaPackService = new List<MetaPackServiceContext>();
 
             MetaPackService.Add(SPMeta2ServiceContext);
-            //MetaPackService.Add(SharePointPnPServiceContext);
+            MetaPackService.Add(SharePointPnPServiceContext);
 
             var localAssemblyDirectoryPath = Path.GetDirectoryName(GetType().Assembly.Location);
             var localNuGetFolder = Path.GetFullPath(localAssemblyDirectoryPath + @"\..\..\..\Build\local-ci-packages");

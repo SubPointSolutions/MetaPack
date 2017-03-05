@@ -78,9 +78,17 @@ namespace MetaPack.Tests.Scenarios
         [TestMethod]
         [TestCategory("Metapack.API.Deployment")]
         [TestCategory("Metapack.API.Deployment.SharePoint")]
-        [TestCategory("Metapack.API.Deployment.Farm")]
+        //[TestCategory("Metapack.API.Deployment.Farm")]
         //[TestCategory("CI.Core")]
         public void Can_Deploy_SolutionPackage_On_SharePoint_Farm_SSOM()
+        {
+            WithMetaPackServices(s =>
+            {
+                Internal_Can_Deploy_SolutionPackage_On_SharePoint_Farm_SSOM(s);
+            });
+        }
+
+        public void Internal_Can_Deploy_SolutionPackage_On_SharePoint_Farm_SSOM(MetaPackServiceContext s)
         {
             var regressionProfile = new RegressionDeploymentProfile();
 
@@ -88,18 +96,23 @@ namespace MetaPack.Tests.Scenarios
             regressionProfile.API = RegressionAPI.SSOM;
             regressionProfile.ModelLevel = RegressinModelLevel.Farm;
 
-            WithMetaPackServices(s =>
-            {
-                Internal_Deploy_SolutionPackage(s, regressionProfile);
-            });
+            Internal_Deploy_SolutionPackage(s, regressionProfile);
         }
 
         [TestMethod]
         [TestCategory("Metapack.API.Deployment")]
         [TestCategory("Metapack.API.Deployment.SharePoint")]
-        [TestCategory("Metapack.API.Deployment.SharePoint.WebApplication")]
+        //[TestCategory("Metapack.API.Deployment.SharePoint.WebApplication")]
         //[TestCategory("CI.Core")]
         public void Can_Deploy_SolutionPackage_On_SharePoint_WebApplication_SSOM()
+        {
+            WithMetaPackServices(s =>
+            {
+                Internal_Can_Deploy_SolutionPackage_On_SharePoint_WebApplication_SSOM(s);
+            });
+        }
+
+        public void Internal_Can_Deploy_SolutionPackage_On_SharePoint_WebApplication_SSOM(MetaPackServiceContext s)
         {
             var regressionProfile = new RegressionDeploymentProfile();
 
@@ -107,56 +120,123 @@ namespace MetaPack.Tests.Scenarios
             regressionProfile.API = RegressionAPI.SSOM;
             regressionProfile.ModelLevel = RegressinModelLevel.WebApplication;
 
-            WithMetaPackServices(s =>
-            {
-                Internal_Deploy_SolutionPackage(s, regressionProfile);
-            });
+            Internal_Deploy_SolutionPackage(s, regressionProfile);
         }
 
         [TestMethod]
         [TestCategory("Metapack.API.Deployment")]
         [TestCategory("Metapack.API.Deployment.SharePoint")]
-        [TestCategory("Metapack.API.Deployment.SharePoint.Site")]
+        ////[TestCategory("Metapack.API.Deployment.SharePoint.Site")]
         //[TestCategory("CI.Core")]
         public void Can_Deploy_SolutionPackage_On_SharePoint_Site_CSOM()
         {
+            WithMetaPackServices(s =>
+            {
+                Internal_Can_Deploy_SolutionPackage_On_SharePoint_Site_CSOM(s);
+            });
+        }
+
+        [TestMethod]
+        [TestCategory("Metapack.API.Deployment.SPMeta2")]
+        [TestCategory("Metapack.API.Deployment.SPMeta2.SharePoint")]
+        //[TestCategory("Metapack.API.Deployment.SPMeta2.SharePoint.Site")]
+        //[TestCategory("CI.Core")]
+        public void Can_Deploy_SolutionPackage_On_SharePoint_Site_CSOM_With_SPMeta2()
+        {
+            Internal_Can_Deploy_SolutionPackage_On_SharePoint_Site_CSOM(SPMeta2ServiceContext);
+        }
+
+        [TestMethod]
+        [TestCategory("Metapack.API.Deployment.SharePointPnP")]
+        [TestCategory("Metapack.API.Deployment.SharePointPnP.SharePoint")]
+        //[TestCategory("CI.Core")]
+        public void Can_Deploy_SolutionPackage_On_SharePoint_Site_CSOM_With_SharePointPnP()
+        {
+            Internal_Can_Deploy_SolutionPackage_On_SharePoint_Site_CSOM(SharePointPnPServiceContext);
+        }
+
+        public void Internal_Can_Deploy_SolutionPackage_On_SharePoint_Site_CSOM(MetaPackServiceContext s)
+        {
             var regressionProfile = new RegressionDeploymentProfile();
 
             regressionProfile.Sandbox = RegressionSandbox.SharePoint;
             regressionProfile.API = RegressionAPI.CSOM;
             regressionProfile.ModelLevel = RegressinModelLevel.Site;
 
-            WithMetaPackServices(s =>
-            {
-                Internal_Deploy_SolutionPackage(s, regressionProfile);
-            });
+            Internal_Deploy_SolutionPackage(s, regressionProfile);
         }
 
         [TestMethod]
         [TestCategory("Metapack.API.Deployment")]
         [TestCategory("Metapack.API.Deployment.SharePoint")]
-        [TestCategory("Metapack.API.Deployment.SharePoint.Site")]
+        //[TestCategory("Metapack.API.Deployment.SharePoint.Site")]
         //[TestCategory("CI.Core")]
         public void Can_Deploy_SolutionPackage_On_SharePoint_Site_SSOM()
         {
+            WithMetaPackServices(s =>
+            {
+                Internal_Can_Deploy_SolutionPackage_On_SharePoint_Site_SSOM(s);
+            });
+        }
+
+        [TestMethod]
+        [TestCategory("Metapack.API.Deployment.SPMeta2")]
+        [TestCategory("Metapack.API.Deployment.SPMeta2.SharePoint")]
+        //[TestCategory("Metapack.API.Deployment.SPMeta2.SharePoint.Site")]
+        //[TestCategory("CI.Core")]
+        public void Can_Deploy_SolutionPackage_On_SharePoint_Site_SSOM_With_SPMeta2()
+        {
+            WithMetaPackServices(s =>
+            {
+                Internal_Can_Deploy_SolutionPackage_On_SharePoint_Site_SSOM(SPMeta2ServiceContext);
+            });
+        }
+
+
+        public void Internal_Can_Deploy_SolutionPackage_On_SharePoint_Site_SSOM(MetaPackServiceContext s)
+        {
             var regressionProfile = new RegressionDeploymentProfile();
 
             regressionProfile.Sandbox = RegressionSandbox.SharePoint;
             regressionProfile.API = RegressionAPI.SSOM;
             regressionProfile.ModelLevel = RegressinModelLevel.Site;
 
-            WithMetaPackServices(s =>
-            {
-                Internal_Deploy_SolutionPackage(s, regressionProfile);
-            });
+            Internal_Deploy_SolutionPackage(s, regressionProfile);
         }
 
         [TestMethod]
         [TestCategory("Metapack.API.Deployment")]
         [TestCategory("Metapack.API.Deployment.SharePoint")]
-        [TestCategory("Metapack.API.Deployment.SharePoint.Web")]
+        //[TestCategory("Metapack.API.Deployment.SharePoint.Web")]
         //[TestCategory("CI.Core")]
         public void Can_Deploy_SolutionPackage_On_SharePoint_Web_CSOM()
+        {
+            WithMetaPackServices(s =>
+            {
+                Internal_Can_Deploy_SolutionPackage_On_SharePoint_Web_CSOM(s);
+            });
+        }
+
+        [TestMethod]
+        [TestCategory("Metapack.API.Deployment.SPMeta2")]
+        [TestCategory("Metapack.API.Deployment.SPMeta2.SharePoint")]
+        // [TestCategory("Metapack.API.Deployment.SPMeta2.SharePoint.Web")]
+        //[TestCategory("CI.Core")]
+        public void Can_Deploy_SolutionPackage_On_SharePoint_Web_CSOM_With_SPMeta2()
+        {
+            Internal_Can_Deploy_SolutionPackage_On_SharePoint_Web_CSOM(SPMeta2ServiceContext);
+        }
+
+        [TestMethod]
+        [TestCategory("Metapack.API.Deployment.SharePointPnP")]
+        [TestCategory("Metapack.API.Deployment.SharePointPnP.SharePoint")]
+        //[TestCategory("CI.Core")]
+        public void Can_Deploy_SolutionPackage_On_SharePoint_Web_CSOM_With_SharePointPnP()
+        {
+            Internal_Can_Deploy_SolutionPackage_On_SharePoint_Web_CSOM(SharePointPnPServiceContext);
+        }
+
+        public void Internal_Can_Deploy_SolutionPackage_On_SharePoint_Web_CSOM(MetaPackServiceContext s)
         {
             var regressionProfile = new RegressionDeploymentProfile();
 
@@ -164,18 +244,33 @@ namespace MetaPack.Tests.Scenarios
             regressionProfile.API = RegressionAPI.CSOM;
             regressionProfile.ModelLevel = RegressinModelLevel.Web;
 
-            WithMetaPackServices(s =>
-            {
-                Internal_Deploy_SolutionPackage(s, regressionProfile);
-            });
+            Internal_Deploy_SolutionPackage(s, regressionProfile);
         }
 
         [TestMethod]
         [TestCategory("Metapack.API.Deployment")]
         [TestCategory("Metapack.API.Deployment.SharePoint")]
-        [TestCategory("Metapack.API.Deployment.SharePoint.Web")]
+        //[TestCategory("Metapack.API.Deployment.SharePoint.Web")]
         //[TestCategory("CI.Core")]
         public void Can_Deploy_SolutionPackage_On_SharePoint_Web_SSOM()
+        {
+            WithMetaPackServices(s =>
+            {
+                Internal_Can_Deploy_SolutionPackage_On_SharePoint_Web_SSOM(s);
+            });
+        }
+
+        [TestMethod]
+        [TestCategory("Metapack.API.Deployment.SPMeta2")]
+        [TestCategory("Metapack.API.Deployment.SPMeta2.SharePoint")]
+        //[TestCategory("Metapack.API.Deployment.SPMeta2.SharePoint.Web")]
+        //[TestCategory("CI.Core")]
+        public void Can_Deploy_SolutionPackage_On_SharePoint_Web_SSOM_With_SPMeta2()
+        {
+            Internal_Can_Deploy_SolutionPackage_On_SharePoint_Web_SSOM(SPMeta2ServiceContext);
+        }
+
+        public void Internal_Can_Deploy_SolutionPackage_On_SharePoint_Web_SSOM(MetaPackServiceContext s)
         {
             var regressionProfile = new RegressionDeploymentProfile();
 
@@ -183,10 +278,7 @@ namespace MetaPack.Tests.Scenarios
             regressionProfile.API = RegressionAPI.SSOM;
             regressionProfile.ModelLevel = RegressinModelLevel.Web;
 
-            WithMetaPackServices(s =>
-            {
-                Internal_Deploy_SolutionPackage(s, regressionProfile);
-            });
+            Internal_Deploy_SolutionPackage(s, regressionProfile);
         }
 
         #endregion
@@ -196,9 +288,36 @@ namespace MetaPack.Tests.Scenarios
         [TestMethod]
         [TestCategory("Metapack.API.Deployment")]
         [TestCategory("Metapack.API.Deployment.O365")]
-        [TestCategory("Metapack.API.Deployment.O365.Site")]
+        //[TestCategory("Metapack.API.Deployment.O365.Site")]
         //[TestCategory("CI.Core")]
         public void Can_Deploy_SolutionPackage_On_O365_Site_CSOM()
+        {
+            WithMetaPackServices(s =>
+            {
+                Internal_Can_Deploy_SolutionPackage_On_O365_Site_CSOM(s);
+            });
+        }
+
+        [TestMethod]
+        [TestCategory("Metapack.API.Deployment.SPMeta2")]
+        [TestCategory("Metapack.API.Deployment.SPMeta2.O365")]
+        //[TestCategory("Metapack.API.Deployment.SPMeta2.O365.Site")]
+        //[TestCategory("CI.Core")]
+        public void Can_Deploy_SolutionPackage_On_O365_Site_CSOM_With_SPMeta2()
+        {
+            Internal_Can_Deploy_SolutionPackage_On_O365_Site_CSOM(SPMeta2ServiceContext);
+        }
+
+        [TestMethod]
+        [TestCategory("Metapack.API.Deployment.SharePointPnP")]
+        [TestCategory("Metapack.API.Deployment.SharePointPnP.O365")]
+        //[TestCategory("CI.Core")]
+        public void Can_Deploy_SolutionPackage_On_O365_Site_CSOM_With_SharePointPnP()
+        {
+            Internal_Can_Deploy_SolutionPackage_On_O365_Site_CSOM(SharePointPnPServiceContext);
+        }
+
+        private void Internal_Can_Deploy_SolutionPackage_On_O365_Site_CSOM(MetaPackServiceContext s)
         {
             var regressionProfile = new RegressionDeploymentProfile();
 
@@ -206,18 +325,43 @@ namespace MetaPack.Tests.Scenarios
             regressionProfile.API = RegressionAPI.CSOM;
             regressionProfile.ModelLevel = RegressinModelLevel.Site;
 
-            WithMetaPackServices(s =>
-            {
-                Internal_Deploy_SolutionPackage(s, regressionProfile);
-            });
+            Internal_Deploy_SolutionPackage(s, regressionProfile);
         }
 
         [TestMethod]
         [TestCategory("Metapack.API.Deployment")]
         [TestCategory("Metapack.API.Deployment.O365")]
-        [TestCategory("Metapack.API.Deployment.O365.Web")]
+        //[TestCategory("Metapack.API.Deployment.O365.Web")]
         //[TestCategory("CI.Core")]
         public void Can_Deploy_SolutionPackage_On_O365_Web_CSOM()
+        {
+            WithMetaPackServices(s =>
+            {
+                Internal_Can_Deploy_SolutionPackage_On_O365_Web_CSOM(s);
+            });
+        }
+
+        [TestMethod]
+        [TestCategory("Metapack.API.Deployment.SPMeta2")]
+        [TestCategory("Metapack.API.Deployment.SPMeta2.O365")]
+        //[TestCategory("Metapack.API.Deployment.SPMeta2.O365.Web")]
+        //[TestCategory("CI.Core")]
+        public void Can_Deploy_SolutionPackage_On_O365_Web_CSOM_With_SPMeta2()
+        {
+            Internal_Can_Deploy_SolutionPackage_On_O365_Web_CSOM(SPMeta2ServiceContext);
+        }
+
+        [TestMethod]
+        [TestCategory("Metapack.API.Deployment.SharePointPnP")]
+        [TestCategory("Metapack.API.Deployment.SharePointPnP.O365")]
+        //[TestCategory("Metapack.API.Deployment.SharePointPnP.Web")]
+        //[TestCategory("CI.Core")]
+        public void Can_Deploy_SolutionPackage_On_O365_Web_CSOM_With_SharePointPnP()
+        {
+            Internal_Can_Deploy_SolutionPackage_On_O365_Web_CSOM(SharePointPnPServiceContext);
+        }
+
+        private void Internal_Can_Deploy_SolutionPackage_On_O365_Web_CSOM(MetaPackServiceContext s)
         {
             var regressionProfile = new RegressionDeploymentProfile();
 
@@ -225,10 +369,7 @@ namespace MetaPack.Tests.Scenarios
             regressionProfile.API = RegressionAPI.CSOM;
             regressionProfile.ModelLevel = RegressinModelLevel.Web;
 
-            WithMetaPackServices(s =>
-            {
-                Internal_Deploy_SolutionPackage(s, regressionProfile);
-            });
+            Internal_Deploy_SolutionPackage(s, regressionProfile);
         }
 
         #endregion
@@ -293,7 +434,7 @@ namespace MetaPack.Tests.Scenarios
 
                     // csom related options
                     solutionOptions.Add(DefaultOptions.SharePoint.Api.CSOM);
-                    solutionOptions.Add(DefaultOptions.SharePoint.Edition.Foundation);
+                    solutionOptions.Add(DefaultOptions.SharePoint.Edition.Standard);
                     solutionOptions.Add(DefaultOptions.SharePoint.Version.O365);
 
                     solutionOptions.Add(new OptionValue
@@ -325,7 +466,7 @@ namespace MetaPack.Tests.Scenarios
                     {
                         // csom related options
                         solutionOptions.Add(DefaultOptions.SharePoint.Api.CSOM);
-                        solutionOptions.Add(DefaultOptions.SharePoint.Edition.Foundation);
+                        solutionOptions.Add(DefaultOptions.SharePoint.Edition.Standard);
                         solutionOptions.Add(DefaultOptions.SharePoint.Version.SP2013);
 
                         var siteUrl = SP2013RootWebUrl;
@@ -358,7 +499,7 @@ namespace MetaPack.Tests.Scenarios
                     {
                         // csom related options
                         solutionOptions.Add(DefaultOptions.SharePoint.Api.SSOM);
-                        solutionOptions.Add(DefaultOptions.SharePoint.Edition.Foundation);
+                        solutionOptions.Add(DefaultOptions.SharePoint.Edition.Standard);
                         solutionOptions.Add(DefaultOptions.SharePoint.Version.SP2013);
 
                         var siteUrl = SP2013RootWebUrl;
