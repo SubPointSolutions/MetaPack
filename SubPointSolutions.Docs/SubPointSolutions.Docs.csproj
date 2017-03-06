@@ -477,6 +477,7 @@
     <None Include="Views\MetaPack\reference\index.md" />
     <None Include="Views\MetaPack\getting-started\index.md" />
     <None Include="Views\MetaPack\cli\index.md" />
+    <None Include="_start_vscode.ps1" />
     <None Include="__packages.config" />
     <None Include="Scripts\bootstrap\jquery-1.9.1.min.map" />
     <None Include="Views\index.md" />
