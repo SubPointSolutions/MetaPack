@@ -32,21 +32,21 @@ Here is how it works:
 ## Key features of MetaPack
 The key features of MetaPack are:
 
-	• Standardized solution packaging: MetaPack abstracts away packaging of your SharePoint customizations. Neither you have to write another console application or PowerShell script, nor you have to think on how to package your customization - you always have a NuGet package as a smallest "solution package"
-	• Standardized versioning: version your SharePoint customizations same way as you version you APIs: use semantic versioning across the board.
-	• Dependency management: with MetaPack not only you can package your SharePoint solutions but you can also modularize them in most natural, industry adopted way - using NuGet versioning and dependency management. MetaPack understands dependencies, resolves and deploys required packages same way as NuGet would
-	• Extensible API: MetaPack offers extensible API so that you can write your own packaging and deployment providers. You can implement your own licensing asking people a license key before deploying your solution.
-	• MetaPack CLI: MetaPack offers a command-line interface. That enables easy integration of MetaPack with existing CI/CD pipelines as well as IT professionals can deploy SharePoint solutions with a single line command
-	• MetaPack GUI (coming soon): we would like to enable business used and IT professionals with a friendly GUI application to manage and deploy SharePoint customization. It's work in progress but let us know what you think of it
+* **Standardized solution packaging**: MetaPack abstracts away packaging of your SharePoint customizations. Neither you have to write another console application or PowerShell script, nor you have to think on how to package your customization - you always have a NuGet package as a smallest "solution package"
+* **Standardized versioning**: version your SharePoint customizations same way as you version you APIs: use semantic versioning across the board.
+* **Dependency management**: with MetaPack not only you can package your SharePoint solutions but you can also modularize them in most natural, industry adopted way - using NuGet versioning and dependency management. MetaPack understands dependencies, resolves and deploys required packages same way as NuGet would
+* **Extensible API**: MetaPack offers extensible API so that you can write your own packaging and deployment providers. You can implement your own licensing asking people a license key before deploying your solution.
+* **MetaPack CLI**: MetaPack offers a command-line interface. That enables easy integration of MetaPack with existing CI/CD pipelines as well as IT professionals can deploy SharePoint solutions with a single line command
+* **MetaPack GUI** (coming soon): we would like to enable business used and IT professionals with a friendly GUI application to manage and deploy SharePoint customization. It's work in progress but let us know what you think of it
 
 ## How MetaPack can be used?
 Standardized packages, versioning and dependency management coupled with out of the box support  for SharePointPnP/SPMeta2 and extensible API makes other interesting scenarios possible:
 
-	• A global, community-driven solution catalog -  why not to create a public NuGet gallery devoted to open-source, community-driving solutions? Let us know if you want one!
-	• A private, corporate solution catalog  - why not to deploy NuGet gallery internally in your company and deliver your solutions for SharePoint that way?
-	• A private solution catalog for your customers -  are you a SharePoint consultancy? Why not to deploy a private NuGet gallery to deliver solutions for your customers? You can use http://myget.org to get one as cheap as $7 a month
-	• You own packaging and licensing  - are you an ISV company? Why not to implement your own packaging provider asking people for a commercial license key before actually deploying your solution?
-	• API-independent solutions provision orchestrations  - why not to mix few SharePointPnP and SPMeta2 solutions in a single batch? MetaPack takes care on all details and we can focus on WHAT to deploy rather HOW to deploy
+* **A global, community-driven solution catalog** -  why not to create a public NuGet gallery devoted to open-source, community-driving solutions? Let us know if you want one!
+* **A private, corporate solution catalog** - why not to deploy NuGet gallery internally in your company and deliver your solutions for SharePoint that way?
+* **A private solution catalog for your customers** -  are you a SharePoint consultancy? Why not to deploy a private NuGet gallery to deliver solutions for your customers? You can use http://myget.org to get one as cheap as $7 a month
+* You own packaging and licensing** - are you an ISV company? Why not to implement your own packaging provider asking people for a commercial license key before actually deploying your solution?
+* **API-independent solutions provision orchestrations** - why not to mix few SharePointPnP and SPMeta2 solutions in a single batch? MetaPack takes care on all details and we can focus on WHAT to deploy rather HOW to deploy
 
 ## Next steps
 Have more question or keen to learn more about MetaPack? Continue with getting started guide,  API reference and use cases page. Don't forget to join the community and share your ideas as well. Also, MetaPack is an open source project hosted at github, it's all yours.
