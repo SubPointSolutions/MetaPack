@@ -17,23 +17,30 @@ namespace MetaPack.Client.Common.Tests.Scenarios
         #region list command
 
         [TestMethod]
-        [TestCategory("Metapack.Client.Commands")]
-        [TestCategory("Metapack.Client.Commands.OnPremise")]
+        [TestCategory("Metapack.Client.API")]
+        [TestCategory("Metapack.Client.API.SP2013")]
         public void Can_Call_List_Command_OnPremise()
         {
-            var webSiteUrl = EnvironmentUtils.GetEnvironmentVariable(RegConsts.OnPremis.RootWebUrl);
+            var webSiteUrl = EnvironmentUtils.GetEnvironmentVariable(RegConsts.SP2013.RootWebUrl);
 
             var command = new NuGetListCommand
             {
-                Url = webSiteUrl
+                Url = webSiteUrl,
+
+                SharePointApi = "CSOM",
+                SharePointEdition = "Standard",
+                SharePointVersion = "SP2013",
+
+                UserName = SP2013UserName,
+                UserPassword = SP2013UserPassword,
             };
 
             command.Execute();
         }
 
         [TestMethod]
-        [TestCategory("Metapack.Client.Commands")]
-        [TestCategory("Metapack.Client.Commands.O365")]
+        [TestCategory("Metapack.Client.API")]
+        [TestCategory("Metapack.Client.API.O365")]
         public void Can_Call_List_Command_O365()
         {
             var webSiteUrl = EnvironmentUtils.GetEnvironmentVariable(RegConsts.O365.RootWebUrl);
@@ -48,7 +55,7 @@ namespace MetaPack.Client.Common.Tests.Scenarios
                 UserName = userName,
                 UserPassword = userPassword,
 
-                IsSharePointOnline = true
+                SharePointVersion = "o365"
             };
 
             command.Execute();
@@ -60,8 +67,8 @@ namespace MetaPack.Client.Common.Tests.Scenarios
         #region install command
 
         [TestMethod]
-        [TestCategory("Metapack.Client.Commands")]
-        [TestCategory("Metapack.Client.Commands.O365")]
+        [TestCategory("Metapack.Client.API")]
+        [TestCategory("Metapack.Client.API.O365")]
         //[TestCategory("CI.Core")]
         public void Can_Call_Install_Command_O365()
         {
@@ -99,14 +106,14 @@ namespace MetaPack.Client.Common.Tests.Scenarios
                         UserName = userName,
                         UserPassword = userPassword,
 
-                        IsSharePointOnline = true,
+                        SharePointVersion = "o365",
 
                         PreRelease = true
                     };
 
                     command.PackageSources.Add(repoUrl);
 
-                    if(UseLocaNuGet)
+                    if (UseLocaNuGet)
                         command.PackageSources.Add(LocalNuGetRepositoryFolderPath);
 
                     command.Execute();

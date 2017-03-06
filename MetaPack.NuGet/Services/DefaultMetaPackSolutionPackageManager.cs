@@ -110,7 +110,7 @@ namespace MetaPack.NuGet.Services
 
                 if (!string.IsNullOrEmpty(packageId))
                 {
-                    MetaPackTrace.Verbose("Found tool. ToolId:[{0}] ToolVersion:[{1}]", packageId, packageVersion);
+                    MetaPackTrace.Verbose(String.Format("Found tool. ToolId:[{0}] ToolVersion:[{1}]", packageId, packageVersion));
 
                     result = new SolutionToolPackage
                     {
@@ -147,8 +147,6 @@ namespace MetaPack.NuGet.Services
 
                                             .Replace(defNamespace, "http://schemas.datacontract.org/2004/07/MetaPack.Core.Packaging");
 
-
-
                         var typedPackage = serializationService.Deserialize(
                                             typeof(SolutionPackageBase), genericXmlDoc)
                                             as SolutionPackageBase;
@@ -158,7 +156,7 @@ namespace MetaPack.NuGet.Services
 
                         if (!string.IsNullOrEmpty(packageIdFromPackage))
                         {
-                            MetaPackTrace.Verbose("Found tool. ToolId:[{0}] ToolVersion:[{1}]", packageId, packageVersion);
+                            MetaPackTrace.Verbose(string.Format("Found tool. ToolId:[{0}] ToolVersion:[{1}]", packageIdFromPackage, packageVersionFromPackage));
 
                             result = new SolutionToolPackage
                             {
@@ -238,15 +236,20 @@ namespace MetaPack.NuGet.Services
             if (toolResolver == null)
                 toolResolver = new ToolResolutionService();
 
-            var toolRepo = toolResolver.PackageManager.LocalRepository;
+            var toolRepo = toolResolver.ToolPackageManager.LocalRepository;
 
             MetaPackTrace.Info("Installing solution tool package...");
+
+            foreach (var packageSource in toolResolver.PackageSources)
+                MetaPackTrace.Verbose(string.Format(" - using repo:[{0}]", packageSource));
+
+            toolResolver.ForceInstallPackages = ForceInstallToolPackages;
             toolResolver.InstallTool(toolPackage);
 
             MetaPackTrace.Info("Resolving additional tooling for tool package [{0}]", toolPackage.Id);
 
             // resolve main assembly, resolve additional tooling
-            var toolNuGetPackage = toolResolver.PackageManager.LocalRepository.FindPackage(toolPackage.Id);
+            var toolNuGetPackage = toolResolver.ToolPackageManager.LocalRepository.FindPackage(toolPackage.Id);
 
             var assemblyHint = toolPackage.AssemblyNameHint ?? toolPackage.Id + ".dll";
             var additionalTools = toolResolver.ResolveAdditionalTooling(toolRepo, toolNuGetPackage, assemblyHint);
@@ -507,6 +510,13 @@ namespace MetaPack.NuGet.Services
                         MetaPackTrace.Verbose(string.Format("AppDomain assembly:[{0}]", eee.RequestingAssembly));
                         MetaPackTrace.Verbose(string.Format("Assembly requested:[{0}]", eee.Name));
 
+                        if (eee.Name.ToLower().Contains(".resources,"))
+                        {
+                            MetaPackTrace.Verbose("Resources assembly detected. Returnin NULL");
+                            return null;
+                        }
+
+                        MetaPackTrace.Verbose("Trying to load from local probing paths...");
                         var assemblyName = eee.Name.Split(',')[0] + ".dll";
 
                         foreach (var dir in ops.AssemblyProbingPaths)
@@ -520,7 +530,20 @@ namespace MetaPack.NuGet.Services
                             }
                         }
 
-                        MetaPackTrace.Verbose("Cannot find. Throwing exception.");
+                        MetaPackTrace.Verbose("Coudn't find assembly in local probing path. Trying to load from GAC.");
+
+                        //// GAC call?
+                        //if (eee.RequestingAssembly == null && !string.IsNullOrEmpty(eee.Name))
+                        //{
+                        //    var asm = Assembly.Load(eee.Name);
+
+                        //    if (asm != null)
+                        //        return asm;
+
+                        //    MetaPackTrace.Verbose("Coudn't find assembly in GAC");
+                        //}
+
+                        //MetaPackTrace.Verbose("Cannot resolve requested assembly. Throwing exception.");
 
                         throw new Exception(string.Format("Cannot load requested assembly [{0}]. Requested by [{1}]",
                             eee.Name,
@@ -596,5 +619,7 @@ namespace MetaPack.NuGet.Services
         }
 
         #endregion
+
+        public bool ForceInstallToolPackages { get; set; }
     }
 }

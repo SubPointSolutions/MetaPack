@@ -1,0 +1,16 @@
+public class Index
+{
+    [TestMethod]
+    [TestCategory("Docs.Basics")]
+    public void Create_Package_SPMeta2()
+    {
+        Console.WriteLine("SPMeta2");
+    }
+
+    [TestMethod]
+    [TestCategory("Docs.Basics")]
+    public void Create_Package_PnP()
+    {
+        Console.WriteLine("PnP");
+    }
+}

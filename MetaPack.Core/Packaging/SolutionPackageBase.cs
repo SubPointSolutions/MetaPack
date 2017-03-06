@@ -1,13 +1,18 @@
 ﻿using MetaPack.Core.Common;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.Serialization;
+using MetaPack.Core.Utils;
 
 namespace MetaPack.Core.Packaging
 {
     /// <summary>
     /// A high level abstraction for solution package.
     /// Follows NuGet spec design - https://docs.nuget.org/ndocs/schema/nuspec
+    /// 
+    /// Solution package is a container for SERIALIZED models.
+    /// It means that solution package does not depend on a particular API/assembly preferring adding / finding models in serialazable, platform and api independent way.
     /// </summary>
     [Serializable]
     [DataContract]
@@ -140,6 +145,7 @@ namespace MetaPack.Core.Packaging
         #endregion
 
         #region additional props
+
         /// <summary>
         /// Additional data accosiated with the solution package
         /// </summary>
@@ -158,8 +164,73 @@ namespace MetaPack.Core.Packaging
 
             if (Dependencies == null)
                 Dependencies = new List<SolutionPackageDependency>();
+
+            if (_models == null)
+                _models = new List<ModelContainerBase>();
         }
 
         #endregion
+
+        #region methods
+
+        private List<ModelContainerBase> _models = new List<ModelContainerBase>();
+
+        public virtual IEnumerable<ModelContainerBase> GetModels()
+        {
+            // sort by the order
+            return _models.OrderBy(m =>
+            {
+                var result = -1;
+
+                var orderOption =
+                    m.AdditionalOptions.FirstOrDefault(v => v.Name.ToUpper() == DefaultOptions.Model.Order.Id.ToUpper());
+
+                if (orderOption != null)
+                {
+                    var tmpInt = ConvertUtils.ToInt(orderOption.Value);
+
+                    if (tmpInt.HasValue)
+                        result = tmpInt.Value;
+                }
+
+                return result;
+            });
+        }
+
+        public virtual void AddModel(ModelContainerBase modelContainer)
+        {
+            AddModelInternal(modelContainer);
+        }
+
+        public virtual void RemoveModel(ModelContainerBase modelContainer)
+        {
+            if (_models.Contains(modelContainer))
+                _models.Remove(modelContainer);
+        }
+
+        protected virtual void AddModelInternal(ModelContainerBase modelContainer)
+        {
+            ProcessModelContainerMetadata(modelContainer);
+
+            _models.Add(modelContainer);
+        }
+
+        private void ProcessModelContainerMetadata(ModelContainerBase modelContainer)
+        {
+            // TODO
+            var isRestoreOperation = false;
+
+            if (isRestoreOperation)
+            {
+                // nothing
+            }
+            else
+            {
+                // fill out MD5 and other things
+            }
+        }
+
+        #endregion
+
     }
 }

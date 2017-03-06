@@ -32,7 +32,7 @@ namespace MetaPack.Tests.Scenarios
     //    #region commands
 
     //    [TestMethod]
-    //    [TestCategory("Metapack.Client.Commands")]
+    //    [TestCategory("Metapack.Client.API")]
     //    //[TestCategory("CI.Core")]
     //    public void Can_Call_List_Command()
     //    {
@@ -47,7 +47,7 @@ namespace MetaPack.Tests.Scenarios
     //    }
 
     //    [TestMethod]
-    //    [TestCategory("Metapack.Client.Commands")]
+    //    [TestCategory("Metapack.Client.API")]
     //    [TestCategory("CI.Core")]
     //    public void Can_Call_List_Command_O365()
     //    {
@@ -69,7 +69,7 @@ namespace MetaPack.Tests.Scenarios
     //    }
 
     //    [TestMethod]
-    //    [TestCategory("Metapack.Client.Commands")]
+    //    [TestCategory("Metapack.Client.API")]
     //    //[TestCategory("CI.Core")]
     //    public void Can_Call_Install_Command()
     //    {
@@ -118,7 +118,7 @@ namespace MetaPack.Tests.Scenarios
 
 
     //    [TestMethod]
-    //    [TestCategory("Metapack.Client.Commands")]
+    //    [TestCategory("Metapack.Client.API")]
     //    [TestCategory("CI.Core")]
     //    public void Can_Install_SPMeta2SolutionPackageDeploymentService()
     //    {
@@ -140,7 +140,7 @@ namespace MetaPack.Tests.Scenarios
     //    }
 
     //    [TestMethod]
-    //    [TestCategory("Metapack.Client.Commands")]
+    //    [TestCategory("Metapack.Client.API")]
     //    [TestCategory("CI.Core")]
     //    public void Can_Call_Install_Command_O365()
     //    {
@@ -205,7 +205,7 @@ namespace MetaPack.Tests.Scenarios
     //    }
 
     //    [TestMethod]
-    //    [TestCategory("Metapack.Client.Commands")]
+    //    [TestCategory("Metapack.Client.API")]
     //    [TestCategory("CI.Core")]
     //    public void Can_Call_Push_Command()
     //    {

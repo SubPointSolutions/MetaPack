@@ -159,9 +159,23 @@ namespace MetaPack.Client.Common.Commands
             var packageManager = new DefaultMetaPackSolutionPackageManager(repo, context);
 
             // add options
-            packageManager.SolutionOptions.Add(DefaultOptions.SharePoint.Api.CSOM);
-            packageManager.SolutionOptions.Add(DefaultOptions.SharePoint.Edition.Foundation);
-            packageManager.SolutionOptions.Add(DefaultOptions.SharePoint.Version.O365);
+            packageManager.SolutionOptions.Add(new OptionValue
+            {
+                Name = DefaultOptions.SharePoint.Api.Id,
+                Value = this.SharePointApi
+            });
+
+            packageManager.SolutionOptions.Add(new OptionValue
+            {
+                Name = DefaultOptions.SharePoint.Edition.Id,
+                Value = this.SharePointEdition
+            });
+
+            packageManager.SolutionOptions.Add(new OptionValue
+            {
+                Name = DefaultOptions.SharePoint.Version.Id,
+                Value = this.SharePointVersion
+            });
 
             packageManager.SolutionOptions.Add(new OptionValue
             {
@@ -169,21 +183,17 @@ namespace MetaPack.Client.Common.Commands
                 Value = context.Url
             });
 
-            if (IsSharePointOnline)
+            packageManager.SolutionOptions.Add(new OptionValue
             {
-                // if o365 - add user name and password
-                packageManager.SolutionOptions.Add(new OptionValue
-                {
-                    Name = DefaultOptions.User.Name.Id,
-                    Value = UserName
-                });
+                Name = DefaultOptions.User.Name.Id,
+                Value = UserName
+            });
 
-                packageManager.SolutionOptions.Add(new OptionValue
-                {
-                    Name = DefaultOptions.User.Password.Id,
-                    Value = UserPassword
-                });
-            }
+            packageManager.SolutionOptions.Add(new OptionValue
+            {
+                Name = DefaultOptions.User.Password.Id,
+                Value = UserPassword
+            });
 
             if (!string.IsNullOrEmpty(ToolId))
             {

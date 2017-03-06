@@ -11,7 +11,11 @@ Here is how we see it working - develop model in Visual Studio, package and push
 [Link to the full image](https://subpointsolutions-dev.netlify.com/content/img/products/metapack/metapack-vision.png)
 
 ### Build status
-[![Build status](https://ci.appveyor.com/api/projects/status/1weq7g33dfp3xi6i?svg=true)](https://ci.appveyor.com/project/SubPointSupport/metapack)
+| Branch  | Status |
+| ------------- | ------------- |
+| dev   | [![Build status](https://ci.appveyor.com/api/projects/status/1weq7g33dfp3xi6i/branch/dev?svg=true)](https://ci.appveyor.com/project/SubPointSupport/metapack/branch/dev)  |
+| beta  | [![Build status](https://ci.appveyor.com/api/projects/status/1weq7g33dfp3xi6i/branch/beta?svg=true)](https://ci.appveyor.com/project/SubPointSupport/metapack/branch/beta)  |
+| master| [![Build status](https://ci.appveyor.com/api/projects/status/1weq7g33dfp3xi6i/branch/master?svg=true)](https://ci.appveyor.com/project/SubPointSupport/metapack/branch/master) |
 
 ### MetaPack in details
 

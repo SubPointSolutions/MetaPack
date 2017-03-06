@@ -4,8 +4,22 @@
     "defaultNuGetPackagesDirectory": "./build-artifact-nuget-packages",
     "defaultChocolateyPackagesDirectory": "./build-artifact-cli-packages",
     "defaultNuspecVersion": "0.1.0",
+
+    "defaultDocsBuildEnabled": true,
+    "defaultDocsViewFolder": "SubPointSolutions.Docs/Views/metapack",
+    "defaultDocsSampleFilesFolder": "SubPointSolutions.Docs/SampleFiles",
+    "defaultDocsRepoFolder": "m2-mp",
+    "defaultDocsBranch": "wyam-dev",
+    "defaultDocsFileExtensions": [
+        "*.md",
+        "*.cs",
+        "*.cshtml",
+        "*.xml"
+    ],
+
     "defaultTestCategories": [
-        "CI.Core"
+        "CI.Core",
+        "CI.Docs"
     ],
     "customNuspecs": [
         {
@@ -25,7 +39,8 @@
                 "Office365",
                 "metapack",
                 "nuget"
-            ]
+            ],
+            "Files": [ ]
         },
         {
             "Id": "MetaPack.NuGet",
@@ -57,7 +72,8 @@
                 "Office365",
                 "metapack",
                 "nuget"
-            ]
+            ],
+            "Files": [ ]
         },
         {
             "Id": "MetaPack.SPMeta2",
@@ -85,7 +101,8 @@
                 "Office365",
                 "metapack",
                 "nuget"
-            ]
+            ],
+            "Files": [ ]
         },
         {
             "Id": "MetaPack.SharePointPnP",
@@ -113,7 +130,8 @@
                 "Office365",
                 "metapack",
                 "nuget"
-            ]
+            ],
+            "Files": [ ]
         },
         {
             "Id": "MetaPack.Client.Common",
@@ -141,7 +159,8 @@
                 "Office365",
                 "metapack",
                 "nuget"
-            ]
+            ],
+            "Files": [ ]
         }
     ],
     "customChocolateySpecs": [
@@ -186,7 +205,8 @@
     "defaultTestAssemblyPaths": [
         "MetaPack.Tests/bin/debug/MetaPack.Tests.dll",
         "MetaPack.Client.Console.Tests/bin/debug/MetaPack.Client.Console.Tests.dll",
-        "MetaPack.Client.Common.Tests/bin/debug/MetaPack.Client.Common.Tests.dll"
+        "MetaPack.Client.Common.Tests/bin/debug/MetaPack.Client.Common.Tests.dll",
+        "SubPointSolutions.Docs/bin/Debug/SubPointSolutions.Docs.dll"
     ],
     "defaultBuildDirs": [ ],
     "defaultEnvironmentVariables": [ ]

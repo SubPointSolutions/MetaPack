@@ -14,6 +14,21 @@ public static class SConfig
 
 ---
 
+var allSamples = new List<SubPointSolutions.Docs.Code.Data.DocSample>();
+
+allSamples.AddRange(SubPointSolutions.Docs.Code.Samples.m2Samples.SysAllSamples);
+allSamples.AddRange(SubPointSolutions.Docs.Code.Samples.reSPSamples.SysAllSamples);
+
+// also load up serialized things from \SampleFiles folder
+var samplesFolder = "SampleFiles";
+var allSampleFilePaths = System.IO.Directory.GetFiles(samplesFolder, "*.xml", System.IO.SearchOption.AllDirectories);
+
+foreach(var allSampleFilePath in allSampleFilePaths) {
+	var sampleXmlContent = System.IO.File.ReadAllText(allSampleFilePath);
+	var sampleInstance = SubPointSolutions.Docs.Code.Data.DocSample.FromXml(sampleXmlContent);
+
+	allSamples.Add(sampleInstance);
+}
 
 Pipelines.Add("site-md-content",
 
@@ -58,12 +73,6 @@ Pipelines.Add("site-md-content",
 				var sampleMethodName = refFileName.Split('-').Last();
 				//codeRef.SetAttribute("sample-method", sampleMethodName);
 
-				// searching for the sample
-				var allSamples = new List<SubPointSolutions.Docs.Code.Data.DocSample>();
-
-				allSamples.AddRange(SubPointSolutions.Docs.Code.Samples.m2Samples.SysAllSamples);
-				allSamples.AddRange(SubPointSolutions.Docs.Code.Samples.reSPSamples.SysAllSamples);
-
 				var sample = allSamples.FirstOrDefault(s => s.MethodName == sampleMethodName);
 
 				if(sample != null) {
@@ -80,12 +89,18 @@ Pipelines.Add("site-md-content",
 					x = doc.Clone(x.Content.Replace(codeRef.OuterHtml, Environment.NewLine + innerHtml));
 				}
 				else{
-					throw new System.Exception(string.Format("cannot find sample with name:[{0}]", sampleMethodName));
+					
+					var errMessage = string.Format("cannot find sample with name:[{0}]", sampleMethodName);
+
+					context.Trace.Error(errMessage, x.Source, errMessage);
+					Environment.Exit(-42);
 				}
 
 			} else {
-				throw new System.Exception("missed file ref");
-				codeRef.SetAttribute("sample-method", "MISSED - " + refFileName);
+				var errMessage = string.Format("missed file ref:[{0}]", refFileName);
+				
+				context.Trace.Error(errMessage, x.Source, errMessage);
+				Environment.Exit(-42);
 			}			
 		}
 
