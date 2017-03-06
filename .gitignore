@@ -7,6 +7,8 @@
 *.userosscache
 *.sln.docstates
 
+*.sample-ref
+
 # NCrunch
 *.ncrunchproject
 
