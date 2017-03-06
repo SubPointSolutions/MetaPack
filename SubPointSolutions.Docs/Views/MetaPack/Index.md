@@ -5,254 +5,48 @@ TileTitle: 'MetaPack'
 TileOrder: 50
 TileLink: true
 TileLinkOrder: 9
-TileDescription: 'The package manager for SPMeta2 based SharePoint customizations.'
+TileDescription: 'The package manager for SharePoint customizations.'
 ---
 
-# MetaPack
-The package manager for SharePoint customizations. CI test 6
+Welcome to the introduction guide to MetaPack! It is the best place to start with basics of MetaPack project. We explain what MetaPack is, what kind of problems it solves, how to get started with MetaPack.
 
-Deploying, updating and managing SharePoint customizations takes effort. Not only deployment but also versioning, modularization and dependency management require too much effort slowing down development, expanding cost and the delivery dates. Time spent on writing plumbing code, scripts or other means to handle all these areas should be spend on really important things. 
+If you are already familiar with the basics, the documentation provides reference for all available API and features.
 
-MetaPack introduces a complete solution for packaging, versioning, deploying and updating SPMeta2 based customizations. It is built on top of NuGet platform and offers a smooth API for developers, a CLI for better CI/CD scenarios and a handy GUI app for IT-pros.
+## What is MetaPack?
 
-Here is how we see it working - develop model in Visual Studio, package and push to NuGet, consume via API later on
+MetaPack is a platform for packaging, delivering and deploying SharePoint customization. MetaPack abstracts away packaging, versioning, dependency management, deploying and updating pipelines offering a complete and consistent workflow instead. 
+
+See it that way: there are many ways to build and deliver SharePoint solutions - from using old fashioned  *.wsp packages, custom PowerShell scripts, to modern remote provisioning approaches using SharePoint PnP or SPMeta2 libraries. Building actual "installation package" takes effort, a fair share of pluming code while the actual outcome, such as a console application or PowerShell script is highly inconsistent.
+
+That's where MetaPack shines! It offers a common, standardized and extensible way to package, deliver and deploy SharePoint solutions regardless of the actual framework or provisioning library used. 
+
+## How does MetaPack work?
+
+MetaPack is built on top of NuGet platform leveraging all packaging, versioning and dependency management features of NuGet itself. MetaPack API allows us to create a NuGet package out of our customizations. Next, once target NuGet package is published to NuGet Gallery (or local file system), target NuGet package can be deployed by MetaPack straight to SharePoint. 
+
+MetaPack integrates with SPMeta2 and SharePoint PnP offering a way to create a NuGet package out of SPMeta2 or PnP models. Taking care of packaging, versioning and dependencies, MetaPack delegates actual provision of a package to SPMeta2 or SharePoint PnP.
+
+Here is how it works:
 ![MetaPack Vision](https://subpointsolutions-dev.netlify.com/content/img/products/metapack/metapack-vision.png)
 
-[Link to the full image](https://subpointsolutions-dev.netlify.com/content/img/products/metapack/metapack-vision.png)
+## Key features of MetaPack
+The key features of MetaPack are:
 
-### Build status
-[![Build status](https://ci.appveyor.com/api/projects/status/1weq7g33dfp3xi6i?svg=true)](https://ci.appveyor.com/project/SubPointSupport/metapack)
+	• Standardized solution packaging: MetaPack abstracts away packaging of your SharePoint customizations. Neither you have to write another console application or PowerShell script, nor you have to think on how to package your customization - you always have a NuGet package as a smallest "solution package"
+	• Standardized versioning: version your SharePoint customizations same way as you version you APIs: use semantic versioning across the board.
+	• Dependency management: with MetaPack not only you can package your SharePoint solutions but you can also modularize them in most natural, industry adopted way - using NuGet versioning and dependency management. MetaPack understands dependencies, resolves and deploys required packages same way as NuGet would
+	• Extensible API: MetaPack offers extensible API so that you can write your own packaging and deployment providers. You can implement your own licensing asking people a license key before deploying your solution.
+	• MetaPack CLI: MetaPack offers a command-line interface. That enables easy integration of MetaPack with existing CI/CD pipelines as well as IT professionals can deploy SharePoint solutions with a single line command
+	• MetaPack GUI (coming soon): we would like to enable business used and IT professionals with a friendly GUI application to manage and deploy SharePoint customization. It's work in progress but let us know what you think of it
 
-### MetaPack in details
+## How MetaPack can be used?
+Standardized packages, versioning and dependency management coupled with out of the box support  for SharePointPnP/SPMeta2 and extensible API makes other interesting scenarios possible:
 
-#### Introduces solution packaging
-Packaging SharePoint customization is never an easy task. Should it be console app? Should it be provider hosted app? A PowerShell script?
+	• A global, community-driven solution catalog -  why not to create a public NuGet gallery devoted to open-source, community-driving solutions? Let us know if you want one!
+	• A private, corporate solution catalog  - why not to deploy NuGet gallery internally in your company and deliver your solutions for SharePoint that way?
+	• A private solution catalog for your customers -  are you a SharePoint consultancy? Why not to deploy a private NuGet gallery to deliver solutions for your customers? You can use http://myget.org to get one as cheap as $7 a month
+	• You own packaging and licensing  - are you an ISV company? Why not to implement your own packaging provider asking people for a commercial license key before actually deploying your solution?
+	• API-independent solutions provision orchestrations  - why not to mix few SharePointPnP and SPMeta2 solutions in a single batch? MetaPack takes care on all details and we can focus on WHAT to deploy rather HOW to deploy
 
-Don't worry. MetaPack packages your solution as a self-contained NuGet package. As simple as that.
-
-#### Handles solution versioning
-Version history is another pain point while delivering SharePoint customizations. It is not easy to keep track of all customizations deployed not to talk about versioning them.
-
-MetaPack uses NuGet Gallery infrastructure to provide solution version tracking. Semantic versioning naturally comes along.
-
-#### Makes dependency management possible
-Did you ever want to reuse and modularize your customizations so that you can compose bigger building blocks? We know it's hard to implement.
-
-MetaPack brings the best of NuGet platform: package dependency management, versioning and easy modularization.
-
-#### Simplifies deployment and updates
-Solution life-cycle does not end with the first deployment. New features are built, new versions are released so that a smooth update process is a must.
-
-MetaPack offers the best experience ever to deploy and update your models. It handles all the details and even shows if updates are available.
-
-
-#### Offers API, a CLI and user friendly GUI
-Modern software development blurs the boundaries between developers, IT-pros and business. Team needs to work closely having a solid, smooth delivery workflow.
-
-MetaPack offers ultimate experience for all team: developers leverage API, IT-pros have a CLI and business have a friendly GUI based application.
-
-#### Improves CI/CD story
-Ultimately, MetaPack not only helps to ship SharePoint customizations to the client but also helps to improve continuous integration and deployment story.
-
-Create SPMeta2 models in Visual Studios, use API to create NuGet packages, ship them the way you like: API, CLI or GUI - it's all yours.
-
-As for the API, that's how you can push your SPMeta2 models into NuGet Gallery: 
-```cs
-WithNuGetContext((apiUrl, apiKey, repoUrl) =>
-            {
-                // you need to apiUrl / apiKey for your NuGet Gallery
-                // apiUrl - something like 'https://{your-nuget-gallery}/api/v2'
-                // apiKey - a long GUID in your NuGet Gallery profile
-
-                // also, https://www.myget.org might help to get started
-
-                // create package service instance
-                var packagingService = new SPMeta2SolutionPackageService();
-
-                // create SPMeta2 solution package
-                var solutionPackage = new SPMeta2SolutionPackage();
-
-                solutionPackage.Title = "SPMeta2 CI Package";
-                solutionPackage.Id = "SPMeta2.CI";
-                solutionPackage.Version = "1.0.0.0";
-                solutionPackage.Authors = "SubPoint Solutions";
-                solutionPackage.Description = "A test package for SPMeta1 models.";
-
-                // add some models
-                var models = new ModelNode[]
-                {
-                    SPMeta2Model.NewSiteModel(site => { }),
-                    SPMeta2Model.NewWebModel(web => { }),
-                };
-
-                foreach (var model in models)
-                {
-                    solutionPackage.Models.Add(model);
-                }
-
-                // we increment solution version within current test
-                UpdatePackageVersion(solutionPackage);
-
-                // publish your solution into NuGet Gallery
-                packagingService.Push(solutionPackage, apiUrl, apiKey);
-            });
-```
-
-Next, you can get package from the NuGet Gallery and unpack it:
-```cs
-WithNuGetContext((apiUrl, apiKey, repoUrl) =>
-            {
-                // you need to apiUrl / apiKey for your NuGet Gallery
-                // apiUrl - something like 'https://{your-nuget-gallery}/api/v2'
-                // apiKey - a long GUID in your NuGet Gallery profile
-
-                // also, https://www.myget.org might help to get started
-
-                // create package service instance
-                var packagingService = new SPMeta2SolutionPackageService();
-
-                // create SPMeta2 solution package
-                var solutionPackage = new SPMeta2SolutionPackage();
-
-                solutionPackage.Title = "SPMeta2 CI Package";
-                solutionPackage.Id = "SPMeta2.CI";
-                solutionPackage.Version = "1.0.0.0";
-                solutionPackage.Authors = "SubPoint Solutions";
-                solutionPackage.Description = "A test package for SPMeta1 models.";
-
-                // add some models
-                var models = new ModelNode[]
-                {
-                    SPMeta2Model.NewSiteModel(site => { }),
-                    SPMeta2Model.NewWebModel(web => { }),
-                };
-
-                foreach (var model in models)
-                {
-                    solutionPackage.Models.Add(model);
-                }
-
-                // we increment solution version within current test
-                UpdatePackageVersion(solutionPackage);
-
-                // publish your solution into NuGet Gallery
-                packagingService.Push(solutionPackage, apiUrl, apiKey);
-
-                // get package from the NuGet Gallery
-                // we use an extension method to find package, as NuGet Gallery takes time to refresh the cache
-                // get the package
-                var nuGetGalleryRepository = PackageRepositoryFactory.Default.CreateRepository(repoUrl);
-                var nuGetPackage = nuGetGalleryRepository.FindPackageSafe(solutionPackage.Id, new SemanticVersion(solutionPackage.Version));
-
-                // unpacking the solution
-                using (var streamReader = nuGetPackage.GetStream())
-                {
-                    // here is your solution with all the models
-                    var unpackedSolutionPackage = packagingService.Unpack(streamReader) as SPMeta2SolutionPackage;
-
-                    // do something with the solution
-                    foreach (var model in unpackedSolutionPackage.Models)
-                    {
-                        // do some stuff with models
-                        // deploy the way you like? 
-                    }
-                }
-            });
-
-```
-
-But why not to deploy your solution straight to SharePoint? Too easy!
-```cs
- // context is an instance of ClientContext
-            // use CSOM for both SharePoint Online and SharePoint 2013 
-
-            WithRootSharePointContext(context =>
-            {
-                WithNuGetContext((apiUrl, apiKey, repoUrl) =>
-                {
-                    // you need to apiUrl / apiKey for your NuGet Gallery
-                    // apiUrl - something like 'https://{your-nuget-gallery}/api/v2'
-                    // apiKey - a long GUID in your NuGet Gallery profile
-
-                    // also, https://www.myget.org might help to get started
-
-                    // create package service instance
-                    var packagingService = new SPMeta2SolutionPackageService();
-
-                    // create SPMeta2 solution package
-                    var solutionPackage = new SPMeta2SolutionPackage();
-
-                    solutionPackage.Title = "SPMeta2 CI Package";
-                    solutionPackage.Id = "SPMeta2.CI";
-                    solutionPackage.Version = "1.0.0.0";
-                    solutionPackage.Authors = "SubPoint Solutions";
-                    solutionPackage.Description = "A test package for SPMeta1 models.";
-
-                    // add some models
-                    var models = new ModelNode[]
-                    {
-                        SPMeta2Model.NewSiteModel(site => { }),
-                        SPMeta2Model.NewWebModel(web => { }),
-                    };
-
-                    foreach (var model in models)
-                    {
-                        solutionPackage.Models.Add(model);
-                    }
-
-                    // we increment solution version within current test
-                    UpdatePackageVersion(solutionPackage);
-
-                    // publish your solution into NuGet Gallery
-                    packagingService.Push(solutionPackage, apiUrl, apiKey);
-
-                    // get package from the NuGet Gallery
-                    // we use an extension method to find package, as NuGet Gallery takes time to refresh the cache
-                    // get the package
-                    var nuGetGalleryRepository = PackageRepositoryFactory.Default.CreateRepository(repoUrl);
-                    var nuGetPackage = nuGetGalleryRepository.FindPackageSafe(solutionPackage.Id,
-                        new SemanticVersion(solutionPackage.Version));
-
-                    // create numage package manager within current SharePoint context
-                    var packageManager = new SPMeta2SolutionPackageManager(nuGetGalleryRepository, context);
-
-                    // setup provision services
-                    packageManager.ProvisionService = new StandardCSOMProvisionService();
-
-                    // but you can also setup SSOM based provision service as following
-                    //packageManager.ProvisionService = new StandardSSOMProvisionService();
-
-                    // set the provision host 
-                    // CSOM -> ClientContext
-                    // SSOM - either SPSite or SPWeb
-                    packageManager.ProvisionServiceHost = context;
-
-                    // just for tracing / logging
-                    packageManager.ProvisionService.OnModelNodeProcessed += (sender, args) =>
-                    {
-                        Trace.WriteLine(
-                            string.Format(" Processed: [{0}/{1}] - [{2}%] - [{3}] [{4}]",
-                                new object[]
-                                    {
-                                        args.ProcessedModelNodeCount,
-                                        args.TotalModelNodeCount,
-                                        100d*(double) args.ProcessedModelNodeCount/(double) args.TotalModelNodeCount,
-                                        args.CurrentNode.Value.GetType().Name,
-                                        args.CurrentNode.Value
-                                    }));
-                    };
-
-                    // go fo install!
-                    packageManager.InstallPackage(nuGetPackage, true, false);
-                });
-            });
-
-```
-
-We have more samples as unit tests here, check them out:
-* [MetaPack API Samples](https://github.com/SubPointSolutions/MetaPack/blob/dev/MetaPack.Tests/Scenarios/ApiSamplesTests.cs)
-
-#### Feature requests, support and contributions
-In case you have unexpected issues or keen to see new features please contact support on SPMeta2 Yammer or here at github:
-
-* [https://www.yammer.com/spmeta2feedback](https://www.yammer.com/spmeta2feedback/#/threads/inGroup?type=in_group&feedId=7897894&view=all)
+## Next steps
+Have more question or keen to learn more about MetaPack? Continue with getting started guide,  API reference and use cases page. Don't forget to join the community and share your ideas as well. Also, MetaPack is an open source project hosted at github, it's all yours.
