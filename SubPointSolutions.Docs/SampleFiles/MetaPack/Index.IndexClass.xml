@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-16"?>
+<DocSample xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <IsMethod>false</IsMethod>
+  <IsClass>true</IsClass>
+  <Tags />
+  <Title>Index</Title>
+  <Description />
+  <MethodBodyWithFunction>    
+    public class Index
+    {
+        [TestMethod]
+        [TestCategory("Docs.Basics")]
+        public void Create_Package_SPMeta2()
+        {
+            Console.WriteLine("SPMeta2");
+        }
+
+        [TestMethod]
+        [TestCategory("Docs.Basics")]
+        public void Create_Package_PnP()
+        {
+            Console.WriteLine("PnP");
+        }
+    }</MethodBodyWithFunction>
+  <MethodBody>public class Index
+{
+    [TestMethod]
+    [TestCategory("Docs.Basics")]
+    public void Create_Package_SPMeta2()
+    {
+        Console.WriteLine("SPMeta2");
+    }
+
+    [TestMethod]
+    [TestCategory("Docs.Basics")]
+    public void Create_Package_PnP()
+    {
+        Console.WriteLine("PnP");
+    }
+}
+</MethodBody>
+  <Language>cs</Language>
+  <Namespace>SubPointSolutions.Docs.Views.MetaPack.getting_started</Namespace>
+  <ClassName>Index</ClassName>
+  <MethodName>IndexClass</MethodName>
+  <ClassComment />
+  <MethodFullName>ClassIndexClass</MethodFullName>
+  <ClassFullName>SubPointSolutions.Docs.Views.MetaPack.getting_started.Index</ClassFullName>
+  <MethodParametersCount>0</MethodParametersCount>
+  <SourceFileName>index.cs</SourceFileName>
+  <SourceFileNameWithoutExtension>index</SourceFileNameWithoutExtension>
+  <SourceFileFolder>C:\Users\avishnyakov\Source\Repos\MetaPack2\SubPointSolutions.Docs\bin\Debug\..\..\Views\MetaPack\getting-started</SourceFileFolder>
+  <SourceFilePath>C:\Users\avishnyakov\Source\Repos\MetaPack2\SubPointSolutions.Docs\bin\Debug\..\..\Views\MetaPack\getting-started\index.cs</SourceFilePath>
+</DocSample>

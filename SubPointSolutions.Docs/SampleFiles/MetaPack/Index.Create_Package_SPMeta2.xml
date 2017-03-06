@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-16"?>
+<DocSample xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <IsMethod>true</IsMethod>
+  <IsClass>false</IsClass>
+  <Tags />
+  <Title>Create_Package_SPMeta2</Title>
+  <Description />
+  <MethodBodyWithFunction>
+        
+        public void Create_Package_SPMeta2()
+        {
+            Console.WriteLine("SPMeta2");
+        }</MethodBodyWithFunction>
+  <MethodBody>Console.WriteLine("SPMeta2");
+
+</MethodBody>
+  <Language>cs</Language>
+  <Namespace>SubPointSolutions.Docs.Views.MetaPack.getting_started</Namespace>
+  <ClassName>Index</ClassName>
+  <MethodName>Create_Package_SPMeta2</MethodName>
+  <ClassComment />
+  <MethodFullName>SubPointSolutions.Docs.Views.MetaPack.getting_started.Index.Create_Package_SPMeta2</MethodFullName>
+  <ClassFullName>SubPointSolutions.Docs.Views.MetaPack.getting_started.Index</ClassFullName>
+  <MethodParametersCount>0</MethodParametersCount>
+  <SourceFileName>index.cs</SourceFileName>
+  <SourceFileNameWithoutExtension>index</SourceFileNameWithoutExtension>
+  <SourceFileFolder>C:\Users\avishnyakov\Source\Repos\MetaPack2\SubPointSolutions.Docs\bin\Debug\..\..\Views\MetaPack\getting-started</SourceFileFolder>
+  <SourceFilePath>C:\Users\avishnyakov\Source\Repos\MetaPack2\SubPointSolutions.Docs\bin\Debug\..\..\Views\MetaPack\getting-started\index.cs</SourceFilePath>
+</DocSample>
