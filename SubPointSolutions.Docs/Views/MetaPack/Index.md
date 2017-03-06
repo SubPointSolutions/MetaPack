@@ -45,7 +45,7 @@ Standardized packages, versioning and dependency management coupled with out of 
 * **A global, community-driven solution catalog** -  why not to create a public NuGet gallery devoted to open-source, community-driving solutions? Let us know if you want one!
 * **A private, corporate solution catalog** - why not to deploy NuGet gallery internally in your company and deliver your solutions for SharePoint that way?
 * **A private solution catalog for your customers** -  are you a SharePoint consultancy? Why not to deploy a private NuGet gallery to deliver solutions for your customers? You can use http://myget.org to get one as cheap as $7 a month
-* You own packaging and licensing** - are you an ISV company? Why not to implement your own packaging provider asking people for a commercial license key before actually deploying your solution?
+* **You own packaging and licensing** - are you an ISV company? Why not to implement your own packaging provider asking people for a commercial license key before actually deploying your solution?
 * **API-independent solutions provision orchestrations** - why not to mix few SharePointPnP and SPMeta2 solutions in a single batch? MetaPack takes care on all details and we can focus on WHAT to deploy rather HOW to deploy
 
 ## Next steps
