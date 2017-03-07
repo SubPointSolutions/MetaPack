@@ -10,7 +10,7 @@ Welcome to MetaPack CLI guide. MetaPack comes in different flavors: a set of C# 
 
 MetaPack CLI connects NuGet Gallery and SharePoint within a commend-line interface. No coding is required, and it's got its own mission - "SharePoint customizations should be one line away" - meaning that it should be really easy to install and update SharePoint solutions within a single line or so. For instance, a solution package "Contoso.Intranet.SiteFiels" can be installed to SharePoint site "http://contoso-intranet.local" with the following command:
 
-```
+```ps
 metapack install -id Contoso.Intranet.SiteFiels -url http://contoso-intranet.local
 ```
 
@@ -24,24 +24,24 @@ There are two ways to get MetaPack CLI installed - using a single *.zip package 
 
 First of all, ensure that you've got [Chocolatey](https://chocolatey.org/install) installed. Next, run the following command to get the latest MetaPack CLI installed:
 
-```
+```ps
 choco install metapack 
 ```
 
 You can also install the recent MetaPack CLI from the build feed:
-```
+```ps
 choco install metapack -source https://ci.appveyor.com/nuget/metapack-ci --force --prerelese
 ```
 
 Once done, check that metapack was installed running one of the following commands:
 
-```
+```ps
 metapack
 metapack version
 ```
 
 The outcome should look as following:
-```
+```ps
 [Information]: Metapack client v1.0.17049.1225
 [Information]: Working directory: [C:\ProgramData\chocolatey\lib\MetaPack\lib\metapack]
 [Information]: Using NuGet galleries:[
@@ -95,7 +95,7 @@ MetaPack CLI is heavility nfluence by nuget.exe and provides similar subset of c
 * **help** - shows help
 
 Every command has additional parameters to address the complexity of a particular deployment scenario. Use "help" switch  to get more information regarding additional parameters available:
-```
+```ps
 metapack install help
 metapack list help
 ```
@@ -127,7 +127,7 @@ Finally, here are some scenarios and examples on how to deploy solution packages
 
 ### Install solution package to O365
 
-```
+```ps
 metapack install `
         --id "Contoso.Intranet.SiteFields" `
         --url "http://contoso-intranet.sharepoint.com" `
@@ -138,7 +138,7 @@ metapack install `
 
 ### Install solution package to SP2013
 
-```
+```ps
 metapack install `
         --id "Contoso.Intranet.SiteFields" `
         --url "http://contoso-intranet.sharepoint.com" `
@@ -150,7 +150,7 @@ metapack install `
 
 ### Install solution package to SP2013 via CSOM
 
-```
+```ps
 metapack install `
         --id "Contoso.Intranet.SiteFields" `
         --url "http://contoso-intranet.sharepoint.com" `
@@ -161,7 +161,7 @@ metapack install `
 
 ### Install solution package to SP2013 via SSOM
 
-```
+```ps
 metapack install `
         --id "Contoso.Intranet.SiteFields" `
         --url "http://contoso-intranet.sharepoint.com" `
@@ -172,7 +172,7 @@ metapack install `
 ```
 
 ### Install solution package from custom NuGet Gallery
-```
+```ps
 metapack install `
         --id "Contoso.Intranet.SiteFields" `
         --source "https://www.myget.org/F/subpointsolutions-staging/api/v2" `
@@ -183,7 +183,7 @@ metapack install `
 ```
 
 ### Install solution package from shared folder
-```
+```ps
 metapack install `
         --id "Contoso.Intranet.SiteFields" `
         --source "\\shared-drives\sp-solutions-repository" `
@@ -194,7 +194,7 @@ metapack install `
 ```
 
 ### Show installed packages on SharePoint web site
-```
+```ps
 metapack list `
         --url "http://contoso-intranet.sharepoint.com" `
         --username "user@contoso.com" `
