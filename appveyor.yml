@@ -7,3 +7,4 @@ build_script:
 
 artifacts:
     - path: '**\packages\*.nupkg'
+    - path: '**\packages\*.zip'
