@@ -40,11 +40,30 @@ MetaPack comes in several flavours: API for developers, a command-line interface
 Let's get started with MetaPack API and see how it can be used for packaging and deploying your SharePoint customizations for both SPMeta2 and SharePointPnP libraries. We cover a high-level overview enough to get started, and the rest of the scenarios and technical details can be found in [API reference](/metapack/reference).
 
 ### Creating MetaPack package with API
+The easiest way to get started with solution packaging is to use MetaPack's integrations for SPMeta2 and SharePointPnP. Both integrations are C# libraries which provide specific PnP/SPMeta2 implementations for model packaging and deployment.
+
+* MetaPack.SharePointPnP - enables SharePointPnP model packaging and deployment 
+* MetaPack.SPMeta2 - enables SPMeta2 model packaging and deployment
+
+Both packages are available in NuGet so that you can install them via "Package Manager Console" as simple as following:
+* Install-Package MetaPack.SPMeta2 
+* Install-Package MetaPack.SharePointPnP 
+
+For the beta versions of the packages use -IncludePrerelease flag:
+* Install-Package MetaPack.SPMeta2 -Pre
+* Install-Package MetaPack.SharePointPnP -Pre
+
+Once done, use the following code to create a solution package for your SPMeta2 models: 
+
 <a href="_samples/index-Create_Package_SPMeta2.sample-ref"></a>
+
+And the following code to create a solution package for SharePointPnP solutions:
+<a href="_samples/index-Create_Package_PnP.sample-ref"></a>
+
 
 ### Deploying MetaPack package with API
 
-<a href="_samples/index-Create_Package_PnP.sample-ref"></a>
+
 
 ## Next steps
 This and that and something else
