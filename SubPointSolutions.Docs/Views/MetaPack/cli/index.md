@@ -203,4 +203,4 @@ metapack list `
 ```
 
 ## Next steps
-Hope the current guide give some understanding of MetaPack CLI. Let us know how it works for you, don't forget to join the community and share your ideas as well.
+Hope the current guide give some understanding of MetaPack CLI. Let us know how it works for you, don't forget to [join the community](https://www.yammer.com/spmeta2feedback) and share your ideas as well.

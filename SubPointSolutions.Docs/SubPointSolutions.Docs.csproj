@@ -236,8 +236,8 @@
     <None Include="fonts\bootstrap\glyphicons-halflings-regular.woff" />
     <None Include="fonts\bootstrap\glyphicons-halflings-regular.woff2" />
     <None Include="packages.config" />
-    <None Include="Views\MetaPack\extensibility\index.md" />
-    <None Include="Views\MetaPack\reference\index.md" />
+    <None Include="Views\MetaPack\extensibility\_index.md" />
+    <None Include="Views\MetaPack\reference\_index.md" />
     <None Include="Views\MetaPack\getting-started\index.md" />
     <None Include="Views\MetaPack\cli\index.md" />
     <None Include="_start_vscode.ps1" />

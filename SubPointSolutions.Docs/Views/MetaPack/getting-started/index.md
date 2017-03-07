@@ -118,4 +118,4 @@ Here is how package installation looks like with MetaPack API:
 <a href="_samples/Index-Install_Package.sample-ref"></a>
 
 ## Next steps
-Hope the current guide give some understanding of MetaPac API. You can continue with API reference and CLI. Don't forget to join the community and share your ideas as well.
+Hope the current guide give some understanding of MetaPac API. You can continue with API reference and CLI. Don't forget to [join the community](https://www.yammer.com/spmeta2feedback) and share your ideas as well.
