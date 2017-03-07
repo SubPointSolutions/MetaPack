@@ -79,7 +79,7 @@
                 Value = "MetaPack.SharePointPnP"
             });
 
-            var solutionPackageService = new SPMeta2SolutionPackageService();
+            var solutionPackageService = new SharePointPnPSolutionPackageService();
 
             // save your NuGet solution package as stream
             var nuGetPackageStream = solutionPackageService.Pack(solutionPackage, null);
@@ -164,7 +164,7 @@ solutionPackage.AdditionalOptions.Add(new OptionValue
     Value = "MetaPack.SharePointPnP"
 });
 
-var solutionPackageService = new SPMeta2SolutionPackageService();
+var solutionPackageService = new SharePointPnPSolutionPackageService();
 
 // save your NuGet solution package as stream
 var nuGetPackageStream = solutionPackageService.Pack(solutionPackage, null);

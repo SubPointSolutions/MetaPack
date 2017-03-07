@@ -209,7 +209,7 @@ namespace SubPointSolutions.Docs.Views.MetaPack
                 // for instance, as following:
                 // nuget.org - https://packages.nuget.org/api/v2
                 // myget.org - https://www.myget.org/F/subpointsolutions-staging/api/v2/package
-                var nuGetRepository = PackageRepositoryFactory.Default.CreateRepository("http://nuget.oi");
+                var nuGetRepository = PackageRepositoryFactory.Default.CreateRepository("https://packages.nuget.org/api/v2");
                 var packageManager = new DefaultMetaPackSolutionPackageManager(nuGetRepository, clientContext);
 
                 // get your NuGet package by its ID 

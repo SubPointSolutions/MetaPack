@@ -9,11 +9,8 @@
         
         public void Create_Package_SPMeta2()
         {
-            // A high level abstraction for solution package.
             // Follows NuGet spec design - https://docs.nuget.org/ndocs/schema/nuspec
             // Solution package is a container for SERIALIZED models.
-            // It means that solution package does not depend on a particular API oe assembly so that  models have to be in serialazable, platform and api independent way.
-
             var solutionPackage = new SolutionPackageBase();
 
             solutionPackage.Name = "Contoso Intranet SPMeta2 - Site Fields";
@@ -86,11 +83,8 @@
 
             solutionPackageService.Push(solutionPackage, nuGetGallery_ApiUrl, nuGetGallery_ApiKey);
         }</MethodBodyWithFunction>
-  <MethodBody>// A high level abstraction for solution package.
-// Follows NuGet spec design - https://docs.nuget.org/ndocs/schema/nuspec
+  <MethodBody>// Follows NuGet spec design - https://docs.nuget.org/ndocs/schema/nuspec
 // Solution package is a container for SERIALIZED models.
-// It means that solution package does not depend on a particular API oe assembly so that  models have to be in serialazable, platform and api independent way.
-
 var solutionPackage = new SolutionPackageBase();
 
 solutionPackage.Name = "Contoso Intranet SPMeta2 - Site Fields";

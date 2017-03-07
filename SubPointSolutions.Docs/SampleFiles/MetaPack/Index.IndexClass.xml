@@ -12,11 +12,8 @@
         [TestCategory("Docs.Basics")]
         public void Create_Package_SPMeta2()
         {
-            // A high level abstraction for solution package.
             // Follows NuGet spec design - https://docs.nuget.org/ndocs/schema/nuspec
             // Solution package is a container for SERIALIZED models.
-            // It means that solution package does not depend on a particular API oe assembly so that  models have to be in serialazable, platform and api independent way.
-
             var solutionPackage = new SolutionPackageBase();
 
             solutionPackage.Name = "Contoso Intranet SPMeta2 - Site Fields";
@@ -164,7 +161,7 @@
                 Value = "MetaPack.SharePointPnP"
             });
 
-            var solutionPackageService = new SPMeta2SolutionPackageService();
+            var solutionPackageService = new SharePointPnPSolutionPackageService();
 
             // save your NuGet solution package as stream
             var nuGetPackageStream = solutionPackageService.Pack(solutionPackage, null);
@@ -200,7 +197,7 @@
                 // for instance, as following:
                 // nuget.org - https://packages.nuget.org/api/v2
                 // myget.org - https://www.myget.org/F/subpointsolutions-staging/api/v2/package
-                var nuGetRepository = PackageRepositoryFactory.Default.CreateRepository("http://nuget.oi");
+                var nuGetRepository = PackageRepositoryFactory.Default.CreateRepository("https://packages.nuget.org/api/v2");
                 var packageManager = new DefaultMetaPackSolutionPackageManager(nuGetRepository, clientContext);
 
                 // get your NuGet package by its ID 
@@ -242,6 +239,8 @@
                     Value = "pass@word1"
                 });
 
+                packageManager.SolutionOptions.AddRange(solutionOptions);
+
                 // install package
                 // metapack will resolve and install all the things for you
                 packageManager.InstallPackage(nuGetPackage, false, false);
@@ -254,11 +253,8 @@
     [TestCategory("Docs.Basics")]
     public void Create_Package_SPMeta2()
     {
-        // A high level abstraction for solution package.
         // Follows NuGet spec design - https://docs.nuget.org/ndocs/schema/nuspec
         // Solution package is a container for SERIALIZED models.
-        // It means that solution package does not depend on a particular API oe assembly so that  models have to be in serialazable, platform and api independent way.
-
         var solutionPackage = new SolutionPackageBase();
 
         solutionPackage.Name = "Contoso Intranet SPMeta2 - Site Fields";
@@ -406,7 +402,7 @@
             Value = "MetaPack.SharePointPnP"
         });
 
-        var solutionPackageService = new SPMeta2SolutionPackageService();
+        var solutionPackageService = new SharePointPnPSolutionPackageService();
 
         // save your NuGet solution package as stream
         var nuGetPackageStream = solutionPackageService.Pack(solutionPackage, null);
@@ -442,7 +438,7 @@
             // for instance, as following:
             // nuget.org - https://packages.nuget.org/api/v2
             // myget.org - https://www.myget.org/F/subpointsolutions-staging/api/v2/package
-            var nuGetRepository = PackageRepositoryFactory.Default.CreateRepository("http://nuget.oi");
+            var nuGetRepository = PackageRepositoryFactory.Default.CreateRepository("https://packages.nuget.org/api/v2");
             var packageManager = new DefaultMetaPackSolutionPackageManager(nuGetRepository, clientContext);
 
             // get your NuGet package by its ID
@@ -483,6 +479,8 @@
                 Name = DefaultOptions.User.Password.Id,
                 Value = "pass@word1"
             });
+
+            packageManager.SolutionOptions.AddRange(solutionOptions);
 
             // install package
             // metapack will resolve and install all the things for you
