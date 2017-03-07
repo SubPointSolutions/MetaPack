@@ -78,6 +78,10 @@ You can also get metapack zip package. Check the following link and get *.zip fi
 * https://ci.appveyor.com/project/SubPointSupport/metapack/build/artifacts
 
 Download it, right clicn -> Properties -> Unblock it, and then extract all the content into a new folder.
+Checksums are also avialable via build links and looks as following:
+* MetaPack.0.1.0-alpha170660508.MD5SUM
+* MetaPack.0.1.0-alpha170660508.SHA256SUM
+* MetaPack.0.1.0-alpha170660508.SHA512SUM
 
 ## Installing packages with MetaPack CLI
 
