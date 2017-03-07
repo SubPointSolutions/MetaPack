@@ -18,8 +18,7 @@
     ],
 
     "defaultTestCategories": [
-        "CI.Core",
-        "CI.Docs"
+        "CI.Core"
     ],
     "customNuspecs": [
         {
