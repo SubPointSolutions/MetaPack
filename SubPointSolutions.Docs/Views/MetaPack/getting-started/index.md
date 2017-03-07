@@ -53,17 +53,69 @@ For the beta versions of the packages use -IncludePrerelease flag:
 * Install-Package MetaPack.SPMeta2 -Pre
 * Install-Package MetaPack.SharePointPnP -Pre
 
-Once done, use the following code to create a solution package for your SPMeta2 models: 
+MetaPack is notmally available via NuGet but the latest dev builds can also be found via myget feed:
+* https://www.myget.org/F/subpointsolutions-staging/api/v2/package
 
+Once done, use the following code to create a solution package for your SPMeta2 models and SharePointPnP solutions.
+In both cases, you need to create a new solution package first, and then use appropriate packaging service to create a NuGet package. Here is how it goes:
+* Create new instance of SolutionPackageBase class
+* Fill out package metadata, such as Id, Title and so on
+* Add PnP/SPMeta2 models to newly created package
+* Use SharePointPnPSolutionPackageService or SPMeta2SolutionPackageService packaging service to create actual NuGet package
+
+SolutionPackageBase is a wrapper over a NuGet package, and it fully follows NuGet package spec design - https://docs.nuget.org/ndocs/schema/nuspec
+
+Both PnP and SPMeta2 models are added to a package as byte[] arrays. It is done intentionally to eliminate a hard dependency on either of the libraries as well as to avoid library versioning issues.
+
+Both models and solution package can have additional options such as name-value pairs which are used by deployment services to understand how the models have to be provisioned. 
+
+Currently, one of the options for SPMeta2/PnP models is "Order" - so that we can control the order in which models are deployed and "ModelType" - which is a type of the model as add. By default, SPMeta2 models have to be added as serialized XML and PnP solutions have to be added as OpenXML packages. These are only supported types for the time being, we'll add more flexibility supporting other PnP solutions down the road.
+
+Once you created a solution package, use either SharePointPnPSolutionPackageService or SPMeta2SolutionPackageService to create an actual NuGet package. Both services support various scenarios as following:
+* Pack as Stream
+* Pack to file
+* Push to NuGet Gallery
+
+The following example illustrates SPMeta2 models packaging:
 <a href="_samples/index-Create_Package_SPMeta2.sample-ref"></a>
 
-And the following code to create a solution package for SharePointPnP solutions:
+The following example illustrates SharePointPnP solution packaging:
 <a href="_samples/index-Create_Package_PnP.sample-ref"></a>
 
-
 ### Deploying MetaPack package with API
+The previous paragraph covers solution packaging so that by this time you should already have your package as a *.nupkg file or pushed to NuGet Gallery. It is time to deploy your package to SharePoint.
 
+MetaPack provides "DefaultMetaPackSolutionPackageManager" which helps connect NuGet Gallery with SharePoint and deploy solution packages. Provisioning flow looks as following:
 
+* Connect to SharePoint using ClientContext  
+* Connect to NuGet Gallery creating new instance of IPackageRepository
+* Create new instance of DefaultMetaPackSolutionPackageManager()
+* Find your package with IPackageRepository
+* Deploy your package with DefaultMetaPackSolutionPackageManager
+
+MetaPack actually implements a special type of NuGet package manager which understands SharePoint. By default, NuGet package manager work with the file system (such as the one within your Visual Studio, for instance). MetaPack implements a special file system provider for NuGet so that package manager can work with SharePoint and store installed packages in SharePoint library. That's how it keeps tracking of all packages installed - they are all stored in a special SharePoint library MetaPack creates.
+
+Once you find your NuGet package, you can call .InstallPackage() method passing actual package. ClientContext is used to connect to SharePoint, and then MetaPack checks if SharePoint has "metapack-gallery" library exists creating once if it does not. Next, MetaPack resolved all package dependencies installing each of them before installing your package - exactly the same way as NuGet does.
+
+Finally, MetaPack unpacks solution packages using the right provider, fetches models and deployed them using the right deployment provider. That's why you had to setup either  "MetaPack.SharePointPnP" or "MetaPack.SPMeta2" as a solution tool package id while packing your solution early. MetaPack installs the right providers, looks for the deployment service and then passed unpacked model to be provisioned to SharePoint.
+
+A set of options is available to tune deployment provider behavior. All of the options are passed as name-value collection via .SolutionOptions property. Here are the basic options passed down to a deployment provider:
+
+SharePoint environment:
+* **DefaultOptions.SharePoint.Api.CSOM** - CSOM/SSOM   
+* **DefaultOptions.SharePoint.Api.Edition** - Foundation/Standard
+* **DefaultOptions.SharePoint.Version.O365** - O365/SP2013/S2016
+
+SharePoint credentials:
+* **UserName** - actual SharePoint user name
+* **UserPassword** - actual SharePoint user password
+
+Be aware that If you use O365, then username and password are used with SharePointOnlineCredentials. For SP2013/2016, NetworkCredential will be used if non-empty username and password were provided (so that you can provision remotely on-remises) and default credentials will be used if no username/password were provided (as if you were on actual SharePoint box).
+
+Deployment API is a little bit verbose so that we suggest to create some high-level wrappers to tune MetaPack as per your business needs. Otherwise, you can use [MetaPack CLI](/metapack/cli) to deploy solution packages from command-line.
+
+Here is how package installation looks like with MetaPack API:
+<a href="_samples/Index-Install_Package.sample-ref"></a>
 
 ## Next steps
-This and that and something else
+Hope the current guide give some understanding of MetaPac API. You can continue with API reference and CLI. Don't forget to join the community and share your ideas as well.
