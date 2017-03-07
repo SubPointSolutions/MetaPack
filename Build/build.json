@@ -204,8 +204,7 @@
     "defaultTestAssemblyPaths": [
         "MetaPack.Tests/bin/debug/MetaPack.Tests.dll",
         "MetaPack.Client.Console.Tests/bin/debug/MetaPack.Client.Console.Tests.dll",
-        "MetaPack.Client.Common.Tests/bin/debug/MetaPack.Client.Common.Tests.dll",
-        "SubPointSolutions.Docs/bin/Debug/SubPointSolutions.Docs.dll"
+        "MetaPack.Client.Common.Tests/bin/debug/MetaPack.Client.Common.Tests.dll"
     ],
     "defaultBuildDirs": [ ],
     "defaultEnvironmentVariables": [ ]
