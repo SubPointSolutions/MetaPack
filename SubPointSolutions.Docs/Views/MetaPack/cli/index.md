@@ -74,6 +74,11 @@ Copyright ©  2016
 [Information]: Cannot find arguments. Exiting.
 ```
 
+You can also get metapack zip package. Check the following link and get *.zip file whith looks as "MetaPack.0.1.0-alpha170660508.zip":
+* https://ci.appveyor.com/project/SubPointSupport/metapack/build/artifacts
+
+Download it, right clicn -> Properties -> Unblock it, and then extract all the content into a new folder.
+
 ## Installing packages with MetaPack CLI
 
 MetaPack CLI is heavility nfluence by nuget.exe and provides similar subset of commands to manage and install solutions packages but in a context of SharePoint:
@@ -182,6 +187,15 @@ metapack install `
         --username "user@contoso.com" `
         --userpassword "pass@word1" `
         --spversion "sp2013"
+```
+
+### Show installed packages on SharePoint web site
+```
+metapack list `
+        --url "http://contoso-intranet.sharepoint.com" `
+        --username "user@contoso.com" `
+        --userpassword "pass@word1" 
+
 ```
 
 ## Next steps

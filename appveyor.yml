@@ -8,3 +8,4 @@ build_script:
 artifacts:
     - path: '**\packages\*.nupkg'
     - path: '**\packages\*.zip'
+    - path: '**\packages\*.zip.*'
