@@ -5,7 +5,7 @@
     "defaultChocolateyPackagesDirectory": "./build-artifact-cli-packages",
     "defaultNuspecVersion": "0.1.0",
 
-    "defaultDocsBuildEnabled": true,
+    "defaultDocsBuildEnabled": false,
     "defaultDocsViewFolder": "SubPointSolutions.Docs/Views/metapack",
     "defaultDocsSampleFilesFolder": "SubPointSolutions.Docs/SampleFiles",
     "defaultDocsRepoFolder": "m2-mp",
