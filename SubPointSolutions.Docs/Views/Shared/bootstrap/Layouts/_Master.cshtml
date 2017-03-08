@@ -40,6 +40,8 @@
     <script src="/scripts/SyntaxHighlighter/shBrushCSharp.js"></script>
     <script src="/scripts/SyntaxHighlighter/shBrushXml.js"></script>
     <script src="/scripts/SyntaxHighlighter/shBrushJScript.js"></script>
+    <script src="/scripts/syntaxhighlighter/shbrushpowershell.js"></script>
+
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/2.2.2/isotope.pkgd.min.js"></script>
 
@@ -76,6 +78,9 @@
 
                 $('code.language-js')
                     .addClass('brush: js;');
+
+                $('code.language-ps')
+                       .addClass('brush: ps;');
 
                 SyntaxHighlighter.defaults['quick-code'] = false;
                 SyntaxHighlighter.config.tagName = 'code';

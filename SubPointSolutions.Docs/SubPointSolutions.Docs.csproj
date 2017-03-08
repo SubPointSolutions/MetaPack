@@ -44,17 +44,21 @@
       <HintPath>..\packages\HtmlAgilityPack.1.4.9.5\lib\Net45\HtmlAgilityPack.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="MetaPack.Core">
-      <HintPath>..\packages\MetaPack.Core.0.1.0-beta1\lib\net45\MetaPack.Core.dll</HintPath>
+    <Reference Include="MetaPack.Core, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\MetaPack.Core.0.1.0-beta2\lib\net45\MetaPack.Core.dll</HintPath>
+      <Private>True</Private>
     </Reference>
-    <Reference Include="MetaPack.NuGet">
-      <HintPath>..\packages\MetaPack.NuGet.0.1.0-beta1\lib\net45\MetaPack.NuGet.dll</HintPath>
+    <Reference Include="MetaPack.NuGet, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\MetaPack.NuGet.0.1.0-beta2\lib\net45\MetaPack.NuGet.dll</HintPath>
+      <Private>True</Private>
     </Reference>
-    <Reference Include="MetaPack.SharePointPnP">
-      <HintPath>..\packages\MetaPack.SharePointPnP.0.1.0-beta1\lib\net45\MetaPack.SharePointPnP.dll</HintPath>
+    <Reference Include="MetaPack.SharePointPnP, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\MetaPack.SharePointPnP.0.1.0-beta2\lib\net45\MetaPack.SharePointPnP.dll</HintPath>
+      <Private>True</Private>
     </Reference>
-    <Reference Include="MetaPack.SPMeta2">
-      <HintPath>..\packages\MetaPack.SPMeta2.0.1.0-beta1\lib\net45\MetaPack.SPMeta2.dll</HintPath>
+    <Reference Include="MetaPack.SPMeta2, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\MetaPack.SPMeta2.0.1.0-beta2\lib\net45\MetaPack.SPMeta2.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.CodeAnalysis, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -64,6 +68,14 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Microsoft.CodeAnalysis.CSharp.1.3.2\lib\net45\Microsoft.CodeAnalysis.CSharp.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.SharePoint.Client, Version=15.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Dependencies\SharePoint\SP2013 - 15.0.4569.1000\CSOM\Microsoft.SharePoint.Client.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.SharePoint.Client.Runtime, Version=15.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Dependencies\SharePoint\SP2013 - 15.0.4569.1000\CSOM\Microsoft.SharePoint.Client.Runtime.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\..\..\Program Files (x86)\Microsoft Visual Studio 12.0\Common7\IDE\PublicAssemblies\Microsoft.VisualStudio.QualityTools.UnitTestFramework.dll</HintPath>
@@ -71,7 +83,7 @@
     <Reference Include="Microsoft.Web.XmlTransform, Version=2.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Web.Xdt.2.1.1\lib\net40\Microsoft.Web.XmlTransform.dll</HintPath>
     </Reference>
-    <Reference Include="NuGet.Core, Version=2.12.0.817, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+    <Reference Include="NuGet.Core, Version=2.12.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\NuGet.Core.2.12.0\lib\net40-Client\NuGet.Core.dll</HintPath>
     </Reference>
@@ -175,280 +187,6 @@
     <Content Include="Scripts\bootstrap\SyntaxHighlighter\shBrushXml.js" />
     <Content Include="Scripts\bootstrap\SyntaxHighlighter\shCore.js" />
     <Content Include="Scripts\bootstrap\SyntaxHighlighter\shLegacy.js" />
-    <Content Include="Wyam 0.11.1-beta\AngleSharp.dll" />
-    <Content Include="Wyam 0.11.1-beta\AngleSharp.xml" />
-    <Content Include="Wyam 0.11.1-beta\CommonMark.dll" />
-    <Content Include="Wyam 0.11.1-beta\CommonMark.pdb" />
-    <Content Include="Wyam 0.11.1-beta\CommonMark.xml" />
-    <Content Include="Wyam 0.11.1-beta\dotless.ClientOnly.dll" />
-    <Content Include="Wyam 0.11.1-beta\dotless.ClientOnly.pdb" />
-    <Content Include="Wyam 0.11.1-beta\EPPlus.dll" />
-    <Content Include="Wyam 0.11.1-beta\EPPlus.xml" />
-    <Content Include="Wyam 0.11.1-beta\ICSharpCode.SharpZipLib.dll" />
-    <Content Include="Wyam 0.11.1-beta\ImageProcessor.dll" />
-    <Content Include="Wyam 0.11.1-beta\LibGit2Sharp.dll" />
-    <Content Include="Wyam 0.11.1-beta\LibGit2Sharp.xml" />
-    <Content Include="Wyam 0.11.1-beta\MetadataExtractor.dll" />
-    <Content Include="Wyam 0.11.1-beta\MetadataExtractor.xml" />
-    <Content Include="Wyam 0.11.1-beta\Microsoft.AspNet.FileProviders.dll" />
-    <Content Include="Wyam 0.11.1-beta\Microsoft.AspNet.FileProviders.Interfaces.dll" />
-    <Content Include="Wyam 0.11.1-beta\Microsoft.AspNet.FileProviders.Interfaces.xml" />
-    <Content Include="Wyam 0.11.1-beta\Microsoft.AspNet.FileProviders.xml" />
-    <Content Include="Wyam 0.11.1-beta\Microsoft.AspNet.Razor.dll" />
-    <Content Include="Wyam 0.11.1-beta\Microsoft.AspNet.Razor.xml" />
-    <Content Include="Wyam 0.11.1-beta\Microsoft.Build.dll" />
-    <Content Include="Wyam 0.11.1-beta\Microsoft.Build.Engine.dll" />
-    <Content Include="Wyam 0.11.1-beta\Microsoft.Build.Framework.dll" />
-    <Content Include="Wyam 0.11.1-beta\Microsoft.Build.Tasks.Core.dll" />
-    <Content Include="Wyam 0.11.1-beta\Microsoft.Build.Utilities.Core.dll" />
-    <Content Include="Wyam 0.11.1-beta\Microsoft.CodeAnalysis.CSharp.dll" />
-    <Content Include="Wyam 0.11.1-beta\Microsoft.CodeAnalysis.CSharp.Workspaces.dll" />
-    <Content Include="Wyam 0.11.1-beta\Microsoft.CodeAnalysis.CSharp.Workspaces.xml" />
-    <Content Include="Wyam 0.11.1-beta\Microsoft.CodeAnalysis.CSharp.xml" />
-    <Content Include="Wyam 0.11.1-beta\Microsoft.CodeAnalysis.dll" />
-    <Content Include="Wyam 0.11.1-beta\Microsoft.CodeAnalysis.VisualBasic.dll" />
-    <Content Include="Wyam 0.11.1-beta\Microsoft.CodeAnalysis.VisualBasic.Workspaces.dll" />
-    <Content Include="Wyam 0.11.1-beta\Microsoft.CodeAnalysis.VisualBasic.Workspaces.xml" />
-    <Content Include="Wyam 0.11.1-beta\Microsoft.CodeAnalysis.VisualBasic.xml" />
-    <Content Include="Wyam 0.11.1-beta\Microsoft.CodeAnalysis.Workspaces.Desktop.dll" />
-    <Content Include="Wyam 0.11.1-beta\Microsoft.CodeAnalysis.Workspaces.Desktop.xml" />
-    <Content Include="Wyam 0.11.1-beta\Microsoft.CodeAnalysis.Workspaces.dll" />
-    <Content Include="Wyam 0.11.1-beta\Microsoft.CodeAnalysis.Workspaces.xml" />
-    <Content Include="Wyam 0.11.1-beta\Microsoft.CodeAnalysis.xml" />
-    <Content Include="Wyam 0.11.1-beta\Microsoft.Framework.Caching.Interfaces.dll" />
-    <Content Include="Wyam 0.11.1-beta\Microsoft.Framework.Caching.Interfaces.xml" />
-    <Content Include="Wyam 0.11.1-beta\Microsoft.Owin.dll" />
-    <Content Include="Wyam 0.11.1-beta\Microsoft.Owin.FileSystems.dll" />
-    <Content Include="Wyam 0.11.1-beta\Microsoft.Owin.FileSystems.xml" />
-    <Content Include="Wyam 0.11.1-beta\Microsoft.Owin.Host.HttpListener.dll" />
-    <Content Include="Wyam 0.11.1-beta\Microsoft.Owin.Host.HttpListener.xml" />
-    <Content Include="Wyam 0.11.1-beta\Microsoft.Owin.Hosting.dll" />
-    <Content Include="Wyam 0.11.1-beta\Microsoft.Owin.Hosting.xml" />
-    <Content Include="Wyam 0.11.1-beta\Microsoft.Owin.StaticFiles.dll" />
-    <Content Include="Wyam 0.11.1-beta\Microsoft.Owin.StaticFiles.xml" />
-    <Content Include="Wyam 0.11.1-beta\Microsoft.Owin.xml" />
-    <Content Include="Wyam 0.11.1-beta\Microsoft.Web.XmlTransform.dll" />
-    <Content Include="Wyam 0.11.1-beta\NativeBinaries\amd64\git2-e0902fb.dll" />
-    <Content Include="Wyam 0.11.1-beta\NativeBinaries\amd64\git2-e0902fb.pdb" />
-    <Content Include="Wyam 0.11.1-beta\NativeBinaries\x86\git2-e0902fb.dll" />
-    <Content Include="Wyam 0.11.1-beta\NativeBinaries\x86\git2-e0902fb.pdb" />
-    <Content Include="Wyam 0.11.1-beta\Newtonsoft.Json.dll" />
-    <Content Include="Wyam 0.11.1-beta\Newtonsoft.Json.xml" />
-    <Content Include="Wyam 0.11.1-beta\NuGet.Core.dll" />
-    <Content Include="Wyam 0.11.1-beta\NuGet.Frameworks.dll" />
-    <Content Include="Wyam 0.11.1-beta\NuGet.Frameworks.xml" />
-    <Content Include="Wyam 0.11.1-beta\Octokit.dll" />
-    <Content Include="Wyam 0.11.1-beta\Octokit.pdb" />
-    <Content Include="Wyam 0.11.1-beta\Octokit.xml" />
-    <Content Include="Wyam 0.11.1-beta\Owin.dll" />
-    <Content Include="Wyam 0.11.1-beta\Rant.dll" />
-    <Content Include="Wyam 0.11.1-beta\Rant.xml" />
-    <Content Include="Wyam 0.11.1-beta\ReflectionMagic.dll" />
-    <Content Include="Wyam 0.11.1-beta\System.Collections.Immutable.dll" />
-    <Content Include="Wyam 0.11.1-beta\System.Collections.Immutable.xml" />
-    <Content Include="Wyam 0.11.1-beta\System.CommandLine.dll" />
-    <Content Include="Wyam 0.11.1-beta\System.CommandLine.pdb" />
-    <Content Include="Wyam 0.11.1-beta\System.Composition.AttributedModel.dll" />
-    <Content Include="Wyam 0.11.1-beta\System.Composition.AttributedModel.xml" />
-    <Content Include="Wyam 0.11.1-beta\System.Composition.Convention.dll" />
-    <Content Include="Wyam 0.11.1-beta\System.Composition.Convention.xml" />
-    <Content Include="Wyam 0.11.1-beta\System.Composition.Hosting.dll" />
-    <Content Include="Wyam 0.11.1-beta\System.Composition.Hosting.xml" />
-    <Content Include="Wyam 0.11.1-beta\System.Composition.Runtime.dll" />
-    <Content Include="Wyam 0.11.1-beta\System.Composition.Runtime.xml" />
-    <Content Include="Wyam 0.11.1-beta\System.Composition.TypedParts.dll" />
-    <Content Include="Wyam 0.11.1-beta\System.Composition.TypedParts.xml" />
-    <Content Include="Wyam 0.11.1-beta\System.Console.dll" />
-    <Content Include="Wyam 0.11.1-beta\System.Reflection.Metadata.dll" />
-    <Content Include="Wyam 0.11.1-beta\System.Reflection.Metadata.xml" />
-    <Content Include="Wyam 0.11.1-beta\Tabular.Csv.dll" />
-    <Content Include="Wyam 0.11.1-beta\Tabular.Csv.xml" />
-    <Content Include="Wyam 0.11.1-beta\Tabular.dll" />
-    <Content Include="Wyam 0.11.1-beta\Tabular.Excel.dll" />
-    <Content Include="Wyam 0.11.1-beta\Tabular.Excel.xml" />
-    <Content Include="Wyam 0.11.1-beta\Tabular.xml" />
-    <Content Include="Wyam 0.11.1-beta\UniversalTypeConverter.dll" />
-    <Content Include="Wyam 0.11.1-beta\UniversalTypeConverter.xml" />
-    <Content Include="Wyam 0.11.1-beta\Wyam.Common.dll" />
-    <Content Include="Wyam 0.11.1-beta\Wyam.Common.pdb" />
-    <Content Include="Wyam 0.11.1-beta\Wyam.Core.dll" />
-    <Content Include="Wyam 0.11.1-beta\Wyam.Core.pdb" />
-    <Content Include="Wyam 0.11.1-beta\Wyam.exe" />
-    <Content Include="Wyam 0.11.1-beta\Wyam.Modules.AmazonWebServices.dll" />
-    <Content Include="Wyam 0.11.1-beta\Wyam.Modules.AmazonWebServices.pdb" />
-    <Content Include="Wyam 0.11.1-beta\Wyam.Modules.CodeAnalysis.dll" />
-    <Content Include="Wyam 0.11.1-beta\Wyam.Modules.CodeAnalysis.pdb" />
-    <Content Include="Wyam 0.11.1-beta\Wyam.Modules.Git.dll" />
-    <Content Include="Wyam 0.11.1-beta\Wyam.Modules.Git.pdb" />
-    <Content Include="Wyam 0.11.1-beta\Wyam.Modules.GitHub.dll" />
-    <Content Include="Wyam 0.11.1-beta\Wyam.Modules.GitHub.pdb" />
-    <Content Include="Wyam 0.11.1-beta\Wyam.Modules.Html.dll" />
-    <Content Include="Wyam 0.11.1-beta\Wyam.Modules.Html.pdb" />
-    <Content Include="Wyam 0.11.1-beta\Wyam.Modules.Images.dll" />
-    <Content Include="Wyam 0.11.1-beta\Wyam.Modules.Images.pdb" />
-    <Content Include="Wyam 0.11.1-beta\Wyam.Modules.Json.dll" />
-    <Content Include="Wyam 0.11.1-beta\Wyam.Modules.Json.pdb" />
-    <Content Include="Wyam 0.11.1-beta\Wyam.Modules.Less.dll" />
-    <Content Include="Wyam 0.11.1-beta\Wyam.Modules.Less.pdb" />
-    <Content Include="Wyam 0.11.1-beta\Wyam.Modules.Markdown.dll" />
-    <Content Include="Wyam 0.11.1-beta\Wyam.Modules.Markdown.pdb" />
-    <Content Include="Wyam 0.11.1-beta\Wyam.Modules.Razor.dll" />
-    <Content Include="Wyam 0.11.1-beta\Wyam.Modules.Razor.pdb" />
-    <Content Include="Wyam 0.11.1-beta\Wyam.Modules.SearchIndex.dll" />
-    <Content Include="Wyam 0.11.1-beta\Wyam.Modules.SearchIndex.pdb" />
-    <Content Include="Wyam 0.11.1-beta\Wyam.Modules.Tables.dll" />
-    <Content Include="Wyam 0.11.1-beta\Wyam.Modules.Tables.pdb" />
-    <Content Include="Wyam 0.11.1-beta\Wyam.Modules.TextGeneration.dll" />
-    <Content Include="Wyam 0.11.1-beta\Wyam.Modules.TextGeneration.pdb" />
-    <Content Include="Wyam 0.11.1-beta\Wyam.Modules.Xmp.dll" />
-    <Content Include="Wyam 0.11.1-beta\Wyam.Modules.Xmp.pdb" />
-    <Content Include="Wyam 0.11.1-beta\Wyam.Modules.Yaml.dll" />
-    <Content Include="Wyam 0.11.1-beta\Wyam.Modules.Yaml.pdb" />
-    <Content Include="Wyam 0.11.1-beta\Wyam.pdb" />
-    <Content Include="Wyam 0.11.1-beta\XmpCore.dll" />
-    <Content Include="Wyam 0.11.1-beta\XmpCore.xml" />
-    <Content Include="Wyam 0.11.1-beta\YamlDotNet.dll" />
-    <Content Include="Wyam 0.11.1-beta\YamlDotNet.Dynamic.dll" />
-    <Content Include="Wyam 0.11.1-beta\YamlDotNet.Dynamic.pdb" />
-    <Content Include="Wyam 0.11.1-beta\YamlDotNet.pdb" />
-    <Content Include="Wyam 0.11.1-beta\YamlDotNet.xml" />
-    <Content Include="Wyam\AngleSharp.dll" />
-    <Content Include="Wyam\AngleSharp.xml" />
-    <Content Include="Wyam\CommonMark.dll" />
-    <Content Include="Wyam\CommonMark.pdb" />
-    <Content Include="Wyam\CommonMark.xml" />
-    <Content Include="Wyam\dotless.ClientOnly.dll" />
-    <Content Include="Wyam\dotless.ClientOnly.pdb" />
-    <Content Include="Wyam\EPPlus.dll" />
-    <Content Include="Wyam\EPPlus.xml" />
-    <Content Include="Wyam\ICSharpCode.SharpZipLib.dll" />
-    <Content Include="Wyam\ImageProcessor.dll" />
-    <Content Include="Wyam\LibGit2Sharp.dll" />
-    <Content Include="Wyam\LibGit2Sharp.xml" />
-    <Content Include="Wyam\MetadataExtractor.dll" />
-    <Content Include="Wyam\MetadataExtractor.xml" />
-    <Content Include="Wyam\Microsoft.AspNet.FileProviders.dll" />
-    <Content Include="Wyam\Microsoft.AspNet.FileProviders.Interfaces.dll" />
-    <Content Include="Wyam\Microsoft.AspNet.FileProviders.Interfaces.xml" />
-    <Content Include="Wyam\Microsoft.AspNet.FileProviders.xml" />
-    <Content Include="Wyam\Microsoft.AspNet.Razor.dll" />
-    <Content Include="Wyam\Microsoft.AspNet.Razor.xml" />
-    <Content Include="Wyam\Microsoft.Build.dll" />
-    <Content Include="Wyam\Microsoft.Build.Engine.dll" />
-    <Content Include="Wyam\Microsoft.Build.Framework.dll" />
-    <Content Include="Wyam\Microsoft.Build.Tasks.Core.dll" />
-    <Content Include="Wyam\Microsoft.Build.Utilities.Core.dll" />
-    <Content Include="Wyam\Microsoft.CodeAnalysis.CSharp.dll" />
-    <Content Include="Wyam\Microsoft.CodeAnalysis.CSharp.Workspaces.dll" />
-    <Content Include="Wyam\Microsoft.CodeAnalysis.CSharp.Workspaces.xml" />
-    <Content Include="Wyam\Microsoft.CodeAnalysis.CSharp.xml" />
-    <Content Include="Wyam\Microsoft.CodeAnalysis.dll" />
-    <Content Include="Wyam\Microsoft.CodeAnalysis.VisualBasic.dll" />
-    <Content Include="Wyam\Microsoft.CodeAnalysis.VisualBasic.Workspaces.dll" />
-    <Content Include="Wyam\Microsoft.CodeAnalysis.VisualBasic.Workspaces.xml" />
-    <Content Include="Wyam\Microsoft.CodeAnalysis.VisualBasic.xml" />
-    <Content Include="Wyam\Microsoft.CodeAnalysis.Workspaces.Desktop.dll" />
-    <Content Include="Wyam\Microsoft.CodeAnalysis.Workspaces.Desktop.xml" />
-    <Content Include="Wyam\Microsoft.CodeAnalysis.Workspaces.dll" />
-    <Content Include="Wyam\Microsoft.CodeAnalysis.Workspaces.xml" />
-    <Content Include="Wyam\Microsoft.CodeAnalysis.xml" />
-    <Content Include="Wyam\Microsoft.Framework.Caching.Interfaces.dll" />
-    <Content Include="Wyam\Microsoft.Framework.Caching.Interfaces.xml" />
-    <Content Include="Wyam\Microsoft.Owin.dll" />
-    <Content Include="Wyam\Microsoft.Owin.FileSystems.dll" />
-    <Content Include="Wyam\Microsoft.Owin.FileSystems.xml" />
-    <Content Include="Wyam\Microsoft.Owin.Host.HttpListener.dll" />
-    <Content Include="Wyam\Microsoft.Owin.Host.HttpListener.xml" />
-    <Content Include="Wyam\Microsoft.Owin.Hosting.dll" />
-    <Content Include="Wyam\Microsoft.Owin.Hosting.xml" />
-    <Content Include="Wyam\Microsoft.Owin.StaticFiles.dll" />
-    <Content Include="Wyam\Microsoft.Owin.StaticFiles.xml" />
-    <Content Include="Wyam\Microsoft.Owin.xml" />
-    <Content Include="Wyam\Microsoft.Web.XmlTransform.dll" />
-    <Content Include="Wyam\NativeBinaries\amd64\git2-e0902fb.dll" />
-    <Content Include="Wyam\NativeBinaries\amd64\git2-e0902fb.pdb" />
-    <Content Include="Wyam\NativeBinaries\x86\git2-e0902fb.dll" />
-    <Content Include="Wyam\NativeBinaries\x86\git2-e0902fb.pdb" />
-    <Content Include="Wyam\Newtonsoft.Json.dll" />
-    <Content Include="Wyam\Newtonsoft.Json.xml" />
-    <Content Include="Wyam\NuGet.Core.dll" />
-    <Content Include="Wyam\NuGet.Frameworks.dll" />
-    <Content Include="Wyam\NuGet.Frameworks.xml" />
-    <Content Include="Wyam\Octokit.dll" />
-    <Content Include="Wyam\Octokit.pdb" />
-    <Content Include="Wyam\Octokit.xml" />
-    <Content Include="Wyam\Owin.dll" />
-    <Content Include="Wyam\Rant.dll" />
-    <Content Include="Wyam\Rant.xml" />
-    <Content Include="Wyam\ReflectionMagic.dll" />
-    <Content Include="Wyam\System.Collections.Immutable.dll" />
-    <Content Include="Wyam\System.Collections.Immutable.xml" />
-    <Content Include="Wyam\System.CommandLine.dll" />
-    <Content Include="Wyam\System.CommandLine.pdb" />
-    <Content Include="Wyam\System.Composition.AttributedModel.dll" />
-    <Content Include="Wyam\System.Composition.AttributedModel.xml" />
-    <Content Include="Wyam\System.Composition.Convention.dll" />
-    <Content Include="Wyam\System.Composition.Convention.xml" />
-    <Content Include="Wyam\System.Composition.Hosting.dll" />
-    <Content Include="Wyam\System.Composition.Hosting.xml" />
-    <Content Include="Wyam\System.Composition.Runtime.dll" />
-    <Content Include="Wyam\System.Composition.Runtime.xml" />
-    <Content Include="Wyam\System.Composition.TypedParts.dll" />
-    <Content Include="Wyam\System.Composition.TypedParts.xml" />
-    <Content Include="Wyam\System.Console.dll" />
-    <Content Include="Wyam\System.Reflection.Metadata.dll" />
-    <Content Include="Wyam\System.Reflection.Metadata.xml" />
-    <Content Include="Wyam\Tabular.Csv.dll" />
-    <Content Include="Wyam\Tabular.Csv.xml" />
-    <Content Include="Wyam\Tabular.dll" />
-    <Content Include="Wyam\Tabular.Excel.dll" />
-    <Content Include="Wyam\Tabular.Excel.xml" />
-    <Content Include="Wyam\Tabular.xml" />
-    <Content Include="Wyam\UniversalTypeConverter.dll" />
-    <Content Include="Wyam\UniversalTypeConverter.xml" />
-    <Content Include="Wyam\Wyam.Common.dll" />
-    <Content Include="Wyam\Wyam.Common.pdb" />
-    <Content Include="Wyam\Wyam.Core.dll" />
-    <Content Include="Wyam\Wyam.Core.pdb" />
-    <Content Include="Wyam\Wyam.exe" />
-    <Content Include="Wyam\Wyam.Modules.AmazonWebServices.dll" />
-    <Content Include="Wyam\Wyam.Modules.AmazonWebServices.pdb" />
-    <Content Include="Wyam\Wyam.Modules.CodeAnalysis.dll" />
-    <Content Include="Wyam\Wyam.Modules.CodeAnalysis.pdb" />
-    <Content Include="Wyam\Wyam.Modules.Git.dll" />
-    <Content Include="Wyam\Wyam.Modules.Git.pdb" />
-    <Content Include="Wyam\Wyam.Modules.GitHub.dll" />
-    <Content Include="Wyam\Wyam.Modules.GitHub.pdb" />
-    <Content Include="Wyam\Wyam.Modules.Html.dll" />
-    <Content Include="Wyam\Wyam.Modules.Html.pdb" />
-    <Content Include="Wyam\Wyam.Modules.Images.dll" />
-    <Content Include="Wyam\Wyam.Modules.Images.pdb" />
-    <Content Include="Wyam\Wyam.Modules.Json.dll" />
-    <Content Include="Wyam\Wyam.Modules.Json.pdb" />
-    <Content Include="Wyam\Wyam.Modules.Less.dll" />
-    <Content Include="Wyam\Wyam.Modules.Less.pdb" />
-    <Content Include="Wyam\Wyam.Modules.Markdown.dll" />
-    <Content Include="Wyam\Wyam.Modules.Markdown.pdb" />
-    <Content Include="Wyam\Wyam.Modules.Razor.dll" />
-    <Content Include="Wyam\Wyam.Modules.Razor.pdb" />
-    <Content Include="Wyam\Wyam.Modules.SearchIndex.dll" />
-    <Content Include="Wyam\Wyam.Modules.SearchIndex.pdb" />
-    <Content Include="Wyam\Wyam.Modules.Tables.dll" />
-    <Content Include="Wyam\Wyam.Modules.Tables.pdb" />
-    <Content Include="Wyam\Wyam.Modules.TextGeneration.dll" />
-    <Content Include="Wyam\Wyam.Modules.TextGeneration.pdb" />
-    <Content Include="Wyam\Wyam.Modules.Xmp.dll" />
-    <Content Include="Wyam\Wyam.Modules.Xmp.pdb" />
-    <Content Include="Wyam\Wyam.Modules.Yaml.dll" />
-    <Content Include="Wyam\Wyam.Modules.Yaml.pdb" />
-    <Content Include="Wyam\Wyam.pdb" />
-    <Content Include="Wyam\XmpCore.dll" />
-    <Content Include="Wyam\XmpCore.xml" />
-    <Content Include="Wyam\YamlDotNet.dll" />
-    <Content Include="Wyam\YamlDotNet.Dynamic.dll" />
-    <Content Include="Wyam\YamlDotNet.Dynamic.pdb" />
-    <Content Include="Wyam\YamlDotNet.pdb" />
-    <Content Include="Wyam\YamlDotNet.xml" />
     <Content Include="_Dependencies\SP2013 - 15.0.4569.1000\CSOM\Microsoft.SharePoint.Client.dll" />
     <Content Include="_Dependencies\SP2013 - 15.0.4569.1000\CSOM\Microsoft.SharePoint.Client.DocumentManagement.dll" />
     <Content Include="_Dependencies\SP2013 - 15.0.4569.1000\CSOM\Microsoft.SharePoint.Client.Publishing.dll" />
@@ -503,7 +241,6 @@
     <None Include="Views\MetaPack\getting-started\index.md" />
     <None Include="Views\MetaPack\cli\index.md" />
     <None Include="_start_vscode.ps1" />
-    <None Include="__packages.config" />
     <None Include="Scripts\bootstrap\jquery-1.9.1.min.map" />
     <None Include="Views\index.md" />
     <None Include="Views\Shared\bootstrap\Components\_PrevNextNavigation.cshtml" />
@@ -523,26 +260,12 @@
     <None Include="Views\MetaPack\Index.md" />
     <None Include="Views\MetaPack\_ViewStart.cshtml" />
     <None Include="Views\_ViewStart.cshtml" />
-    <None Include="Wyam 0.11.1-beta\config.wyam" />
-    <None Include="Wyam 0.11.1-beta\LICENSE" />
-    <None Include="Wyam 0.11.1-beta\README.md" />
-    <None Include="Wyam 0.11.1-beta\ReleaseNotes.md" />
-    <None Include="Wyam 0.11.1-beta\Wyam.exe.config" />
-    <None Include="Wyam\config.wyam" />
-    <None Include="Wyam\LICENSE" />
-    <None Include="Wyam\README.md" />
-    <None Include="Wyam\ReleaseNotes.md" />
-    <None Include="Wyam\Wyam.exe.config" />
     <None Include="_site.wyam" />
     <None Include="_start-site.ps1" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="content\Shared\" />
     <Folder Include="Tests\" />
-    <Folder Include="Wyam 0.11.1-beta\Input\" />
-    <Folder Include="Wyam 0.11.1-beta\Output\" />
-    <Folder Include="Wyam\Input\" />
-    <Folder Include="Wyam\Output\" />
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
