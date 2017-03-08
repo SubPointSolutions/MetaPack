@@ -149,6 +149,8 @@ namespace MetaPack.Client.Console
                 if (toolResolutionService == null)
                     toolResolutionService = new ToolResolutionService();
 
+                toolResolutionService.PackageSources.Clear();
+
                 // environment varioable must go first so that we can override stuff
                 toolResolutionService.InitPackageSourcesFromGetEnvironmentVariable("MetaPack.NuGet.Galleries", EnvironmentVariableTarget.Machine);
                 toolResolutionService.InitPackageSourcesFromGetEnvironmentVariable("MetaPack.NuGet.Galleries", EnvironmentVariableTarget.User);
