@@ -57,11 +57,22 @@ namespace MetaPack.SPMeta2.Services
 
                 if (Compare(spApi, DefaultOptions.SharePoint.Api.CSOM.Value, true))
                 {
-                    result.Add(new SolutionToolPackage
+                    if (Compare(spVersion, DefaultOptions.SharePoint.Version.O365.Value, true))
                     {
-                        Id = "SPMeta2.CSOM.Foundation",
-                        AssemblyNameHint = "SPMeta2.CSOM.dll"
-                    });
+                        result.Add(new SolutionToolPackage
+                        {
+                            Id = "SPMeta2.CSOM.Foundation-v16",
+                            AssemblyNameHint = "SPMeta2.CSOM.dll"
+                        });
+                    }
+                    else
+                    {
+                        result.Add(new SolutionToolPackage
+                        {
+                            Id = "SPMeta2.CSOM.Foundation",
+                            AssemblyNameHint = "SPMeta2.CSOM.dll"
+                        });
+                    }
                 }
 
                 if (Compare(spApi, DefaultOptions.SharePoint.Api.SSOM.Value, true))
@@ -123,7 +134,23 @@ namespace MetaPack.SPMeta2.Services
             }
             else if (Compare(spVersion, DefaultOptions.SharePoint.Version.SP2016.Value, true))
             {
-                // nothing
+                // same as 2013 yet
+                if (Compare(spApi, DefaultOptions.SharePoint.Api.CSOM.Value, true))
+                {
+                    result.Add(new SolutionToolPackage
+                    {
+                        Id = "Microsoft.SharePoint2013.CSOM",
+                        Version = "15.0.4711.1000",
+                        AssemblyNameHint = "Microsoft.SharePoint.Client.dll"
+                    });
+
+                    result.Add(new SolutionToolPackage
+                    {
+                        Id = "Microsoft.SharePoint2013.CSOM",
+                        Version = "15.0.4711.1000",
+                        AssemblyNameHint = "Microsoft.SharePoint.Client.Runtime.dll"
+                    });
+                }
             }
             else
             {
