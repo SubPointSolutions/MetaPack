@@ -36,7 +36,7 @@ Task("Action-CLI-Regression")
 // add one more for taskDefaultCLIPackaging
 // testing that CLI from chocolatey works
 // https://github.com/SubPointSolutions/CakeBuildTools
-taskDefaultCI
+//taskDefaultCI
     .IsDependentOn("Action-CLI-Regression");
 
 // default targets
