@@ -61,7 +61,7 @@ $testFiles = @(
         ProfileName = "cli.m2.csom.o365"
         FileName = "Pester/metapack.cli.provision.ps1"
         TestName = "metapack.cli.provision.spmeta2.o365"
-        Enable = $false
+        Enable = $true
     },
 
     # PnP + O365
@@ -94,7 +94,7 @@ $testFiles = @(
         ProfileName = "cli.m2.csom.sp2013.ssom"
         FileName = "Pester/metapack.cli.provision.ps1"
         TestName = "metapack.cli.provision.spmeta2.sp2013.ssom"
-        Enable = $true
+        Enable = $false
     }
 )
 

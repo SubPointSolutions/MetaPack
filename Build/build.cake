@@ -13,11 +13,11 @@ Task("Action-CLI-Regression")
 
 		System.IO.Directory.CreateDirectory(workingFolderPath);
 
-        // Information("- ensuring peter is installed...");
-        // StartPowershellFile("Pester/_install.ps1", args =>
-        // {
-        //      args.Append("WorkingFolderPath", workingFolderPath);
-        // });
+        Information("- ensuring peter is installed...");
+        StartPowershellFile("Pester/_install.ps1", args =>
+        {
+             args.Append("WorkingFolderPath", workingFolderPath);
+        });
 
 		Information("- installing the latest Chocolatey package...");
         StartPowershellFile("build-choco-install-local.ps1", args =>
@@ -36,7 +36,7 @@ Task("Action-CLI-Regression")
 // add one more for taskDefaultCLIPackaging
 // testing that CLI from chocolatey works
 // https://github.com/SubPointSolutions/CakeBuildTools
-//taskDefaultCLIPackaging
+//taskDefaultCI
 //    .IsDependentOn("Action-CLI-Regression");
 
 // default targets
