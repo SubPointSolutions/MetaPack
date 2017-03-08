@@ -15,6 +15,7 @@ using MetaPack.NuGet.Services;
 using MetaPack.SPMeta2.Services;
 using System.Diagnostics;
 using System.IO;
+using System.Text;
 using MetaPack.Core;
 using MetaPack.NuGet.Common;
 using MetaPack.SharePointPnP;
@@ -23,6 +24,9 @@ using MetaPack.Core.Common;
 using MetaPack.Tests.Extensions;
 using MetaPack.Tests.Services;
 using NuGet;
+using System.IO.Compression;
+using System.Net;
+using MetaPack.Tests.Scenarios;
 
 namespace MetaPack.Tests.Base
 {
@@ -31,18 +35,47 @@ namespace MetaPack.Tests.Base
     {
         #region constructors
 
+        public MetaPackServiceContext SPMeta2ServiceContext { get; set; }
+        public MetaPackServiceContext SharePointPnPServiceContext { get; set; }
+
         public MetaPackScenarioTestBase()
         {
             var regressionTraceService = new RegressionTraceService();
 
-            MetaPackServiceContainer.Instance.ReplaceService(typeof(TraceServiceBase), regressionTraceService);
+            SPMeta2SolutionPackagingService = new SPMeta2SolutionPackageService();
+            SharePointPnPSolutionPackagingService = new SharePointPnPSolutionPackageService();
 
-            var useSPMeta2 = true;
-            var usePnP = false;
+            MetaPackServiceContainer.Instance.ReplaceService(typeof(TraceServiceBase), regressionTraceService);
 
             UseLocaNuGet = true;
 
             InitEnvironmentVariables();
+
+            SPMeta2ServiceContext = new MetaPackServiceContext
+            {
+                PackagingService = new SPMeta2SolutionPackageService(),
+                DeploymentService = new SPMeta2SolutionPackageDeploymentService(),
+
+                ToolPackage = new SolutionToolPackage
+                {
+                    Id = "MetaPack.SPMeta2"
+                },
+
+                CIPackageId = "MetaPack.SPMeta2.CI"
+            };
+
+            SharePointPnPServiceContext = new MetaPackServiceContext
+            {
+                PackagingService = new SharePointPnPSolutionPackageService(),
+                DeploymentService = new SharePointPnPSolutionDeploymentService(),
+
+                ToolPackage = new SolutionToolPackage
+                {
+                    Id = "MetaPack.SharePointPnP"
+                },
+
+                CIPackageId = "MetaPack.SharePointPnP.CI"
+            };
 
             //if (!Environment.Is64BitProcess)
             //    throw new Exception("x64 process is requred. VS -> Test -> Test Settings -> Default process architecture -> x64");
@@ -50,39 +83,12 @@ namespace MetaPack.Tests.Base
             // packaging
             MetaPackService = new List<MetaPackServiceContext>();
 
-            if (useSPMeta2)
-            {
-                MetaPackService.Add(new MetaPackServiceContext
-                {
-                    PackagingService = new SPMeta2SolutionPackageService(),
-                    DeploymentService = new SPMeta2SolutionPackageDeploymentService(),
+            MetaPackService.Add(SPMeta2ServiceContext);
+            MetaPackService.Add(SharePointPnPServiceContext);
 
-                    ToolPackage = new SolutionToolPackage
-                    {
-                        Id = "MetaPack.SPMeta2"
-                    },
+            var localAssemblyDirectoryPath = Path.GetDirectoryName(GetType().Assembly.Location);
+            var localNuGetFolder = Path.GetFullPath(localAssemblyDirectoryPath + @"\..\..\..\Build\local-ci-packages");
 
-                    CIPackageId = "MetaPack.SPMeta2.CI"
-                });
-            }
-
-            if (usePnP)
-            {
-                MetaPackService.Add(new MetaPackServiceContext
-                {
-                    PackagingService = new SharePointPnPSolutionPackageService(),
-                    DeploymentService = new SharePointPnPSolutionDeploymentService(),
-
-                    ToolPackage = new SolutionToolPackage
-                    {
-                        Id = "MetaPack.SharePointPnP"
-                    },
-
-                    CIPackageId = "MetaPack.SharePointPnP.CI"
-                });
-            }
-
-            var localNuGetFolder = Path.GetFullPath(@"..\..\..\Build\local-ci-packages");
             LocalNuGetRepositoryFolderPath = localNuGetFolder;
 
             Directory.CreateDirectory(LocalNuGetRepositoryFolderPath);
@@ -103,9 +109,16 @@ namespace MetaPack.Tests.Base
             }
         }
 
+
         protected virtual void CreateNewSolutionPackage(MetaPackServiceContext service)
         {
-            var solutionPackage = CreateNewSolutionPackage(service.PackagingService);
+            CreateNewSolutionPackage(service, RegressinModelLevel.Site);
+        }
+
+        protected virtual void CreateNewSolutionPackage(MetaPackServiceContext service,
+            RegressinModelLevel modelLevel)
+        {
+            var solutionPackage = CreateNewSolutionPackage(service.PackagingService, null, modelLevel);
             UpdatePackageVersion(solutionPackage);
             PushPackageToCIRepository(solutionPackage, null, service.PackagingService);
         }
@@ -118,8 +131,11 @@ namespace MetaPack.Tests.Base
             O365RootWebUrl = EnvironmentUtils.GetEnvironmentVariable(RegConsts.O365.RootWebUrl);
             O365SubWebUrl = EnvironmentUtils.GetEnvironmentVariable(RegConsts.O365.SubWebUrl);
 
-            OnPremisRootWebUrl = EnvironmentUtils.GetEnvironmentVariable(RegConsts.OnPremis.RootWebUrl);
-            OnPremisSubWebUrl = EnvironmentUtils.GetEnvironmentVariable(RegConsts.OnPremis.SubWebUrl);
+            SP2013RootWebUrl = EnvironmentUtils.GetEnvironmentVariable(RegConsts.SP2013.RootWebUrl);
+            SP2013SubWebUrl = EnvironmentUtils.GetEnvironmentVariable(RegConsts.SP2013.SubWebUrl);
+
+            SP2013UserName = EnvironmentUtils.GetEnvironmentVariable(RegConsts.SP2013.UserName);
+            SP2013UserPassword = EnvironmentUtils.GetEnvironmentVariable(RegConsts.SP2013.UserPassword);
         }
 
         private static List<string> ResolveNuGetGalleryPaths(string value)
@@ -164,6 +180,9 @@ namespace MetaPack.Tests.Base
         #endregion
 
         #region properties
+
+        public NuGetSolutionPackageService SharePointPnPSolutionPackagingService { get; set; }
+        public NuGetSolutionPackageService SPMeta2SolutionPackagingService { get; set; }
 
         public string O365UserName { get; set; }
         public string O365UserPassword { get; set; }
@@ -272,47 +291,7 @@ namespace MetaPack.Tests.Base
             return result;
         }
 
-        protected void WithCIRootSharePointContext(Action<ClientContext> action)
-        {
-            var rootWebUrl = EnvironmentUtils.GetEnvironmentVariable(RegConsts.O365.RootWebUrl);
 
-            if (string.IsNullOrEmpty(rootWebUrl))
-                throw new NullReferenceException("rootWebUrl");
-
-            WithCISharePointContext(rootWebUrl, action);
-        }
-
-        protected void WithCISubWebSharePointContext(Action<ClientContext> action)
-        {
-            var subwebUrl = EnvironmentUtils.GetEnvironmentVariable(RegConsts.O365.SubWebUrl);
-
-            if (string.IsNullOrEmpty(subwebUrl))
-                throw new NullReferenceException("subwebUrl");
-
-            WithCISharePointContext(subwebUrl, action);
-        }
-
-        protected void WithCISharePointContext(string url, Action<ClientContext> action)
-        {
-            var userName = O365UserName;
-            var userPassword = O365UserPassword;
-
-            using (var context = new ClientContext(url))
-            {
-                if (!string.IsNullOrEmpty(userName) && !string.IsNullOrEmpty(userPassword))
-                {
-                    var securePassword = new SecureString();
-
-                    foreach (var c in userPassword)
-                        securePassword.AppendChar(c);
-
-                    context.Credentials = new SharePointOnlineCredentials(userName, securePassword);
-                    context.ExecuteQuery();
-                }
-
-                action(context);
-            }
-        }
 
         protected void WithCINuGetContext(Action<string, string, string> action)
         {
@@ -340,6 +319,54 @@ namespace MetaPack.Tests.Base
                 date.ToString("yyyy"),
                 date.ToString("MMdd"),
                 date.ToString("HHHmm"));
+        }
+
+        protected void WithCIO365ClientContext(string url,
+           string userName,
+           string userPassword,
+           Action<ClientContext> action)
+        {
+            using (var context = new ClientContext(url))
+            {
+                var securePassword = new SecureString();
+
+                foreach (var c in userPassword)
+                    securePassword.AppendChar(c);
+
+                context.Credentials = new SharePointOnlineCredentials(userName, securePassword);
+                context.ExecuteQuery();
+
+                action(context);
+            }
+        }
+
+        protected void WithCISharePointClientContext(string url,
+           Action<ClientContext> action)
+        {
+            WithCISharePointNetworkCredsClientContext(url, null, null, action);
+        }
+
+        protected void WithCISharePointNetworkCredsClientContext(string url,
+           string userName,
+           string userPassword,
+           Action<ClientContext> action)
+        {
+            using (var context = new ClientContext(url))
+            {
+                if (!string.IsNullOrEmpty(userName) && !string.IsNullOrEmpty(userPassword))
+                {
+                    var securePassword = new SecureString();
+
+                    foreach (var c in userPassword)
+                        securePassword.AppendChar(c);
+
+                    context.Credentials = new NetworkCredential(userName, securePassword);
+                }
+
+                context.ExecuteQuery();
+
+                action(context);
+            }
         }
 
         #endregion
@@ -371,12 +398,19 @@ namespace MetaPack.Tests.Base
 
         protected virtual SolutionPackageBase CreateNewSolutionPackage(NuGetSolutionPackageService service)
         {
-            return CreateNewSolutionPackage(service, null);
+            return CreateNewSolutionPackage(service, null, RegressinModelLevel.Site);
+        }
+
+        protected virtual SolutionPackageBase CreateNewSolutionPackage(NuGetSolutionPackageService service,
+               RegressinModelLevel modelLevel)
+        {
+            return CreateNewSolutionPackage(service, null, modelLevel);
         }
 
         protected virtual SolutionPackageBase CreateNewSolutionPackage(
                 NuGetSolutionPackageService service,
-                Action<SolutionPackageBase> action)
+                Action<SolutionPackageBase> action,
+                RegressinModelLevel modelLevel)
         {
             var knownPackageType = false;
 
@@ -384,7 +418,7 @@ namespace MetaPack.Tests.Base
 
             if (service is SPMeta2SolutionPackageService)
             {
-                var m2package = new SPMeta2SolutionPackage();
+                var m2package = new SolutionPackageBase();
 
                 m2package.Name = "SPMeta2 CI Package Name";
                 m2package.Title = "SPMeta2 CI Package Title";
@@ -405,31 +439,67 @@ namespace MetaPack.Tests.Base
                 m2package.Copyright = "Some copyright here";
                 m2package.Tags = "CI SPMeta2 MetaPack Tags";
 
-                var models = new ModelNode[]
-                {
-                    SPMeta2Model.NewSiteModel(site => { }),
-                    SPMeta2Model.NewWebModel(web => { }),
-                };
+                var models = new List<ModelNode>();
 
-                var tmpFolder = GetTempFolderPath();
+                switch (modelLevel)
+                {
+                    case RegressinModelLevel.Farm:
+                        models.Add(SPMeta2Model.NewFarmModel(farm => { }));
+                        break;
+
+                    case RegressinModelLevel.WebApplication:
+                        models.Add(SPMeta2Model.NewWebApplicationModel(webApp => { }));
+                        break;
+
+                    case RegressinModelLevel.Site:
+                        models.Add(SPMeta2Model.NewSiteModel(site => { }));
+                        models.Add(SPMeta2Model.NewWebModel(web => { }));
+                        break;
+
+                    case RegressinModelLevel.Web:
+                        models.Add(SPMeta2Model.NewWebModel(web => { }));
+                        break;
+
+                    default:
+                        throw new NotImplementedException(string.Format(
+                            "Unsupported model level:[{0}] for model genaration",
+                            modelLevel));
+                }
+
+                var index = 0;
 
                 foreach (var model in models)
                 {
+                    index++;
+
                     var xmlContext = SPMeta2Model.ToXML(model);
 
-                    var tmpFileName = GetTempXmlFileName();
-                    var tmpFilePath = Path.Combine(tmpFolder, tmpFileName);
+                    var modelContainer = new ModelContainerBase
+                    {
+                        Model = Encoding.UTF8.GetBytes(xmlContext),
+                    };
 
-                    System.IO.File.WriteAllText(tmpFilePath, xmlContext);
+                    modelContainer.AdditionalOptions.Add(new OptionValue
+                    {
+                        Name = DefaultOptions.Model.Order.Id,
+                        Value = index.ToString()
+                    });
+
+                    m2package.AddModel(modelContainer);
                 }
 
-                m2package.ModelFolders.Add(tmpFolder);
+                m2package.AdditionalOptions.Add(new OptionValue
+                {
+                    Name = DefaultOptions.SolutionToolPackage.PackageId.Id,
+                    Value = "MetaPack.SPMeta2"
+                });
+
                 solutionPackage = m2package;
             }
 
             if (service is SharePointPnPSolutionPackageService)
             {
-                var pnpPackage = new SharePointPnPSolutionPackage();
+                var pnpPackage = new SolutionPackageBase();
 
                 pnpPackage.Name = "SharePointPnP CI Package Name";
                 pnpPackage.Title = "SharePointPnP Package Title";
@@ -450,12 +520,60 @@ namespace MetaPack.Tests.Base
                 pnpPackage.Copyright = "Some copyright here";
                 pnpPackage.Tags = "CI SPMeta2 MetaPack Tags";
 
-                foreach (var folder in Directory.GetDirectories(@"Data/PnPTemplates/Folders"))
-                    pnpPackage.ProvisioningTemplateFolders.Add(folder);
 
-                pnpPackage.ProvisioningTemplateOpenXmlPackageFolders.Add(@"Data/PnPTemplates/OpenXML");
+                // TODO
+                // Zip up and set the model type
+                var asmFolder = Path.GetDirectoryName(GetType().Assembly.Location);
 
-               
+                var foldersPath = Path.Combine(asmFolder, @"Data/PnPTemplates/Folders");
+                var openXmlFolderPath = Path.Combine(asmFolder, @"Data/PnPTemplates/OpenXML");
+
+                foreach (var templateFolder in Directory.GetDirectories(foldersPath))
+                {
+                    // package up into zip
+                    var templateFolderZipFile = GetTempZipFilePath();
+                    ZipFile.CreateFromDirectory(templateFolder, templateFolderZipFile);
+
+                    var modelContainer = new ModelContainerBase
+                    {
+                        Model = System.IO.File.ReadAllBytes(templateFolderZipFile),
+                    };
+
+                    modelContainer.AdditionalOptions.Add(new OptionValue
+                    {
+                        Name = DefaultOptions.Model.Type.Id,
+                        Value = "SharePointPnP.FolderZip"
+                    });
+
+                    pnpPackage.AddModel(modelContainer);
+                }
+
+
+
+
+                var openXmlPackages = Directory.GetFiles(openXmlFolderPath, "*.pnp");
+
+                foreach (var file in openXmlPackages)
+                {
+                    var modelContainer = new ModelContainerBase
+                    {
+                        Model = System.IO.File.ReadAllBytes(file),
+                    };
+
+                    modelContainer.AdditionalOptions.Add(new OptionValue
+                    {
+                        Name = DefaultOptions.Model.Type.Id,
+                        Value = "SharePointPnP.OpenXml"
+                    });
+
+                    pnpPackage.AddModel(modelContainer);
+                }
+
+                pnpPackage.AdditionalOptions.Add(new OptionValue
+                {
+                    Name = DefaultOptions.SolutionToolPackage.PackageId.Id,
+                    Value = "MetaPack.SharePointPnP"
+                });
 
                 solutionPackage = pnpPackage;
             }
@@ -497,6 +615,11 @@ namespace MetaPack.Tests.Base
             return Path.Combine(GetTempFolderPath(), GetTempXmlFileName());
         }
 
+        protected virtual string GetTempZipFilePath()
+        {
+            return Path.Combine(GetTempFolderPath(), string.Format("{0}.zip", Guid.NewGuid().ToString("N")));
+        }
+
         protected virtual string GetTempNuGetFileName()
         {
             return string.Format("{0}.nupkg", Guid.NewGuid().ToString("N"));
@@ -511,8 +634,12 @@ namespace MetaPack.Tests.Base
 
 
 
-        public string OnPremisRootWebUrl { get; set; }
+        public string SP2013RootWebUrl { get; set; }
 
-        public string OnPremisSubWebUrl { get; set; }
+        public string SP2013SubWebUrl { get; set; }
+
+        public string SP2013UserName { get; set; }
+
+        public string SP2013UserPassword { get; set; }
     }
 }

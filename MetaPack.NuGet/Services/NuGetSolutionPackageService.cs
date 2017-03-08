@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using MetaPack.Core;
+using MetaPack.Core.Common;
 using MetaPack.Core.Packaging;
 using MetaPack.Core.Services;
 using NuGet;
 using MetaPack.Core.Consts;
+using MetaPack.Core.Utils;
 
 namespace MetaPack.NuGet.Services
 {
@@ -238,6 +240,24 @@ namespace MetaPack.NuGet.Services
             return solutionFilePath;
         }
 
+        protected virtual ManifestFile GetModelManifestFile(ModelContainerBase model)
+        {
+            var result = new ManifestFile();
+
+            SerializationService.RegisterKnownType(typeof(ModelContainerBase));
+            SerializationService.RegisterKnownType(typeof(OptionValue));
+
+            var fileContent = SerializationService.Serialize(model);
+            var filePath = GetTempXmlFilePath();
+
+            result.Source = filePath;
+            result.Target = MetaPackConsts.ModelsContainerFolder + "/" + Path.GetFileName(filePath);
+
+            File.WriteAllText(filePath, fileContent);
+
+            return result;
+        }
+
         public IPackageFile FindSolutionPackageFile(IPackage package)
         {
             var solutionPackageFile = package.GetFiles().FirstOrDefault(f => f.Path.ToUpper() == MetaPackConsts.SolutionFileName.ToUpper());
@@ -246,6 +266,81 @@ namespace MetaPack.NuGet.Services
                 throw new ArgumentNullException(string.Format("Cannot find SolutionPackage.xml in the provided NuGet package"));
 
             return solutionPackageFile;
+        }
+
+        #endregion
+
+        #region pacjing
+
+        public override Stream Pack(SolutionPackageBase package, SolutionPackageOptions options)
+        {
+            var typedPackage = package;
+
+            MetaPackTrace.Verbose("Packing solution package...");
+
+            // create result stream and NuGet package
+            var resultStream = new MemoryStream();
+            var metadata = GetManifestMetadata(package);
+
+            var nugetPackageBuilder = new PackageBuilder();
+
+            var solutionPackageManifestFile = new ManifestFile();
+            var solutionFilePath = SaveMetaPackSolutionFile<SolutionPackageBase>(solutionPackageManifestFile, typedPackage);
+
+            nugetPackageBuilder.PopulateFiles("", new[] { solutionPackageManifestFile });
+            nugetPackageBuilder.Populate(metadata);
+
+            // TODO
+            // implement container persistance
+
+            var models = package.GetModels();
+
+            foreach (var model in models)
+            {
+                var modelManifestFile = GetModelManifestFile(model);
+                nugetPackageBuilder.PopulateFiles("", new[] { modelManifestFile });
+            }
+
+            // save nuget package into the final stream
+            nugetPackageBuilder.Save(resultStream);
+
+            resultStream.Position = 0;
+
+            MetaPackTrace.Verbose("Packing solution package completed...");
+
+            return resultStream;
+        }
+
+        public override SolutionPackageBase Unpack(Stream package, SolutionPackageOptions options)
+        {
+            package.Position = 0;
+
+            var zipPackage = new ZipPackage(package);
+            var solutionPackageFile = FindSolutionPackageFile(zipPackage);
+
+            SerializationService.RegisterKnownType(typeof(SolutionPackageBase));
+            //SerializationService.RegisterKnownType(typeof(SPMeta2SolutionPackage));
+
+            using (var streamReader = new StreamReader(solutionPackageFile.GetStream()))
+            {
+                var solutionFileContent = streamReader.ReadToEnd();
+
+                var solutionPackage = SerializationService.Deserialize(typeof(SolutionPackageBase), solutionFileContent) as SolutionPackageBase;
+                var modelContainerFiles = zipPackage.GetFiles(MetaPackConsts.ModelsContainerFolder);
+
+                foreach (var modelContainerFile in modelContainerFiles)
+                {
+                    using (var modelContainerStream = modelContainerFile.GetStream())
+                    {
+                        var modelContainerBinary = modelContainerStream.ReadToEnd();
+
+                        var modelContainer = SerializationService.Deserialize(typeof(ModelContainerBase), modelContainerBinary) as ModelContainerBase;
+                        solutionPackage.AddModel(modelContainer);
+                    }
+                }
+
+                return solutionPackage;
+            }
         }
 
         #endregion

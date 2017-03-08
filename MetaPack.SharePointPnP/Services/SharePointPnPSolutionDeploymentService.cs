@@ -17,12 +17,24 @@ using System.Collections;
 using MetaPack.Core.Exceptions;
 using NuGet;
 using MetaPack.Core.Utils;
+using System.Net;
 
 namespace MetaPack.SharePointPnP.Services
 {
     public class SharePointPnPSolutionDeploymentService : SolutionPackageDeploymentService
     {
         #region methods
+
+        private bool Compare(string v1, string v2)
+        {
+            return Compare(v1, v2, true);
+        }
+
+        private bool Compare(string v1, string v2, bool irnoreCase)
+        {
+            return string.Compare(v1, v2, true) == 0;
+        }
+
 
         public override IEnumerable<SolutionToolPackage> GetAdditionalToolPackages(SolutionPackageProvisionOptions options)
         {
@@ -34,13 +46,10 @@ namespace MetaPack.SharePointPnP.Services
             var spEdition = options.GetOptionValue(DefaultOptions.SharePoint.Edition.Id);
             var spApi = options.GetOptionValue(DefaultOptions.SharePoint.Api.Id);
 
-            // ensure m2 assemblies
-            if (spApi != DefaultOptions.SharePoint.Api.CSOM.Value)
-            {
-                throw new MetaPackException(String.Format("Unsuported SharePoint Api:[{0}]", spApi));
-            }
+            if (!Compare(spApi, DefaultOptions.SharePoint.Api.CSOM.Value, true))
+                throw new MetaPackException(String.Format("Unsupported SharePoint Api:[{0}]", spApi));
 
-            if (spVersion == DefaultOptions.SharePoint.Version.O365.Value)
+            if (Compare(spVersion, DefaultOptions.SharePoint.Version.O365.Value))
             {
                 mainToolPackageId = "SharePointPnPCoreOnline";
 
@@ -56,17 +65,32 @@ namespace MetaPack.SharePointPnP.Services
                     AssemblyNameHint = "Microsoft.SharePoint.Client.Runtime.dll"
                 });
             }
-            else if (spVersion == DefaultOptions.SharePoint.Version.SP2013.Value)
+            else if (Compare(spVersion, DefaultOptions.SharePoint.Version.SP2013.Value))
             {
-                throw new NotImplementedException();
+                mainToolPackageId = "SharePointPnPCore2013";
+
+                // adding main toolpackage
+                result.Add(new SolutionToolPackage
+                {
+                    Id = "Microsoft.SharePoint2013.CSOM",
+                    Version = "15.0.4711.1000",
+                    AssemblyNameHint = "Microsoft.SharePoint.Client.dll"
+                });
+
+                result.Add(new SolutionToolPackage
+                {
+                    Id = "Microsoft.SharePoint2013.CSOM",
+                    Version = "15.0.4711.1000",
+                    AssemblyNameHint = "Microsoft.SharePoint.Client.Runtime.dll"
+                });
             }
-            else if (spVersion == DefaultOptions.SharePoint.Version.SP2016.Value)
+            else if (Compare(spVersion, DefaultOptions.SharePoint.Version.SP2016.Value))
             {
                 throw new NotImplementedException();
             }
             else
             {
-                throw new MetaPackException(String.Format("Unsuported SharePoint Version:[{0}]", spVersion));
+                throw new MetaPackException(String.Format("Unsupported SharePoint Version:[{0}]", spVersion));
             }
 
             result.Add(new SolutionToolPackage
@@ -88,7 +112,7 @@ namespace MetaPack.SharePointPnP.Services
             MetaPackTrace.Verbose(string.Format("spEdition:[{0}]", spEdition));
             MetaPackTrace.Verbose(string.Format("spApi:[{0}]", spApi));
 
-            if (spApi != DefaultOptions.SharePoint.Api.CSOM.Value)
+            if (!Compare(spApi, DefaultOptions.SharePoint.Api.CSOM.Value, true))
                 throw new NotSupportedException(string.Format("SharePoint API [{0}] is not supported yet", spApi));
 
             var allAssemblies = ReflectionUtils.GetAllAssembliesFromCurrentAppDomain();
@@ -104,9 +128,10 @@ namespace MetaPack.SharePointPnP.Services
 
             MetaPackTrace.Verbose("Resolving provision class...");
 
-            var solutionPackage = options.SolutionPackage as SharePointPnPSolutionPackage;
+            var solutionPackage = options.SolutionPackage as SolutionPackageBase;
+            var solutionModels = solutionPackage.GetModels();
 
-            MetaPackTrace.Verbose(string.Format("Found [{0}] provision templates", solutionPackage.ProvisioningTemplateFolders.Count));
+            MetaPackTrace.Verbose(string.Format("Found [{0}] models", solutionModels.Count()));
 
             var siteToTemplateConversionType = "OfficeDevPnP.Core.Framework.Provisioning.ObjectHandlers.SiteToTemplateConversion";
             var fileSystemConnectorType = "OfficeDevPnP.Core.Framework.Provisioning.Connectors.FileSystemConnector";
@@ -114,11 +139,26 @@ namespace MetaPack.SharePointPnP.Services
             var provisioningTemplateApplyingInformationType = "OfficeDevPnP.Core.Framework.Provisioning.ObjectHandlers.ProvisioningTemplateApplyingInformation";
             var openXmlConnectorType = "OfficeDevPnP.Core.Framework.Provisioning.Connectors.OpenXMLConnector";
 
-            foreach (var templateFolder in solutionPackage.ProvisioningTemplateOpenXmlPackageFolders)
-            {
-                MetaPackTrace.Verbose(string.Format("Deploying OpenXML package from path: [{0}]", templateFolder));
+            var currentModelIndex = 0;
+            var allModelsCount = solutionModels.Count();
 
-                var allPackages = Directory.GetFiles(templateFolder, "*.pnp");
+            foreach (var modelContainer in solutionModels)
+            {
+                currentModelIndex++;
+
+                MetaPackTrace.Verbose(string.Format(" - deploying model [{0}/{1}]", currentModelIndex, allModelsCount));
+
+                // "SharePointPnP.FolderZip"
+                // "SharePointPnP.OpenXml"
+
+                var modelType = "SharePointPnP.OpenXml";
+                var modelTypeOption = modelContainer.AdditionalOptions
+                                                    .FirstOrDefault(o => o.Name.ToUpper() == DefaultOptions.Model.Type.Id);
+
+                if (modelTypeOption != null)
+                    modelType = modelTypeOption.Value;
+
+                MetaPackTrace.Verbose(string.Format(" - model type: [{0}]", modelType));
 
                 MetaPackTrace.Verbose(string.Format("Detected CSOM provision."));
 
@@ -141,7 +181,7 @@ namespace MetaPack.SharePointPnP.Services
 
                 var web = ReflectionUtils.GetPropertyValue(clientContextInstance, "Web");
 
-                if (spVersion == DefaultOptions.SharePoint.Version.O365.Value)
+                if (Compare(spVersion, DefaultOptions.SharePoint.Version.O365.Value, true))
                 {
                     MetaPackTrace.Verbose(string.Format("O365 API detected"));
 
@@ -179,9 +219,40 @@ namespace MetaPack.SharePointPnP.Services
                         ));
                     }
                 }
-
-                foreach (var pnpPackage in allPackages)
+                else
                 {
+                    MetaPackTrace.Verbose(string.Format("On-premises CSOM API is detected"));
+
+                    // local network creds
+                    if (!string.IsNullOrEmpty(userName) && !string.IsNullOrEmpty(userPassword))
+                    {
+                        MetaPackTrace.Verbose(string.Format("[{0}] and [{1}] aren't null.",
+                                DefaultOptions.User.Name.Id,
+                                DefaultOptions.User.Password.Id
+                            ));
+
+                        MetaPackTrace.Verbose(string.Format("Creating NetworkCredential for web site:[{0}]", siteUrl));
+
+                        var spCredentialsInstance = new NetworkCredential(userName, userPassword);
+
+                        MetaPackTrace.Verbose(string.Format("Setting up credentials..."));
+                        ReflectionUtils.SetPropertyValue(clientContextInstance, "Credentials", spCredentialsInstance);
+                    }
+                    else
+                    {
+                        MetaPackTrace.Verbose(string.Format("No username/userpassword were provided for site:[{0}]", siteUrl));
+                    }
+                }
+
+                if (modelType.ToUpper() == "SharePointPnP.OpenXml".ToUpper())
+                {
+                    var tmpFileFolder = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString("N"));
+                    Directory.CreateDirectory(tmpFileFolder);
+                    var tmpFilePath = Path.Combine(tmpFileFolder, Guid.NewGuid().ToString("N") + ".pnp");
+
+                    System.IO.File.WriteAllBytes(tmpFilePath, modelContainer.Model);
+                    var pnpPackage = tmpFilePath;
+
                     var filConnectorPath = Path.GetDirectoryName(pnpPackage);
                     var fileSystemConnectorInstance = pnpAssembly.CreateInstance(fileSystemConnectorType,
                         true, BindingFlags.CreateInstance, null,
@@ -206,19 +277,31 @@ namespace MetaPack.SharePointPnP.Services
                      CultureInfo.CurrentCulture,
                      null);
 
+                    MetaPackTrace.Verbose(string.Format("Fetching templates..."));
                     var provider = providerInstance;
                     var getTemplatesMethod = provider.GetType().GetMethods()
                                                      .FirstOrDefault(m => m.Name == "GetTemplates" && m.GetParameters().Length == 0);
 
                     var templates = getTemplatesMethod.Invoke(provider, null) as IEnumerable;
 
+                    var templatesCount = 0;
+
+                    foreach (var template in templates)
+                        templatesCount++;
+
+                    MetaPackTrace.Verbose(string.Format("Found [{0}] templates", templatesCount));
+
                     var providerConnector = ReflectionUtils.GetPropertyValue(provider, "Connector");
+
+                    var currentTemplateIndex = 0;
 
                     foreach (var template in templates)
                     {
+                        currentTemplateIndex++;
+
                         ReflectionUtils.SetPropertyValue(template, "Connector", providerConnector);
 
-                        MetaPackTrace.Verbose(string.Format("Deploying template:"));
+                        MetaPackTrace.Verbose(string.Format("Deploying template [{0}/{1}]", currentTemplateIndex, templatesCount));
                         var templateId = ReflectionUtils.GetPropertyValue(template, "Id");
                         MetaPackTrace.Verbose(string.Format(" -ID:[{0}]", templateId));
 
@@ -251,6 +334,13 @@ namespace MetaPack.SharePointPnP.Services
                             provisionOptions
                         });
                     }
+                }
+                else
+                {
+                    var errMesssage = string.Format("Deloyment models of type [{0}] is not supported yet", modelType);
+
+                    MetaPackTrace.Info(errMesssage);
+                    throw new MetaPackException(errMesssage);
                 }
             }
         }

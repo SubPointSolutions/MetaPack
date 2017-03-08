@@ -52,7 +52,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="SharePointPnPSolutionPackage.cs" />
+    <Compile Include="_SharePointPnPSolutionPackage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\SharePointPnPSolutionDeploymentService.cs" />
     <Compile Include="Services\SharePointPnPSolutionPackageService.cs" />

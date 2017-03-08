@@ -23,6 +23,39 @@ using MetaPack.NuGet.Common;
 
 namespace MetaPack.Tests.Scenarios
 {
+    public enum RegressionSandbox
+    {
+        O365,
+        SharePoint
+    }
+
+    public enum RegressionAPI
+    {
+        CSOM,
+        SSOM
+    }
+
+    public enum RegressinModelLevel
+    {
+        Farm,
+        WebApplication,
+        Site,
+        Web
+    }
+
+    public class RegressionDeploymentProfile
+    {
+        public RegressionDeploymentProfile()
+        {
+
+        }
+
+        public RegressionSandbox Sandbox { get; set; }
+        public RegressionAPI API { get; set; }
+
+        public RegressinModelLevel ModelLevel { get; set; }
+    }
+
     [TestClass]
     public class DeploymentScenarioTests : MetaPackScenarioTestBase
     {
@@ -35,183 +68,482 @@ namespace MetaPack.Tests.Scenarios
 
         #endregion
 
-        #region spmeta2
+        #region classes
+
+
+        #endregion
+
+        #region deployment baseline for SharePoint
 
         [TestMethod]
-        [TestCategory("Metapack.Deployment.RootWeb")]
+        [TestCategory("Metapack.API.Deployment")]
+        [TestCategory("Metapack.API.Deployment.SharePoint")]
+        //[TestCategory("Metapack.API.Deployment.Farm")]
         //[TestCategory("CI.Core")]
-        public void Can_Deploy_Solution_Package_To_Root_Web()
+        public void Can_Deploy_SolutionPackage_On_SharePoint_Farm_SSOM()
         {
-            Can_Deploy_Solution_Package_Internal(true, 1, false);
+            WithMetaPackServices(s =>
+            {
+                Internal_Can_Deploy_SolutionPackage_On_SharePoint_Farm_SSOM(s);
+            });
+        }
+
+        public void Internal_Can_Deploy_SolutionPackage_On_SharePoint_Farm_SSOM(MetaPackServiceContext s)
+        {
+            var regressionProfile = new RegressionDeploymentProfile();
+
+            regressionProfile.Sandbox = RegressionSandbox.SharePoint;
+            regressionProfile.API = RegressionAPI.SSOM;
+            regressionProfile.ModelLevel = RegressinModelLevel.Farm;
+
+            Internal_Deploy_SolutionPackage(s, regressionProfile);
         }
 
         [TestMethod]
-        [TestCategory("Metapack.Deployment.RootWeb")]
+        [TestCategory("Metapack.API.Deployment")]
+        [TestCategory("Metapack.API.Deployment.SharePoint")]
+        //[TestCategory("Metapack.API.Deployment.SharePoint.WebApplication")]
         //[TestCategory("CI.Core")]
-        public void Can_Deploy_Solution_Package_To_Root_Web_Twice()
+        public void Can_Deploy_SolutionPackage_On_SharePoint_WebApplication_SSOM()
         {
-            Can_Deploy_Solution_Package_Internal(true, 2, false);
+            WithMetaPackServices(s =>
+            {
+                Internal_Can_Deploy_SolutionPackage_On_SharePoint_WebApplication_SSOM(s);
+            });
+        }
+
+        public void Internal_Can_Deploy_SolutionPackage_On_SharePoint_WebApplication_SSOM(MetaPackServiceContext s)
+        {
+            var regressionProfile = new RegressionDeploymentProfile();
+
+            regressionProfile.Sandbox = RegressionSandbox.SharePoint;
+            regressionProfile.API = RegressionAPI.SSOM;
+            regressionProfile.ModelLevel = RegressinModelLevel.WebApplication;
+
+            Internal_Deploy_SolutionPackage(s, regressionProfile);
         }
 
         [TestMethod]
-        [TestCategory("Metapack.Deployment.RootWeb")]
+        [TestCategory("Metapack.API.Deployment")]
+        [TestCategory("Metapack.API.Deployment.SharePoint")]
+        ////[TestCategory("Metapack.API.Deployment.SharePoint.Site")]
         //[TestCategory("CI.Core")]
-        public void Can_Deploy_Solution_Package_To_Root_Web_With_Dependencies()
+        public void Can_Deploy_SolutionPackage_On_SharePoint_Site_CSOM()
         {
-            Can_Deploy_Solution_Package_Internal(true, 1, true);
+            WithMetaPackServices(s =>
+            {
+                Internal_Can_Deploy_SolutionPackage_On_SharePoint_Site_CSOM(s);
+            });
         }
 
         [TestMethod]
-        [TestCategory("Metapack.Deployment.RootWeb")]
+        [TestCategory("Metapack.API.Deployment.SPMeta2")]
+        [TestCategory("Metapack.API.Deployment.SPMeta2.SharePoint")]
+        //[TestCategory("Metapack.API.Deployment.SPMeta2.SharePoint.Site")]
         //[TestCategory("CI.Core")]
-        public void Can_Deploy_Solution_Package_To_Root_Web_With_Dependencies_Twice()
+        public void Can_Deploy_SolutionPackage_On_SharePoint_Site_CSOM_With_SPMeta2()
         {
-            Can_Deploy_Solution_Package_Internal(true, 2, true);
+            Internal_Can_Deploy_SolutionPackage_On_SharePoint_Site_CSOM(SPMeta2ServiceContext);
         }
 
         [TestMethod]
-        [TestCategory("Metapack.Deployment.SubWeb")]
+        [TestCategory("Metapack.API.Deployment.SharePointPnP")]
+        [TestCategory("Metapack.API.Deployment.SharePointPnP.SharePoint")]
         //[TestCategory("CI.Core")]
-        public void Can_Deploy_Solution_Package_To_Sub_Web()
+        public void Can_Deploy_SolutionPackage_On_SharePoint_Site_CSOM_With_SharePointPnP()
         {
-            Can_Deploy_Solution_Package_Internal(false, 1, false);
+            Internal_Can_Deploy_SolutionPackage_On_SharePoint_Site_CSOM(SharePointPnPServiceContext);
+        }
+
+        public void Internal_Can_Deploy_SolutionPackage_On_SharePoint_Site_CSOM(MetaPackServiceContext s)
+        {
+            var regressionProfile = new RegressionDeploymentProfile();
+
+            regressionProfile.Sandbox = RegressionSandbox.SharePoint;
+            regressionProfile.API = RegressionAPI.CSOM;
+            regressionProfile.ModelLevel = RegressinModelLevel.Site;
+
+            Internal_Deploy_SolutionPackage(s, regressionProfile);
         }
 
         [TestMethod]
-        [TestCategory("Metapack.Deployment.SubWeb")]
+        [TestCategory("Metapack.API.Deployment")]
+        [TestCategory("Metapack.API.Deployment.SharePoint")]
+        //[TestCategory("Metapack.API.Deployment.SharePoint.Site")]
         //[TestCategory("CI.Core")]
-        public void Can_Deploy_Solution_Package_To_Sub_Web_Twice()
+        public void Can_Deploy_SolutionPackage_On_SharePoint_Site_SSOM()
         {
-            Can_Deploy_Solution_Package_Internal(false, 2, false);
-        }
-
-
-        [TestMethod]
-        [TestCategory("Metapack.Deployment.SubWeb")]
-        //[TestCategory("CI.Core")]
-        public void Can_Deploy_Solution_Package_To_Sub_Web_With_Dependencies()
-        {
-            Can_Deploy_Solution_Package_Internal(false, 1, true);
+            WithMetaPackServices(s =>
+            {
+                Internal_Can_Deploy_SolutionPackage_On_SharePoint_Site_SSOM(s);
+            });
         }
 
         [TestMethod]
-        [TestCategory("Metapack.Deployment.SubWeb")]
+        [TestCategory("Metapack.API.Deployment.SPMeta2")]
+        [TestCategory("Metapack.API.Deployment.SPMeta2.SharePoint")]
+        //[TestCategory("Metapack.API.Deployment.SPMeta2.SharePoint.Site")]
         //[TestCategory("CI.Core")]
-        public void Can_Deploy_Solution_Package_To_Sub_Web_With_Dependencies_Twice()
+        public void Can_Deploy_SolutionPackage_On_SharePoint_Site_SSOM_With_SPMeta2()
         {
-            Can_Deploy_Solution_Package_Internal(false, 2, true);
+            WithMetaPackServices(s =>
+            {
+                Internal_Can_Deploy_SolutionPackage_On_SharePoint_Site_SSOM(SPMeta2ServiceContext);
+            });
+        }
+
+
+        public void Internal_Can_Deploy_SolutionPackage_On_SharePoint_Site_SSOM(MetaPackServiceContext s)
+        {
+            var regressionProfile = new RegressionDeploymentProfile();
+
+            regressionProfile.Sandbox = RegressionSandbox.SharePoint;
+            regressionProfile.API = RegressionAPI.SSOM;
+            regressionProfile.ModelLevel = RegressinModelLevel.Site;
+
+            Internal_Deploy_SolutionPackage(s, regressionProfile);
+        }
+
+        [TestMethod]
+        [TestCategory("Metapack.API.Deployment")]
+        [TestCategory("Metapack.API.Deployment.SharePoint")]
+        //[TestCategory("Metapack.API.Deployment.SharePoint.Web")]
+        //[TestCategory("CI.Core")]
+        public void Can_Deploy_SolutionPackage_On_SharePoint_Web_CSOM()
+        {
+            WithMetaPackServices(s =>
+            {
+                Internal_Can_Deploy_SolutionPackage_On_SharePoint_Web_CSOM(s);
+            });
+        }
+
+        [TestMethod]
+        [TestCategory("Metapack.API.Deployment.SPMeta2")]
+        [TestCategory("Metapack.API.Deployment.SPMeta2.SharePoint")]
+        // [TestCategory("Metapack.API.Deployment.SPMeta2.SharePoint.Web")]
+        //[TestCategory("CI.Core")]
+        public void Can_Deploy_SolutionPackage_On_SharePoint_Web_CSOM_With_SPMeta2()
+        {
+            Internal_Can_Deploy_SolutionPackage_On_SharePoint_Web_CSOM(SPMeta2ServiceContext);
+        }
+
+        [TestMethod]
+        [TestCategory("Metapack.API.Deployment.SharePointPnP")]
+        [TestCategory("Metapack.API.Deployment.SharePointPnP.SharePoint")]
+        //[TestCategory("CI.Core")]
+        public void Can_Deploy_SolutionPackage_On_SharePoint_Web_CSOM_With_SharePointPnP()
+        {
+            Internal_Can_Deploy_SolutionPackage_On_SharePoint_Web_CSOM(SharePointPnPServiceContext);
+        }
+
+        public void Internal_Can_Deploy_SolutionPackage_On_SharePoint_Web_CSOM(MetaPackServiceContext s)
+        {
+            var regressionProfile = new RegressionDeploymentProfile();
+
+            regressionProfile.Sandbox = RegressionSandbox.SharePoint;
+            regressionProfile.API = RegressionAPI.CSOM;
+            regressionProfile.ModelLevel = RegressinModelLevel.Web;
+
+            Internal_Deploy_SolutionPackage(s, regressionProfile);
+        }
+
+        [TestMethod]
+        [TestCategory("Metapack.API.Deployment")]
+        [TestCategory("Metapack.API.Deployment.SharePoint")]
+        //[TestCategory("Metapack.API.Deployment.SharePoint.Web")]
+        //[TestCategory("CI.Core")]
+        public void Can_Deploy_SolutionPackage_On_SharePoint_Web_SSOM()
+        {
+            WithMetaPackServices(s =>
+            {
+                Internal_Can_Deploy_SolutionPackage_On_SharePoint_Web_SSOM(s);
+            });
+        }
+
+        [TestMethod]
+        [TestCategory("Metapack.API.Deployment.SPMeta2")]
+        [TestCategory("Metapack.API.Deployment.SPMeta2.SharePoint")]
+        //[TestCategory("Metapack.API.Deployment.SPMeta2.SharePoint.Web")]
+        //[TestCategory("CI.Core")]
+        public void Can_Deploy_SolutionPackage_On_SharePoint_Web_SSOM_With_SPMeta2()
+        {
+            Internal_Can_Deploy_SolutionPackage_On_SharePoint_Web_SSOM(SPMeta2ServiceContext);
+        }
+
+        public void Internal_Can_Deploy_SolutionPackage_On_SharePoint_Web_SSOM(MetaPackServiceContext s)
+        {
+            var regressionProfile = new RegressionDeploymentProfile();
+
+            regressionProfile.Sandbox = RegressionSandbox.SharePoint;
+            regressionProfile.API = RegressionAPI.SSOM;
+            regressionProfile.ModelLevel = RegressinModelLevel.Web;
+
+            Internal_Deploy_SolutionPackage(s, regressionProfile);
+        }
+
+        #endregion
+
+        #region deployment baseline for O365
+
+        [TestMethod]
+        [TestCategory("Metapack.API.Deployment")]
+        [TestCategory("Metapack.API.Deployment.O365")]
+        //[TestCategory("Metapack.API.Deployment.O365.Site")]
+        //[TestCategory("CI.Core")]
+        public void Can_Deploy_SolutionPackage_On_O365_Site_CSOM()
+        {
+            WithMetaPackServices(s =>
+            {
+                Internal_Can_Deploy_SolutionPackage_On_O365_Site_CSOM(s);
+            });
+        }
+
+        [TestMethod]
+        [TestCategory("Metapack.API.Deployment.SPMeta2")]
+        [TestCategory("Metapack.API.Deployment.SPMeta2.O365")]
+        //[TestCategory("Metapack.API.Deployment.SPMeta2.O365.Site")]
+        //[TestCategory("CI.Core")]
+        public void Can_Deploy_SolutionPackage_On_O365_Site_CSOM_With_SPMeta2()
+        {
+            Internal_Can_Deploy_SolutionPackage_On_O365_Site_CSOM(SPMeta2ServiceContext);
+        }
+
+        [TestMethod]
+        [TestCategory("Metapack.API.Deployment.SharePointPnP")]
+        [TestCategory("Metapack.API.Deployment.SharePointPnP.O365")]
+        //[TestCategory("CI.Core")]
+        public void Can_Deploy_SolutionPackage_On_O365_Site_CSOM_With_SharePointPnP()
+        {
+            Internal_Can_Deploy_SolutionPackage_On_O365_Site_CSOM(SharePointPnPServiceContext);
+        }
+
+        private void Internal_Can_Deploy_SolutionPackage_On_O365_Site_CSOM(MetaPackServiceContext s)
+        {
+            var regressionProfile = new RegressionDeploymentProfile();
+
+            regressionProfile.Sandbox = RegressionSandbox.O365;
+            regressionProfile.API = RegressionAPI.CSOM;
+            regressionProfile.ModelLevel = RegressinModelLevel.Site;
+
+            Internal_Deploy_SolutionPackage(s, regressionProfile);
+        }
+
+        [TestMethod]
+        [TestCategory("Metapack.API.Deployment")]
+        [TestCategory("Metapack.API.Deployment.O365")]
+        //[TestCategory("Metapack.API.Deployment.O365.Web")]
+        //[TestCategory("CI.Core")]
+        public void Can_Deploy_SolutionPackage_On_O365_Web_CSOM()
+        {
+            WithMetaPackServices(s =>
+            {
+                Internal_Can_Deploy_SolutionPackage_On_O365_Web_CSOM(s);
+            });
+        }
+
+        [TestMethod]
+        [TestCategory("Metapack.API.Deployment.SPMeta2")]
+        [TestCategory("Metapack.API.Deployment.SPMeta2.O365")]
+        //[TestCategory("Metapack.API.Deployment.SPMeta2.O365.Web")]
+        //[TestCategory("CI.Core")]
+        public void Can_Deploy_SolutionPackage_On_O365_Web_CSOM_With_SPMeta2()
+        {
+            Internal_Can_Deploy_SolutionPackage_On_O365_Web_CSOM(SPMeta2ServiceContext);
+        }
+
+        [TestMethod]
+        [TestCategory("Metapack.API.Deployment.SharePointPnP")]
+        [TestCategory("Metapack.API.Deployment.SharePointPnP.O365")]
+        //[TestCategory("Metapack.API.Deployment.SharePointPnP.Web")]
+        //[TestCategory("CI.Core")]
+        public void Can_Deploy_SolutionPackage_On_O365_Web_CSOM_With_SharePointPnP()
+        {
+            Internal_Can_Deploy_SolutionPackage_On_O365_Web_CSOM(SharePointPnPServiceContext);
+        }
+
+        private void Internal_Can_Deploy_SolutionPackage_On_O365_Web_CSOM(MetaPackServiceContext s)
+        {
+            var regressionProfile = new RegressionDeploymentProfile();
+
+            regressionProfile.Sandbox = RegressionSandbox.O365;
+            regressionProfile.API = RegressionAPI.CSOM;
+            regressionProfile.ModelLevel = RegressinModelLevel.Web;
+
+            Internal_Deploy_SolutionPackage(s, regressionProfile);
         }
 
         #endregion
 
         #region utils
 
-        private void Can_Deploy_Solution_Package_Internal(bool isRootUrl, int provisionCount, bool? useDependencies)
+        private void Internal_Deploy_SolutionPackage(
+            MetaPackServiceContext regressionContext,
+            RegressionDeploymentProfile regressionProfile)
         {
-            WithMetaPackServices(service =>
+            var packagingService = regressionContext.PackagingService;
+            var deploymentService = regressionContext.DeploymentService;
+
+            // create new solution package for this deployment
+            var ciSolutionPackage = CreateNewSolutionPackage(packagingService, regressionProfile.ModelLevel);
+            UpdatePackageVersion(ciSolutionPackage);
+
+            var packageId = ciSolutionPackage.Id;
+            var packageVersion = ciSolutionPackage.Version;
+
+            // push to repo
+            PushPackageToCIRepository(ciSolutionPackage, null, packagingService);
+
+            // find
+            var ciPackage = FindPackageInCIRepository(packageId, packageVersion);
+            Assert.IsNotNull(ciPackage, "Solution package");
+
+            var solutionOptions = new List<OptionValue>();
+
+            WithCIRepositoryContext(ciNuGetRepository =>
             {
-                var packagingService = service.PackagingService;
-
-                // push
-                var solutionPackage = CreateNewSolutionPackage(packagingService);
-
-                var solutionDependencies = new List<SolutionPackageBase>();
-
-                if (useDependencies.HasValue && useDependencies.Value == true)
-                {
-                    // adding a few dependencies
-                    for (var i = 1; i < 3; i++)
+                // actual deployment callback
+                Action<ClientContext, IPackage, List<OptionValue>> metapackDeployment =
+                    (clientContext, package, options) =>
                     {
-                        var solutionDep = CreateNewSolutionPackage(packagingService,
-                            solution => { solution.Id = solution.Id + "dep" + i; });
+                        var packageManager = new DefaultMetaPackSolutionPackageManager(ciNuGetRepository, clientContext);
 
-                        UpdatePackageVersion(solutionDep);
-                        solutionDependencies.Add(solutionDep);
+                        // configura options
+                        packageManager.SolutionOptions.AddRange(options);
 
-                        solutionPackage.Dependencies.Add(new SolutionPackageDependency
-                        {
-                            Id = solutionDep.Id,
-                            Version = solutionDep.Version
-                        });
-                    }
-                }
-
-                UpdatePackageVersion(solutionPackage);
-
-                var packageId = solutionPackage.Id;
-                var packageVersion = solutionPackage.Version;
-
-                var nuGetPackageDependencies = new List<Stream>();
-
-                foreach (var soutionDependency in solutionDependencies)
-                {
-                    var nuGetPackageDependency = packagingService.Pack(soutionDependency, null);
-                    nuGetPackageDependencies.Add(nuGetPackageDependency);
-                }
-
-                var nuGetPackage = packagingService.Pack(solutionPackage, null);
-                var canFind = false;
-
-                WithCINuGetContext((apiUrl, apiKey, repoUrl) =>
-                {
-                    // push
-                    PushPackageToCIRepository(solutionPackage, solutionDependencies, packagingService);
-                    // find
-                    var ciPackage = FindPackageInCIRepository(packageId, packageVersion);
-
-                    Assert.IsNotNull(ciPackage, "Solution package");
-                    canFind = ciPackage != null;
-
-                    Action<ClientContext> action = context =>
-                    {
-                        for (var index = 0; index < provisionCount; index++)
-                        {
-                            Trace.WriteLine(string.Format("Installing:[{0}/{1}]", index, provisionCount));
-
-                            WithCIRepositoryContext(repo =>
-                            {
-                                // create nuget package manager within current SharePoint context
-                                var packageManager = new DefaultMetaPackSolutionPackageManager(repo, context);
-
-                                // add options
-                                packageManager.SolutionOptions.Add(DefaultOptions.SharePoint.Api.CSOM);
-                                packageManager.SolutionOptions.Add(DefaultOptions.SharePoint.Edition.Foundation);
-                                packageManager.SolutionOptions.Add(DefaultOptions.SharePoint.Version.O365);
-
-                                packageManager.SolutionOptions.Add(new OptionValue
-                                {
-                                    Name = DefaultOptions.Site.Url.Id,
-                                    Value = context.Url
-                                });
-
-                                // if o365 - add user name and password
-                                packageManager.SolutionOptions.Add(new OptionValue
-                                {
-                                    Name = DefaultOptions.User.Name.Id,
-                                    Value = O365UserName
-                                });
-
-                                packageManager.SolutionOptions.Add(new OptionValue
-                                {
-                                    Name = DefaultOptions.User.Password.Id,
-                                    Value = O365UserPassword
-                                });
-
-                                // install package
-                                packageManager.InstallPackage(ciPackage, false, false);
-                            });
-                        }
+                        // install package
+                        packageManager.InstallPackage(package, false, false);
                     };
 
-                    if (isRootUrl)
-                        WithCIRootSharePointContext(action);
-                    else
-                        WithCISubWebSharePointContext(action);
-                });
+                if (regressionProfile.Sandbox == RegressionSandbox.O365)
+                {
+                    var siteUrl = O365RootWebUrl;
+                    var userName = O365UserName;
+                    var userPassword = O365UserPassword;
 
-                Assert.IsTrue(canFind);
+                    // checking correct model
+                    if (regressionProfile.ModelLevel == RegressinModelLevel.Site)
+                        siteUrl = O365RootWebUrl;
+                    else if (regressionProfile.ModelLevel == RegressinModelLevel.Web)
+                        siteUrl = O365RootWebUrl;
+                    else
+                    {
+                        throw new NotImplementedException(
+                               string.Format("Unsupported ModelLevel type:[{0}]",
+                               regressionProfile.ModelLevel));
+                    }
+
+                    // csom related options
+                    solutionOptions.Add(DefaultOptions.SharePoint.Api.CSOM);
+                    solutionOptions.Add(DefaultOptions.SharePoint.Edition.Standard);
+                    solutionOptions.Add(DefaultOptions.SharePoint.Version.O365);
+
+                    solutionOptions.Add(new OptionValue
+                    {
+                        Name = DefaultOptions.Site.Url.Id,
+                        Value = siteUrl
+                    });
+
+                    solutionOptions.Add(new OptionValue
+                    {
+                        Name = DefaultOptions.User.Name.Id,
+                        Value = userName
+                    });
+
+                    solutionOptions.Add(new OptionValue
+                    {
+                        Name = DefaultOptions.User.Password.Id,
+                        Value = userPassword
+                    });
+
+                    WithCIO365ClientContext(siteUrl, userName, userPassword, context =>
+                    {
+                        metapackDeployment(context, ciPackage, solutionOptions);
+                    });
+                }
+                else if (regressionProfile.Sandbox == RegressionSandbox.SharePoint)
+                {
+                    if (regressionProfile.API == RegressionAPI.CSOM)
+                    {
+                        // csom related options
+                        solutionOptions.Add(DefaultOptions.SharePoint.Api.CSOM);
+                        solutionOptions.Add(DefaultOptions.SharePoint.Edition.Standard);
+                        solutionOptions.Add(DefaultOptions.SharePoint.Version.SP2013);
+
+                        var siteUrl = SP2013RootWebUrl;
+
+                        // checking correct model
+                        if (regressionProfile.ModelLevel == RegressinModelLevel.Site)
+                            siteUrl = SP2013RootWebUrl;
+                        else if (regressionProfile.ModelLevel == RegressinModelLevel.Web)
+                            siteUrl = SP2013RootWebUrl;
+                        else
+                        {
+                            throw new NotImplementedException(
+                                   string.Format("Unsupported ModelLevel type:[{0}]",
+                                   regressionProfile.ModelLevel));
+                        }
+
+                        solutionOptions.Add(new OptionValue
+                        {
+                            Name = DefaultOptions.Site.Url.Id,
+                            Value = siteUrl
+                        });
+
+                        WithCISharePointClientContext(siteUrl, context =>
+                        {
+                            metapackDeployment(context, ciPackage, solutionOptions);
+                        });
+
+                    }
+                    else if (regressionProfile.API == RegressionAPI.SSOM)
+                    {
+                        // csom related options
+                        solutionOptions.Add(DefaultOptions.SharePoint.Api.SSOM);
+                        solutionOptions.Add(DefaultOptions.SharePoint.Edition.Standard);
+                        solutionOptions.Add(DefaultOptions.SharePoint.Version.SP2013);
+
+                        var siteUrl = SP2013RootWebUrl;
+
+                        // checking correct model
+                        if (regressionProfile.ModelLevel == RegressinModelLevel.Site)
+                            siteUrl = SP2013RootWebUrl;
+                        else if (regressionProfile.ModelLevel == RegressinModelLevel.Web)
+                            siteUrl = SP2013RootWebUrl;
+                        else
+                        {
+                            throw new NotImplementedException(
+                                   string.Format("Unsupported ModelLevel type:[{0}]",
+                                   regressionProfile.ModelLevel));
+                        }
+
+                        solutionOptions.Add(new OptionValue
+                        {
+                            Name = DefaultOptions.Site.Url.Id,
+                            Value = siteUrl
+                        });
+
+                        WithCISharePointClientContext(siteUrl, context =>
+                        {
+                            metapackDeployment(context, ciPackage, solutionOptions);
+                        });
+                    }
+                    else
+                    {
+                        throw new NotImplementedException(
+                              string.Format("Unsupported API type:[{0}]",
+                              regressionProfile.API));
+                    }
+                }
+                else
+                {
+                    throw new NotImplementedException(
+                          string.Format("Unsupported Sandbox type:[{0}]",
+                          regressionProfile.Sandbox));
+                }
             });
         }
+
+
 
         #endregion
     }

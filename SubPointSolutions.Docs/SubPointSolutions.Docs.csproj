@@ -37,230 +37,60 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="AppDomainToolkit">
+      <HintPath>..\packages\AppDomainToolkit.1.0.4.3\lib\net\AppDomainToolkit.dll</HintPath>
+    </Reference>
     <Reference Include="HtmlAgilityPack, Version=1.4.9.5, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
       <HintPath>..\packages\HtmlAgilityPack.1.4.9.5\lib\Net45\HtmlAgilityPack.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Microsoft.BusinessData, Version=15.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>_Dependencies\SP2013 - 15.0.4569.1000\SSOM\Microsoft.BusinessData.dll</HintPath>
+    <Reference Include="MetaPack.Core, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\MetaPack.Core.0.1.0-beta2\lib\net45\MetaPack.Core.dll</HintPath>
+      <Private>True</Private>
     </Reference>
-    <Reference Include="Microsoft.CodeAnalysis, Version=1.3.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+    <Reference Include="MetaPack.NuGet, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\MetaPack.NuGet.0.1.0-beta2\lib\net45\MetaPack.NuGet.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="MetaPack.SharePointPnP, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\MetaPack.SharePointPnP.0.1.0-beta2\lib\net45\MetaPack.SharePointPnP.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="MetaPack.SPMeta2, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\MetaPack.SPMeta2.0.1.0-beta2\lib\net45\MetaPack.SPMeta2.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.CodeAnalysis, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Microsoft.CodeAnalysis.Common.1.3.2\lib\net45\Microsoft.CodeAnalysis.dll</HintPath>
-      <Private>True</Private>
     </Reference>
-    <Reference Include="Microsoft.CodeAnalysis.CSharp, Version=1.3.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+    <Reference Include="Microsoft.CodeAnalysis.CSharp, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Microsoft.CodeAnalysis.CSharp.1.3.2\lib\net45\Microsoft.CodeAnalysis.CSharp.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Microsoft.CodeAnalysis.CSharp.Workspaces, Version=1.3.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Microsoft.CodeAnalysis.CSharp.Workspaces.1.3.2\lib\net45\Microsoft.CodeAnalysis.CSharp.Workspaces.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Microsoft.CodeAnalysis.VisualBasic, Version=1.3.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Microsoft.CodeAnalysis.VisualBasic.1.3.2\lib\net45\Microsoft.CodeAnalysis.VisualBasic.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Microsoft.CodeAnalysis.VisualBasic.Workspaces, Version=1.3.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Microsoft.CodeAnalysis.VisualBasic.Workspaces.1.3.2\lib\net45\Microsoft.CodeAnalysis.VisualBasic.Workspaces.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Microsoft.CodeAnalysis.Workspaces, Version=1.3.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Microsoft.CodeAnalysis.Workspaces.Common.1.3.2\lib\net45\Microsoft.CodeAnalysis.Workspaces.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Microsoft.CodeAnalysis.Workspaces.Desktop, Version=1.3.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Microsoft.CodeAnalysis.Workspaces.Common.1.3.2\lib\net45\Microsoft.CodeAnalysis.Workspaces.Desktop.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Microsoft.IdentityModel, Version=3.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>_Dependencies\SP2013 - 15.0.4569.1000\SSOM\Microsoft.IdentityModel.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.IdentityModel.WindowsTokenService, Version=3.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>_Dependencies\SP2013 - 15.0.4569.1000\SSOM\Microsoft.IdentityModel.WindowsTokenService.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.Office.DocumentManagement, Version=15.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>_Dependencies\SP2013 - 15.0.4569.1000\SSOM\Microsoft.Office.DocumentManagement.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.Office.SecureStoreService, Version=15.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>_Dependencies\SP2013 - 15.0.4569.1000\SSOM\Microsoft.Office.SecureStoreService.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.Office.Server, Version=15.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>_Dependencies\SP2013 - 15.0.4569.1000\SSOM\Microsoft.Office.Server.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.Office.Server.Search, Version=15.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>_Dependencies\SP2013 - 15.0.4569.1000\SSOM\Microsoft.Office.Server.Search.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.Office.Server.Search.Applications, Version=15.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>_Dependencies\SP2013 - 15.0.4569.1000\SSOM\Microsoft.Office.Server.Search.Applications.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.Office.Server.Search.Connector, Version=15.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>_Dependencies\SP2013 - 15.0.4569.1000\SSOM\Microsoft.Office.Server.Search.Connector.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.Office.Server.Search.ExchangeAdapter, Version=15.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>_Dependencies\SP2013 - 15.0.4569.1000\SSOM\Microsoft.Office.Server.Search.ExchangeAdapter.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.Office.Server.UserProfiles, Version=15.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>_Dependencies\SP2013 - 15.0.4569.1000\SSOM\Microsoft.Office.Server.UserProfiles.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.SharePoint, Version=15.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>_Dependencies\SP2013 - 15.0.4569.1000\SSOM\Microsoft.SharePoint.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.SharePoint.Client, Version=15.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>_Dependencies\SP2013 - 15.0.4569.1000\CSOM\Microsoft.SharePoint.Client.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.SharePoint.Client.DocumentManagement, Version=15.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>_Dependencies\SP2013 - 15.0.4569.1000\CSOM\Microsoft.SharePoint.Client.DocumentManagement.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.SharePoint.Client.Publishing, Version=15.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>_Dependencies\SP2013 - 15.0.4569.1000\CSOM\Microsoft.SharePoint.Client.Publishing.dll</HintPath>
+      <HintPath>..\Dependencies\SharePoint\SP2013 - 15.0.4569.1000\CSOM\Microsoft.SharePoint.Client.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.SharePoint.Client.Runtime, Version=15.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>_Dependencies\SP2013 - 15.0.4569.1000\CSOM\Microsoft.SharePoint.Client.Runtime.dll</HintPath>
+      <HintPath>..\Dependencies\SharePoint\SP2013 - 15.0.4569.1000\CSOM\Microsoft.SharePoint.Client.Runtime.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.SharePoint.Client.Search, Version=15.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
+    <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>_Dependencies\SP2013 - 15.0.4569.1000\CSOM\Microsoft.SharePoint.Client.Search.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\Program Files (x86)\Microsoft Visual Studio 12.0\Common7\IDE\PublicAssemblies\Microsoft.VisualStudio.QualityTools.UnitTestFramework.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.SharePoint.Client.Search.Applications, Version=15.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
+    <Reference Include="Microsoft.Web.XmlTransform, Version=2.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Web.Xdt.2.1.1\lib\net40\Microsoft.Web.XmlTransform.dll</HintPath>
+    </Reference>
+    <Reference Include="NuGet.Core, Version=2.12.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>_Dependencies\SP2013 - 15.0.4569.1000\CSOM\Microsoft.SharePoint.Client.Search.Applications.dll</HintPath>
+      <HintPath>..\packages\NuGet.Core.2.12.0\lib\net40-Client\NuGet.Core.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.SharePoint.Client.ServerRuntime, Version=15.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>_Dependencies\SP2013 - 15.0.4569.1000\CSOM\Microsoft.SharePoint.Client.ServerRuntime.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.SharePoint.Client.Taxonomy, Version=15.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>_Dependencies\SP2013 - 15.0.4569.1000\CSOM\Microsoft.SharePoint.Client.Taxonomy.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.SharePoint.Client.UserProfiles, Version=15.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>_Dependencies\SP2013 - 15.0.4569.1000\CSOM\Microsoft.SharePoint.Client.UserProfiles.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.SharePoint.Client.WorkflowServices, Version=15.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>_Dependencies\SP2013 - 15.0.4569.1000\CSOM\Microsoft.SharePoint.Client.WorkflowServices.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.SharePoint.Linq, Version=15.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>_Dependencies\SP2013 - 15.0.4569.1000\SSOM\Microsoft.SharePoint.Linq.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.SharePoint.Portal, Version=15.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>_Dependencies\SP2013 - 15.0.4569.1000\SSOM\Microsoft.SharePoint.Portal.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.SharePoint.Publishing, Version=15.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>_Dependencies\SP2013 - 15.0.4569.1000\SSOM\Microsoft.SharePoint.Publishing.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.SharePoint.Search, Version=15.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>_Dependencies\SP2013 - 15.0.4569.1000\SSOM\Microsoft.SharePoint.Search.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.SharePoint.Search.Extended.Administration, Version=14.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>_Dependencies\SP2013 - 15.0.4569.1000\SSOM\Microsoft.SharePoint.Search.Extended.Administration.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.SharePoint.Search.Extended.Administration.Common, Version=14.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>_Dependencies\SP2013 - 15.0.4569.1000\SSOM\Microsoft.SharePoint.Search.Extended.Administration.Common.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.SharePoint.Search.Extended.Administration.ResourceStorage, Version=14.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>_Dependencies\SP2013 - 15.0.4569.1000\SSOM\Microsoft.SharePoint.Search.Extended.Administration.ResourceStorage.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.SharePoint.Security, Version=15.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>_Dependencies\SP2013 - 15.0.4569.1000\SSOM\Microsoft.SharePoint.Security.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.SharePoint.Taxonomy, Version=15.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>_Dependencies\SP2013 - 15.0.4569.1000\SSOM\Microsoft.SharePoint.Taxonomy.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.SharePoint.Taxonomy.Intl, Version=15.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>_Dependencies\SP2013 - 15.0.4569.1000\SSOM\Microsoft.SharePoint.Taxonomy.Intl.dll</HintPath>
-    </Reference>
-    <Reference Include="microsoft.sharepoint.WorkflowActions, Version=15.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>_Dependencies\SP2013 - 15.0.4569.1000\SSOM\microsoft.sharepoint.WorkflowActions.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.SharePoint.WorkflowServices, Version=15.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>_Dependencies\SP2013 - 15.0.4569.1000\SSOM\Microsoft.SharePoint.WorkflowServices.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.SharePoint.WorkflowServicesBase, Version=15.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>_Dependencies\SP2013 - 15.0.4569.1000\SSOM\Microsoft.SharePoint.WorkflowServicesBase.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.SharePoint.WorkManagement.Client, Version=15.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>_Dependencies\SP2013 - 15.0.4569.1000\SSOM\Microsoft.SharePoint.WorkManagement.Client.dll</HintPath>
-    </Reference>
-    <Reference Include="SPMeta2, Version=1.0.0.0, Culture=neutral, PublicKeyToken=d71faae3bf28531a, processorArchitecture=MSIL">
-      <HintPath>..\packages\SPMeta2.Core.1.2.80\lib\net45\SPMeta2.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="SPMeta2.CSOM, Version=1.0.0.0, Culture=neutral, PublicKeyToken=d71faae3bf28531a, processorArchitecture=MSIL">
-      <HintPath>..\packages\SPMeta2.CSOM.Foundation.1.2.80\lib\net45\SPMeta2.CSOM.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="SPMeta2.CSOM.Standard, Version=1.0.0.0, Culture=neutral, PublicKeyToken=d71faae3bf28531a, processorArchitecture=MSIL">
-      <HintPath>..\packages\SPMeta2.CSOM.Standard.1.2.80\lib\net45\SPMeta2.CSOM.Standard.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="SPMeta2.Standard, Version=1.0.0.0, Culture=neutral, PublicKeyToken=d71faae3bf28531a, processorArchitecture=MSIL">
-      <HintPath>..\packages\SPMeta2.Core.Standard.1.2.80\lib\net45\SPMeta2.Standard.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="SPMeta2">
+      <HintPath>..\packages\SPMeta2.Core.1.2.100\lib\net45\SPMeta2.dll</HintPath>
     </Reference>
     <Reference Include="System" />
-    <Reference Include="System.Collections.Immutable, Version=1.1.37.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Collections.Immutable.1.1.37\lib\dotnet\System.Collections.Immutable.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="System.Composition.AttributedModel, Version=1.0.27.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Composition.1.0.27\lib\portable-net45+win8+wp8+wpa81\System.Composition.AttributedModel.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="System.Composition.Convention, Version=1.0.27.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Composition.1.0.27\lib\portable-net45+win8+wp8+wpa81\System.Composition.Convention.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="System.Composition.Hosting, Version=1.0.27.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Composition.1.0.27\lib\portable-net45+win8+wp8+wpa81\System.Composition.Hosting.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="System.Composition.Runtime, Version=1.0.27.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Composition.1.0.27\lib\portable-net45+win8+wp8+wpa81\System.Composition.Runtime.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="System.Composition.TypedParts, Version=1.0.27.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Composition.1.0.27\lib\portable-net45+win8+wp8+wpa81\System.Composition.TypedParts.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="System.Data" />
     <Reference Include="System.Reflection.Metadata, Version=1.2.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -277,51 +107,32 @@
         <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework, Version=10.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
       </ItemGroup>
     </When>
-    <Otherwise>
-      <ItemGroup>
-        <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework" />
-      </ItemGroup>
-    </Otherwise>
+    <Otherwise />
   </Choose>
   <ItemGroup>
     <Compile Include="Code\API\SamplesAPI.cs" />
-    <Compile Include="Code\Base\ProvisionTestBase.cs" />
-    <Compile Include="Code\Consts\DocConsts.cs" />
-    <Compile Include="Code\Consts\SampleGroups.cs" />
     <Compile Include="Code\Data\DocSample.cs" />
-    <Compile Include="Code\Definitions\DocContentTypes.cs" />
-    <Compile Include="Code\Definitions\DocFields.cs" />
-    <Compile Include="Code\Definitions\DocFolders.cs" />
-    <Compile Include="Code\Definitions\DocLists.cs" />
-    <Compile Include="Code\Definitions\DocSecurityGroups.cs" />
-    <Compile Include="Code\Definitions\DocSiteFeatures.cs" />
-    <Compile Include="Code\Definitions\DocWebFeatures.cs" />
-    <Compile Include="Code\Definitions\DocWebs.cs" />
-    <Compile Include="Code\Definitions\DocWikiPages.cs" />
-    <Compile Include="Code\Enumerations\BuiltInSampleCategoryTagValues.cs" />
-    <Compile Include="Code\Enumerations\BuiltInM2ModelTagValues.cs" />
-    <Compile Include="Code\Enumerations\BuiltInSPRuntimeTagValues.cs" />
+    <Compile Include="Code\Data\SampleMetadata.cs" />
     <Compile Include="Code\Enumerations\BuiltInTagNames.cs" />
-    <Compile Include="Code\Metadata\SampleMetadataAttribute.cs" />
-    <Compile Include="Code\Metadata\SampleMetadataTagAttribute.cs" />
-    <Compile Include="Code\Resources\DefaultMasterPageTemplates.Designer.cs" />
-    <Compile Include="Code\Resources\DefaultPublishingPageLayoutTemplates.Designer.cs" />
-    <Compile Include="Code\Resources\WorkflowTemplates.Designer.cs" />
+    <Compile Include="Code\Attributes\SampleMetadataAttribute.cs" />
+    <Compile Include="Code\Attributes\SampleMetadataTagAttribute.cs" />
     <Compile Include="Code\Samples\m2ExtSamples.cs" />
     <Compile Include="Code\Samples\m2Samples.cs" />
-    <Compile Include="Code\Samples\m2SpecSamples.cs" />
     <Compile Include="Code\Samples\reSPSamples.cs" />
     <Compile Include="Code\Services\Base\SamplesServiceBase.cs" />
+    <Compile Include="Code\Services\CSClassSamplesService.cs" />
     <Compile Include="Code\Services\CSSamplesService.cs" />
     <Compile Include="Code\Services\HtmlSamplesService.cs" />
     <Compile Include="Code\Services\XmlSamplesService.cs" />
-    <Compile Include="Code\Tests\DocSamplesServiceTests.cs" />
-    <Compile Include="Code\Tests\DocTests.cs" />
+    <Compile Include="Code\Tests\DocPublishingTests.cs" />
+    <Compile Include="Code\Utils\ReflectionUtils.cs" />
     <Compile Include="Code\Utils\StringUtils.cs" />
+    <Compile Include="Code\Utils\XmlSerializerUtils.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Code\Tests\DocsBuildToolsTest.cs" />
+    <Compile Include="Views\MetaPack\getting-started\Index.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Code\Modules\jquery-1.11.2.min.js" />
     <Content Include="content\bootstrap\bootstrap.min.css" />
     <Content Include="content\bootstrap\s.docs.default.css" />
     <Content Include="content\bootstrap\SyntaxHighlighter\shCore.css" />
@@ -376,280 +187,6 @@
     <Content Include="Scripts\bootstrap\SyntaxHighlighter\shBrushXml.js" />
     <Content Include="Scripts\bootstrap\SyntaxHighlighter\shCore.js" />
     <Content Include="Scripts\bootstrap\SyntaxHighlighter\shLegacy.js" />
-    <Content Include="Wyam 0.11.1-beta\AngleSharp.dll" />
-    <Content Include="Wyam 0.11.1-beta\AngleSharp.xml" />
-    <Content Include="Wyam 0.11.1-beta\CommonMark.dll" />
-    <Content Include="Wyam 0.11.1-beta\CommonMark.pdb" />
-    <Content Include="Wyam 0.11.1-beta\CommonMark.xml" />
-    <Content Include="Wyam 0.11.1-beta\dotless.ClientOnly.dll" />
-    <Content Include="Wyam 0.11.1-beta\dotless.ClientOnly.pdb" />
-    <Content Include="Wyam 0.11.1-beta\EPPlus.dll" />
-    <Content Include="Wyam 0.11.1-beta\EPPlus.xml" />
-    <Content Include="Wyam 0.11.1-beta\ICSharpCode.SharpZipLib.dll" />
-    <Content Include="Wyam 0.11.1-beta\ImageProcessor.dll" />
-    <Content Include="Wyam 0.11.1-beta\LibGit2Sharp.dll" />
-    <Content Include="Wyam 0.11.1-beta\LibGit2Sharp.xml" />
-    <Content Include="Wyam 0.11.1-beta\MetadataExtractor.dll" />
-    <Content Include="Wyam 0.11.1-beta\MetadataExtractor.xml" />
-    <Content Include="Wyam 0.11.1-beta\Microsoft.AspNet.FileProviders.dll" />
-    <Content Include="Wyam 0.11.1-beta\Microsoft.AspNet.FileProviders.Interfaces.dll" />
-    <Content Include="Wyam 0.11.1-beta\Microsoft.AspNet.FileProviders.Interfaces.xml" />
-    <Content Include="Wyam 0.11.1-beta\Microsoft.AspNet.FileProviders.xml" />
-    <Content Include="Wyam 0.11.1-beta\Microsoft.AspNet.Razor.dll" />
-    <Content Include="Wyam 0.11.1-beta\Microsoft.AspNet.Razor.xml" />
-    <Content Include="Wyam 0.11.1-beta\Microsoft.Build.dll" />
-    <Content Include="Wyam 0.11.1-beta\Microsoft.Build.Engine.dll" />
-    <Content Include="Wyam 0.11.1-beta\Microsoft.Build.Framework.dll" />
-    <Content Include="Wyam 0.11.1-beta\Microsoft.Build.Tasks.Core.dll" />
-    <Content Include="Wyam 0.11.1-beta\Microsoft.Build.Utilities.Core.dll" />
-    <Content Include="Wyam 0.11.1-beta\Microsoft.CodeAnalysis.CSharp.dll" />
-    <Content Include="Wyam 0.11.1-beta\Microsoft.CodeAnalysis.CSharp.Workspaces.dll" />
-    <Content Include="Wyam 0.11.1-beta\Microsoft.CodeAnalysis.CSharp.Workspaces.xml" />
-    <Content Include="Wyam 0.11.1-beta\Microsoft.CodeAnalysis.CSharp.xml" />
-    <Content Include="Wyam 0.11.1-beta\Microsoft.CodeAnalysis.dll" />
-    <Content Include="Wyam 0.11.1-beta\Microsoft.CodeAnalysis.VisualBasic.dll" />
-    <Content Include="Wyam 0.11.1-beta\Microsoft.CodeAnalysis.VisualBasic.Workspaces.dll" />
-    <Content Include="Wyam 0.11.1-beta\Microsoft.CodeAnalysis.VisualBasic.Workspaces.xml" />
-    <Content Include="Wyam 0.11.1-beta\Microsoft.CodeAnalysis.VisualBasic.xml" />
-    <Content Include="Wyam 0.11.1-beta\Microsoft.CodeAnalysis.Workspaces.Desktop.dll" />
-    <Content Include="Wyam 0.11.1-beta\Microsoft.CodeAnalysis.Workspaces.Desktop.xml" />
-    <Content Include="Wyam 0.11.1-beta\Microsoft.CodeAnalysis.Workspaces.dll" />
-    <Content Include="Wyam 0.11.1-beta\Microsoft.CodeAnalysis.Workspaces.xml" />
-    <Content Include="Wyam 0.11.1-beta\Microsoft.CodeAnalysis.xml" />
-    <Content Include="Wyam 0.11.1-beta\Microsoft.Framework.Caching.Interfaces.dll" />
-    <Content Include="Wyam 0.11.1-beta\Microsoft.Framework.Caching.Interfaces.xml" />
-    <Content Include="Wyam 0.11.1-beta\Microsoft.Owin.dll" />
-    <Content Include="Wyam 0.11.1-beta\Microsoft.Owin.FileSystems.dll" />
-    <Content Include="Wyam 0.11.1-beta\Microsoft.Owin.FileSystems.xml" />
-    <Content Include="Wyam 0.11.1-beta\Microsoft.Owin.Host.HttpListener.dll" />
-    <Content Include="Wyam 0.11.1-beta\Microsoft.Owin.Host.HttpListener.xml" />
-    <Content Include="Wyam 0.11.1-beta\Microsoft.Owin.Hosting.dll" />
-    <Content Include="Wyam 0.11.1-beta\Microsoft.Owin.Hosting.xml" />
-    <Content Include="Wyam 0.11.1-beta\Microsoft.Owin.StaticFiles.dll" />
-    <Content Include="Wyam 0.11.1-beta\Microsoft.Owin.StaticFiles.xml" />
-    <Content Include="Wyam 0.11.1-beta\Microsoft.Owin.xml" />
-    <Content Include="Wyam 0.11.1-beta\Microsoft.Web.XmlTransform.dll" />
-    <Content Include="Wyam 0.11.1-beta\NativeBinaries\amd64\git2-e0902fb.dll" />
-    <Content Include="Wyam 0.11.1-beta\NativeBinaries\amd64\git2-e0902fb.pdb" />
-    <Content Include="Wyam 0.11.1-beta\NativeBinaries\x86\git2-e0902fb.dll" />
-    <Content Include="Wyam 0.11.1-beta\NativeBinaries\x86\git2-e0902fb.pdb" />
-    <Content Include="Wyam 0.11.1-beta\Newtonsoft.Json.dll" />
-    <Content Include="Wyam 0.11.1-beta\Newtonsoft.Json.xml" />
-    <Content Include="Wyam 0.11.1-beta\NuGet.Core.dll" />
-    <Content Include="Wyam 0.11.1-beta\NuGet.Frameworks.dll" />
-    <Content Include="Wyam 0.11.1-beta\NuGet.Frameworks.xml" />
-    <Content Include="Wyam 0.11.1-beta\Octokit.dll" />
-    <Content Include="Wyam 0.11.1-beta\Octokit.pdb" />
-    <Content Include="Wyam 0.11.1-beta\Octokit.xml" />
-    <Content Include="Wyam 0.11.1-beta\Owin.dll" />
-    <Content Include="Wyam 0.11.1-beta\Rant.dll" />
-    <Content Include="Wyam 0.11.1-beta\Rant.xml" />
-    <Content Include="Wyam 0.11.1-beta\ReflectionMagic.dll" />
-    <Content Include="Wyam 0.11.1-beta\System.Collections.Immutable.dll" />
-    <Content Include="Wyam 0.11.1-beta\System.Collections.Immutable.xml" />
-    <Content Include="Wyam 0.11.1-beta\System.CommandLine.dll" />
-    <Content Include="Wyam 0.11.1-beta\System.CommandLine.pdb" />
-    <Content Include="Wyam 0.11.1-beta\System.Composition.AttributedModel.dll" />
-    <Content Include="Wyam 0.11.1-beta\System.Composition.AttributedModel.xml" />
-    <Content Include="Wyam 0.11.1-beta\System.Composition.Convention.dll" />
-    <Content Include="Wyam 0.11.1-beta\System.Composition.Convention.xml" />
-    <Content Include="Wyam 0.11.1-beta\System.Composition.Hosting.dll" />
-    <Content Include="Wyam 0.11.1-beta\System.Composition.Hosting.xml" />
-    <Content Include="Wyam 0.11.1-beta\System.Composition.Runtime.dll" />
-    <Content Include="Wyam 0.11.1-beta\System.Composition.Runtime.xml" />
-    <Content Include="Wyam 0.11.1-beta\System.Composition.TypedParts.dll" />
-    <Content Include="Wyam 0.11.1-beta\System.Composition.TypedParts.xml" />
-    <Content Include="Wyam 0.11.1-beta\System.Console.dll" />
-    <Content Include="Wyam 0.11.1-beta\System.Reflection.Metadata.dll" />
-    <Content Include="Wyam 0.11.1-beta\System.Reflection.Metadata.xml" />
-    <Content Include="Wyam 0.11.1-beta\Tabular.Csv.dll" />
-    <Content Include="Wyam 0.11.1-beta\Tabular.Csv.xml" />
-    <Content Include="Wyam 0.11.1-beta\Tabular.dll" />
-    <Content Include="Wyam 0.11.1-beta\Tabular.Excel.dll" />
-    <Content Include="Wyam 0.11.1-beta\Tabular.Excel.xml" />
-    <Content Include="Wyam 0.11.1-beta\Tabular.xml" />
-    <Content Include="Wyam 0.11.1-beta\UniversalTypeConverter.dll" />
-    <Content Include="Wyam 0.11.1-beta\UniversalTypeConverter.xml" />
-    <Content Include="Wyam 0.11.1-beta\Wyam.Common.dll" />
-    <Content Include="Wyam 0.11.1-beta\Wyam.Common.pdb" />
-    <Content Include="Wyam 0.11.1-beta\Wyam.Core.dll" />
-    <Content Include="Wyam 0.11.1-beta\Wyam.Core.pdb" />
-    <Content Include="Wyam 0.11.1-beta\Wyam.exe" />
-    <Content Include="Wyam 0.11.1-beta\Wyam.Modules.AmazonWebServices.dll" />
-    <Content Include="Wyam 0.11.1-beta\Wyam.Modules.AmazonWebServices.pdb" />
-    <Content Include="Wyam 0.11.1-beta\Wyam.Modules.CodeAnalysis.dll" />
-    <Content Include="Wyam 0.11.1-beta\Wyam.Modules.CodeAnalysis.pdb" />
-    <Content Include="Wyam 0.11.1-beta\Wyam.Modules.Git.dll" />
-    <Content Include="Wyam 0.11.1-beta\Wyam.Modules.Git.pdb" />
-    <Content Include="Wyam 0.11.1-beta\Wyam.Modules.GitHub.dll" />
-    <Content Include="Wyam 0.11.1-beta\Wyam.Modules.GitHub.pdb" />
-    <Content Include="Wyam 0.11.1-beta\Wyam.Modules.Html.dll" />
-    <Content Include="Wyam 0.11.1-beta\Wyam.Modules.Html.pdb" />
-    <Content Include="Wyam 0.11.1-beta\Wyam.Modules.Images.dll" />
-    <Content Include="Wyam 0.11.1-beta\Wyam.Modules.Images.pdb" />
-    <Content Include="Wyam 0.11.1-beta\Wyam.Modules.Json.dll" />
-    <Content Include="Wyam 0.11.1-beta\Wyam.Modules.Json.pdb" />
-    <Content Include="Wyam 0.11.1-beta\Wyam.Modules.Less.dll" />
-    <Content Include="Wyam 0.11.1-beta\Wyam.Modules.Less.pdb" />
-    <Content Include="Wyam 0.11.1-beta\Wyam.Modules.Markdown.dll" />
-    <Content Include="Wyam 0.11.1-beta\Wyam.Modules.Markdown.pdb" />
-    <Content Include="Wyam 0.11.1-beta\Wyam.Modules.Razor.dll" />
-    <Content Include="Wyam 0.11.1-beta\Wyam.Modules.Razor.pdb" />
-    <Content Include="Wyam 0.11.1-beta\Wyam.Modules.SearchIndex.dll" />
-    <Content Include="Wyam 0.11.1-beta\Wyam.Modules.SearchIndex.pdb" />
-    <Content Include="Wyam 0.11.1-beta\Wyam.Modules.Tables.dll" />
-    <Content Include="Wyam 0.11.1-beta\Wyam.Modules.Tables.pdb" />
-    <Content Include="Wyam 0.11.1-beta\Wyam.Modules.TextGeneration.dll" />
-    <Content Include="Wyam 0.11.1-beta\Wyam.Modules.TextGeneration.pdb" />
-    <Content Include="Wyam 0.11.1-beta\Wyam.Modules.Xmp.dll" />
-    <Content Include="Wyam 0.11.1-beta\Wyam.Modules.Xmp.pdb" />
-    <Content Include="Wyam 0.11.1-beta\Wyam.Modules.Yaml.dll" />
-    <Content Include="Wyam 0.11.1-beta\Wyam.Modules.Yaml.pdb" />
-    <Content Include="Wyam 0.11.1-beta\Wyam.pdb" />
-    <Content Include="Wyam 0.11.1-beta\XmpCore.dll" />
-    <Content Include="Wyam 0.11.1-beta\XmpCore.xml" />
-    <Content Include="Wyam 0.11.1-beta\YamlDotNet.dll" />
-    <Content Include="Wyam 0.11.1-beta\YamlDotNet.Dynamic.dll" />
-    <Content Include="Wyam 0.11.1-beta\YamlDotNet.Dynamic.pdb" />
-    <Content Include="Wyam 0.11.1-beta\YamlDotNet.pdb" />
-    <Content Include="Wyam 0.11.1-beta\YamlDotNet.xml" />
-    <Content Include="Wyam\AngleSharp.dll" />
-    <Content Include="Wyam\AngleSharp.xml" />
-    <Content Include="Wyam\CommonMark.dll" />
-    <Content Include="Wyam\CommonMark.pdb" />
-    <Content Include="Wyam\CommonMark.xml" />
-    <Content Include="Wyam\dotless.ClientOnly.dll" />
-    <Content Include="Wyam\dotless.ClientOnly.pdb" />
-    <Content Include="Wyam\EPPlus.dll" />
-    <Content Include="Wyam\EPPlus.xml" />
-    <Content Include="Wyam\ICSharpCode.SharpZipLib.dll" />
-    <Content Include="Wyam\ImageProcessor.dll" />
-    <Content Include="Wyam\LibGit2Sharp.dll" />
-    <Content Include="Wyam\LibGit2Sharp.xml" />
-    <Content Include="Wyam\MetadataExtractor.dll" />
-    <Content Include="Wyam\MetadataExtractor.xml" />
-    <Content Include="Wyam\Microsoft.AspNet.FileProviders.dll" />
-    <Content Include="Wyam\Microsoft.AspNet.FileProviders.Interfaces.dll" />
-    <Content Include="Wyam\Microsoft.AspNet.FileProviders.Interfaces.xml" />
-    <Content Include="Wyam\Microsoft.AspNet.FileProviders.xml" />
-    <Content Include="Wyam\Microsoft.AspNet.Razor.dll" />
-    <Content Include="Wyam\Microsoft.AspNet.Razor.xml" />
-    <Content Include="Wyam\Microsoft.Build.dll" />
-    <Content Include="Wyam\Microsoft.Build.Engine.dll" />
-    <Content Include="Wyam\Microsoft.Build.Framework.dll" />
-    <Content Include="Wyam\Microsoft.Build.Tasks.Core.dll" />
-    <Content Include="Wyam\Microsoft.Build.Utilities.Core.dll" />
-    <Content Include="Wyam\Microsoft.CodeAnalysis.CSharp.dll" />
-    <Content Include="Wyam\Microsoft.CodeAnalysis.CSharp.Workspaces.dll" />
-    <Content Include="Wyam\Microsoft.CodeAnalysis.CSharp.Workspaces.xml" />
-    <Content Include="Wyam\Microsoft.CodeAnalysis.CSharp.xml" />
-    <Content Include="Wyam\Microsoft.CodeAnalysis.dll" />
-    <Content Include="Wyam\Microsoft.CodeAnalysis.VisualBasic.dll" />
-    <Content Include="Wyam\Microsoft.CodeAnalysis.VisualBasic.Workspaces.dll" />
-    <Content Include="Wyam\Microsoft.CodeAnalysis.VisualBasic.Workspaces.xml" />
-    <Content Include="Wyam\Microsoft.CodeAnalysis.VisualBasic.xml" />
-    <Content Include="Wyam\Microsoft.CodeAnalysis.Workspaces.Desktop.dll" />
-    <Content Include="Wyam\Microsoft.CodeAnalysis.Workspaces.Desktop.xml" />
-    <Content Include="Wyam\Microsoft.CodeAnalysis.Workspaces.dll" />
-    <Content Include="Wyam\Microsoft.CodeAnalysis.Workspaces.xml" />
-    <Content Include="Wyam\Microsoft.CodeAnalysis.xml" />
-    <Content Include="Wyam\Microsoft.Framework.Caching.Interfaces.dll" />
-    <Content Include="Wyam\Microsoft.Framework.Caching.Interfaces.xml" />
-    <Content Include="Wyam\Microsoft.Owin.dll" />
-    <Content Include="Wyam\Microsoft.Owin.FileSystems.dll" />
-    <Content Include="Wyam\Microsoft.Owin.FileSystems.xml" />
-    <Content Include="Wyam\Microsoft.Owin.Host.HttpListener.dll" />
-    <Content Include="Wyam\Microsoft.Owin.Host.HttpListener.xml" />
-    <Content Include="Wyam\Microsoft.Owin.Hosting.dll" />
-    <Content Include="Wyam\Microsoft.Owin.Hosting.xml" />
-    <Content Include="Wyam\Microsoft.Owin.StaticFiles.dll" />
-    <Content Include="Wyam\Microsoft.Owin.StaticFiles.xml" />
-    <Content Include="Wyam\Microsoft.Owin.xml" />
-    <Content Include="Wyam\Microsoft.Web.XmlTransform.dll" />
-    <Content Include="Wyam\NativeBinaries\amd64\git2-e0902fb.dll" />
-    <Content Include="Wyam\NativeBinaries\amd64\git2-e0902fb.pdb" />
-    <Content Include="Wyam\NativeBinaries\x86\git2-e0902fb.dll" />
-    <Content Include="Wyam\NativeBinaries\x86\git2-e0902fb.pdb" />
-    <Content Include="Wyam\Newtonsoft.Json.dll" />
-    <Content Include="Wyam\Newtonsoft.Json.xml" />
-    <Content Include="Wyam\NuGet.Core.dll" />
-    <Content Include="Wyam\NuGet.Frameworks.dll" />
-    <Content Include="Wyam\NuGet.Frameworks.xml" />
-    <Content Include="Wyam\Octokit.dll" />
-    <Content Include="Wyam\Octokit.pdb" />
-    <Content Include="Wyam\Octokit.xml" />
-    <Content Include="Wyam\Owin.dll" />
-    <Content Include="Wyam\Rant.dll" />
-    <Content Include="Wyam\Rant.xml" />
-    <Content Include="Wyam\ReflectionMagic.dll" />
-    <Content Include="Wyam\System.Collections.Immutable.dll" />
-    <Content Include="Wyam\System.Collections.Immutable.xml" />
-    <Content Include="Wyam\System.CommandLine.dll" />
-    <Content Include="Wyam\System.CommandLine.pdb" />
-    <Content Include="Wyam\System.Composition.AttributedModel.dll" />
-    <Content Include="Wyam\System.Composition.AttributedModel.xml" />
-    <Content Include="Wyam\System.Composition.Convention.dll" />
-    <Content Include="Wyam\System.Composition.Convention.xml" />
-    <Content Include="Wyam\System.Composition.Hosting.dll" />
-    <Content Include="Wyam\System.Composition.Hosting.xml" />
-    <Content Include="Wyam\System.Composition.Runtime.dll" />
-    <Content Include="Wyam\System.Composition.Runtime.xml" />
-    <Content Include="Wyam\System.Composition.TypedParts.dll" />
-    <Content Include="Wyam\System.Composition.TypedParts.xml" />
-    <Content Include="Wyam\System.Console.dll" />
-    <Content Include="Wyam\System.Reflection.Metadata.dll" />
-    <Content Include="Wyam\System.Reflection.Metadata.xml" />
-    <Content Include="Wyam\Tabular.Csv.dll" />
-    <Content Include="Wyam\Tabular.Csv.xml" />
-    <Content Include="Wyam\Tabular.dll" />
-    <Content Include="Wyam\Tabular.Excel.dll" />
-    <Content Include="Wyam\Tabular.Excel.xml" />
-    <Content Include="Wyam\Tabular.xml" />
-    <Content Include="Wyam\UniversalTypeConverter.dll" />
-    <Content Include="Wyam\UniversalTypeConverter.xml" />
-    <Content Include="Wyam\Wyam.Common.dll" />
-    <Content Include="Wyam\Wyam.Common.pdb" />
-    <Content Include="Wyam\Wyam.Core.dll" />
-    <Content Include="Wyam\Wyam.Core.pdb" />
-    <Content Include="Wyam\Wyam.exe" />
-    <Content Include="Wyam\Wyam.Modules.AmazonWebServices.dll" />
-    <Content Include="Wyam\Wyam.Modules.AmazonWebServices.pdb" />
-    <Content Include="Wyam\Wyam.Modules.CodeAnalysis.dll" />
-    <Content Include="Wyam\Wyam.Modules.CodeAnalysis.pdb" />
-    <Content Include="Wyam\Wyam.Modules.Git.dll" />
-    <Content Include="Wyam\Wyam.Modules.Git.pdb" />
-    <Content Include="Wyam\Wyam.Modules.GitHub.dll" />
-    <Content Include="Wyam\Wyam.Modules.GitHub.pdb" />
-    <Content Include="Wyam\Wyam.Modules.Html.dll" />
-    <Content Include="Wyam\Wyam.Modules.Html.pdb" />
-    <Content Include="Wyam\Wyam.Modules.Images.dll" />
-    <Content Include="Wyam\Wyam.Modules.Images.pdb" />
-    <Content Include="Wyam\Wyam.Modules.Json.dll" />
-    <Content Include="Wyam\Wyam.Modules.Json.pdb" />
-    <Content Include="Wyam\Wyam.Modules.Less.dll" />
-    <Content Include="Wyam\Wyam.Modules.Less.pdb" />
-    <Content Include="Wyam\Wyam.Modules.Markdown.dll" />
-    <Content Include="Wyam\Wyam.Modules.Markdown.pdb" />
-    <Content Include="Wyam\Wyam.Modules.Razor.dll" />
-    <Content Include="Wyam\Wyam.Modules.Razor.pdb" />
-    <Content Include="Wyam\Wyam.Modules.SearchIndex.dll" />
-    <Content Include="Wyam\Wyam.Modules.SearchIndex.pdb" />
-    <Content Include="Wyam\Wyam.Modules.Tables.dll" />
-    <Content Include="Wyam\Wyam.Modules.Tables.pdb" />
-    <Content Include="Wyam\Wyam.Modules.TextGeneration.dll" />
-    <Content Include="Wyam\Wyam.Modules.TextGeneration.pdb" />
-    <Content Include="Wyam\Wyam.Modules.Xmp.dll" />
-    <Content Include="Wyam\Wyam.Modules.Xmp.pdb" />
-    <Content Include="Wyam\Wyam.Modules.Yaml.dll" />
-    <Content Include="Wyam\Wyam.Modules.Yaml.pdb" />
-    <Content Include="Wyam\Wyam.pdb" />
-    <Content Include="Wyam\XmpCore.dll" />
-    <Content Include="Wyam\XmpCore.xml" />
-    <Content Include="Wyam\YamlDotNet.dll" />
-    <Content Include="Wyam\YamlDotNet.Dynamic.dll" />
-    <Content Include="Wyam\YamlDotNet.Dynamic.pdb" />
-    <Content Include="Wyam\YamlDotNet.pdb" />
-    <Content Include="Wyam\YamlDotNet.xml" />
     <Content Include="_Dependencies\SP2013 - 15.0.4569.1000\CSOM\Microsoft.SharePoint.Client.dll" />
     <Content Include="_Dependencies\SP2013 - 15.0.4569.1000\CSOM\Microsoft.SharePoint.Client.DocumentManagement.dll" />
     <Content Include="_Dependencies\SP2013 - 15.0.4569.1000\CSOM\Microsoft.SharePoint.Client.Publishing.dll" />
@@ -699,7 +236,11 @@
     <None Include="fonts\bootstrap\glyphicons-halflings-regular.woff" />
     <None Include="fonts\bootstrap\glyphicons-halflings-regular.woff2" />
     <None Include="packages.config" />
-    <None Include="__packages.config" />
+    <None Include="Views\MetaPack\extensibility\index.md" />
+    <None Include="Views\MetaPack\reference\index.md" />
+    <None Include="Views\MetaPack\getting-started\index.md" />
+    <None Include="Views\MetaPack\cli\index.md" />
+    <None Include="_start_vscode.ps1" />
     <None Include="Scripts\bootstrap\jquery-1.9.1.min.map" />
     <None Include="Views\index.md" />
     <None Include="Views\Shared\bootstrap\Components\_PrevNextNavigation.cshtml" />
@@ -719,35 +260,12 @@
     <None Include="Views\MetaPack\Index.md" />
     <None Include="Views\MetaPack\_ViewStart.cshtml" />
     <None Include="Views\_ViewStart.cshtml" />
-    <None Include="Wyam 0.11.1-beta\config.wyam" />
-    <None Include="Wyam 0.11.1-beta\LICENSE" />
-    <None Include="Wyam 0.11.1-beta\README.md" />
-    <None Include="Wyam 0.11.1-beta\ReleaseNotes.md" />
-    <None Include="Wyam 0.11.1-beta\Wyam.exe.config" />
-    <None Include="Wyam\config.wyam" />
-    <None Include="Wyam\LICENSE" />
-    <None Include="Wyam\README.md" />
-    <None Include="Wyam\ReleaseNotes.md" />
-    <None Include="Wyam\Wyam.exe.config" />
     <None Include="_site.wyam" />
     <None Include="_start-site.ps1" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="content\Shared\" />
-    <Folder Include="Views\MetaPack\getting-started\" />
-    <Folder Include="Wyam 0.11.1-beta\Input\" />
-    <Folder Include="Wyam 0.11.1-beta\Output\" />
-    <Folder Include="Wyam\Input\" />
-    <Folder Include="Wyam\Output\" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Code\Resources\DefaultMasterPageTemplates.resx" />
-    <EmbeddedResource Include="Code\Resources\DefaultPublishingPageLayoutTemplates.resx" />
-    <EmbeddedResource Include="Code\Resources\WorkflowTemplates.resx" />
-  </ItemGroup>
-  <ItemGroup>
-    <Analyzer Include="..\packages\Microsoft.CodeAnalysis.Analyzers.1.1.0\analyzers\dotnet\cs\Microsoft.CodeAnalysis.Analyzers.dll" />
-    <Analyzer Include="..\packages\Microsoft.CodeAnalysis.Analyzers.1.1.0\analyzers\dotnet\cs\Microsoft.CodeAnalysis.CSharp.Analyzers.dll" />
+    <Folder Include="Tests\" />
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
