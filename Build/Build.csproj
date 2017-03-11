@@ -42,7 +42,8 @@
     <None Include="Pester\helpers.ps1" />
     <None Include="Pester\metapack.cli.core.ps1" />
     <None Include="Pester\metapack.cli.provision.ps1" />
-    <None Include="Pester\pester.run.ps1" />
+    <None Include="Pester\pester.cli.core.ps1" />
+    <None Include="Pester\pester.cli.provision.spmeta2.o365.ps1" />
     <None Include="Pester\_install.ps1" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <None Include="tools\nuget.config" />
