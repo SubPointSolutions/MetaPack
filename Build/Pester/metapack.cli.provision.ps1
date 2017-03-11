@@ -16,19 +16,14 @@ Describe "metapack.cli.provision.spmeta2.o365" {
                   "--verbose"
                   )
 
-        $result = (RunMetaPackCLI $args $false)
+        $result = (RunMetaPackCLI $args $true)
 
         $output = $result.Output
         $exitCode = $result.ExitCode
         
-		Write-Host "111"
-		Write-Host "222"
-
         # no exception in output
         if($result.UseShellExecute -eq $false) {
             (OutputHasError $output) | Should Be $false
-
-			Write-Host $output
         }            
         
         # exist code, please 0
