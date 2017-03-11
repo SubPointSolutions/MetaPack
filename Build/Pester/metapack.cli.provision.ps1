@@ -27,7 +27,7 @@ Describe "metapack.cli.provision.spmeta2.o365" {
         # no exception in output
         if($result.UseShellExecute -eq $false) {
             (OutputHasError $output) | Should Be $false
-			Write-Host $output
+			#Write-Host $output
         }            
         
         # exist code, please 0
