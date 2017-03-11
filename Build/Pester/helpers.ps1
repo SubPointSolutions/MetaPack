@@ -5,6 +5,42 @@ $nugetSource = "https://www.myget.org/F/subpointsolutions-ci/api/v2"
 
 Write-Host "Reading environment variables..." -fore Green
 
+function Analyse-Results($results) {
+
+    $failedCount = 0;
+    $passedCount = 0;
+
+    foreach($r in $results.TestResult) {
+
+    Write-Host "- Test [$($r.Name)] with result:[$($r.Result)]"
+
+    switch($r.Result) {
+        "Failed"  {
+            $failedCount++
+        }; 
+        "Passed"  {
+            $passedCount++
+        }; 
+    }
+    }
+
+    Write-Host "- Failed count:[$failedCount]"
+    Write-Host "- Passed count:[$passedCount]"
+
+    if($failedCount -gt 0) {
+        Write-Host "[FAIL] Didn't pass Pester regression. Failed tests count:[$failedCount]"
+        return $false
+    }
+    else{
+        if($passedCount -le 0) {
+            Write-Host "[FAIL] Weird. No tests were passed. Check it, please?"
+            return $false
+        }
+    } 
+
+    return $true
+}
+
 function GetGlobalEnvironmentVariable($name) {
     
 	$result = [System.Environment]::GetEnvironmentVariable($name, "Process");
