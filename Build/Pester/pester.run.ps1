@@ -52,7 +52,7 @@ $testFiles = @(
     @{
         ProfileName = "cli.default"
         FileName = "Pester/metapack.cli.core.ps1"
-        Enable = $false
+        Enable = $true
     },
 
     # O365 regresssion

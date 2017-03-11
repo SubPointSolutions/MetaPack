@@ -1,6 +1,9 @@
 ﻿
 . "Pester\helpers.ps1"
 
+
+Write-Host "Running CLI provisioning tests..." -fore Green
+
 # O365
 Describe "metapack.cli.provision.spmeta2.o365" {
   
