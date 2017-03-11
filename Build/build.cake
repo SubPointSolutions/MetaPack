@@ -6,6 +6,15 @@ Task("Action-CLI-Regression")
 
         Information("Running Pester testing...");
 
+		var t1 = GetGlobalEnvironmentVariable("tmp1");
+		var t2 = GetGlobalEnvironmentVariable("tmp2");
+		
+		Information("tmp1: " + t1);
+		Information("tmp2: " + t2);
+
+
+		throw new Exception("test!");
+
 		var tmpPath = System.IO.Path.GetTempPath();
 		
 		var workingFolderName = string.Format("metapack-cli-{0}", Guid.NewGuid().ToString("N"));
@@ -36,7 +45,7 @@ Task("Action-CLI-Regression")
 // add one more for taskDefaultCLIPackaging
 // testing that CLI from chocolatey works
 // https://github.com/SubPointSolutions/CakeBuildTools
-taskDefaultCI
+taskDefaultRunUnitTests
     .IsDependentOn("Action-CLI-Regression");
 
 // default targets
