@@ -121,7 +121,6 @@ function RunMetaPackCLI($processArgs, $useShellExecute)
         $Process = New-Object System.Diagnostics.Process 
         $Process.StartInfo = $ProcessInfo 
         $Process.Start() | Out-Null 
-        $Process.WaitForExit() 
         
         if($useShellExecute -eq $true)
         {
@@ -132,6 +131,8 @@ function RunMetaPackCLI($processArgs, $useShellExecute)
             $output = $Process.StandardOutput.ReadToEnd() 
             Write-Host $output 
         }
+
+		$Process.WaitForExit() 
 
         return @{
             Output = $output
