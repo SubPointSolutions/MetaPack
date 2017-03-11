@@ -76,7 +76,7 @@ Describe "metapack.cli.provision.pnp.o365" {
                   "--verbose"
                   )
 
-        $result = (RunMetaPackCLI $args $true)
+        $result = (RunMetaPackCLI $args $false)
 
         $output = $result.Output
         $exitCode = $result.ExitCode
