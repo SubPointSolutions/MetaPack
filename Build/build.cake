@@ -24,7 +24,6 @@ Task("Action-CLI-Regression")
         {
             args.Append("WorkingFolderPath", workingFolderPath);
         });
-
 		
         Information("- running CLI core regression...");
         StartPowershellFile("Pester/pester.cli.core.ps1", args =>
@@ -32,12 +31,11 @@ Task("Action-CLI-Regression")
             args.Append("WorkingFolderPath", workingFolderPath);
         });
 
-		Information("- running CLI SPMeta2 O365");
-        StartPowershellFile("Pester/pester.cli.provision.spmeta2.o365.ps1", args =>
+		Information("- running CLI core provision, SPMeta2/PnP with O365");
+        StartPowershellFile("Pester/pester.cli.provision.ps1", args =>
         {
             args.Append("WorkingFolderPath", workingFolderPath);
         });
-		
     });
 
 // add one more for taskDefaultCLIPackaging
