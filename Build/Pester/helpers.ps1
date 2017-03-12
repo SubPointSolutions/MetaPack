@@ -129,7 +129,7 @@ function RunMetaPackCLI($processArgs, $useShellExecute)
         else
         {
             $output = $Process.StandardOutput.ReadToEnd() 
-            Write-Host $output 
+            #Write-Host $output 
         }
 
 		$Process.WaitForExit() 
