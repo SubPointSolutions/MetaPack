@@ -21,7 +21,7 @@ $testFiles = @(
         ProfileName = "cli.pnp.csom.o365"
         FileName = "Pester/metapack.cli.provision.ps1"
         TestName = "metapack.cli.provision.pnp.o365"
-        Enable = $false
+        Enable = $true
     }
 
     # SP2013 regresssion
