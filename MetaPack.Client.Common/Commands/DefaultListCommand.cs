@@ -6,11 +6,21 @@ using MetaPack.Client.Common.Services;
 using MetaPack.NuGet.Services;
 using Microsoft.SharePoint.Client;
 using NuGet;
+using System.Collections.Generic;
 
 namespace MetaPack.Client.Common.Commands
 {
     public class NuGetListCommand : CommandBase
     {
+        #region constructors
+
+        public NuGetListCommand()
+        {
+
+        }
+
+        #endregion
+
 
         #region properties
         public override string Name
@@ -21,11 +31,24 @@ namespace MetaPack.Client.Common.Commands
 
             }
         }
+
+        private List<IPackage> _packages = new List<IPackage>();
+
+        public IEnumerable<IPackage> Packages
+        {
+            get
+            {
+                return _packages;
+            }
+        }
+
         #endregion
 
         #region methods
         public override object Execute()
         {
+            _packages.Clear();
+
             if (string.IsNullOrEmpty(Url))
                 throw new ArgumentException("Url");
 
@@ -65,6 +88,7 @@ namespace MetaPack.Client.Common.Commands
 
                     foreach (var package in packages)
                     {
+                        _packages.Add(package);
                         Out.WriteLine(package.GetFullName());
                     }
                 });
