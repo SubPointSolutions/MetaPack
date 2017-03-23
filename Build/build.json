@@ -24,7 +24,7 @@
     "customNuspecs": [
         {
             "Id": "MetaPack.Core",
-            "Version": "0.1.0-beta3",
+            "Version": "0.1.0-beta4",
             "Dependencies": [ ],
             "LicenseUrl": "http://docs.subpointsolutions.com/metapack/license",
             "ProjectUrl": "https://github.com/SubPointSolutions/metapack",
@@ -44,11 +44,11 @@
         },
         {
             "Id": "MetaPack.NuGet",
-            "Version": "0.1.0-beta3",
+            "Version": "0.1.0-beta4",
             "Dependencies": [
                 {
                     "Id": "MetaPack.Core",
-                    "Version": "0.1.0-beta3"
+                    "Version": "0.1.0-beta4"
                 },
                 {
                     "Id": "NuGet.Core",
@@ -77,15 +77,15 @@
         },
         {
             "Id": "MetaPack.SPMeta2",
-            "Version": "0.1.0-beta3",
+            "Version": "0.1.0-beta4",
             "Dependencies": [
                 {
                     "Id": "MetaPack.Core",
-                    "Version": "0.1.0-beta3"
+                    "Version": "0.1.0-beta4"
                 },
                 {
                     "Id": "MetaPack.NuGet",
-                    "Version": "0.1.0-beta3"
+                    "Version": "0.1.0-beta4"
                 }
             ],
             "LicenseUrl": "http://docs.subpointsolutions.com/metapack/license",
@@ -106,15 +106,15 @@
         },
         {
             "Id": "MetaPack.SharePointPnP",
-            "Version": "0.1.0-beta3",
+            "Version": "0.1.0-beta4",
             "Dependencies": [
                 {
                     "Id": "MetaPack.Core",
-                    "Version": "0.1.0-beta3"
+                    "Version": "0.1.0-beta4"
                 },
                 {
                     "Id": "MetaPack.NuGet",
-                    "Version": "0.1.0-beta3"
+                    "Version": "0.1.0-beta4"
                 }
             ],
             "LicenseUrl": "http://docs.subpointsolutions.com/metapack/license",
@@ -135,15 +135,15 @@
         },
         {
             "Id": "MetaPack.Client.Common",
-            "Version": "0.1.0-beta3",
+            "Version": "0.1.0-beta4",
             "Dependencies": [
                 {
                     "Id": "MetaPack.Core",
-                    "Version": "0.1.0-beta3"
+                    "Version": "0.1.0-beta4"
                 },
                 {
                     "Id": "MetaPack.NuGet",
-                    "Version": "0.1.0-beta3"
+                    "Version": "0.1.0-beta4"
                 }
             ],
             "LicenseUrl": "http://docs.subpointsolutions.com/metapack/license",
@@ -166,7 +166,7 @@
     "customChocolateySpecs": [
         {
             "Id": "MetaPack",
-            "Version": "0.1.0-beta3",
+            "Version": "0.1.0-beta4",
             "LicenseUrl": "http://docs.subpointsolutions.com/metapack/license",
             "ProjectUrl": "https://github.com/SubPointSolutions/metapack",
             "IconUrl": "https://raw.githubusercontent.com/SubPointSolutions/spmeta2/dev/SPMeta2/SPMeta2.Dependencies/Images/SPMeta2_64_64.png",
