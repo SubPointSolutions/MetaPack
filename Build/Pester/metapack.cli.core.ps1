@@ -1,5 +1,7 @@
 ﻿. "Pester\helpers.ps1"
 
+Write-Host "Running CLI provisioning tests..." -fore Green
+
 Describe "metapack.cli.core" {
   
     # generic tests
@@ -34,105 +36,4 @@ Describe "metapack.cli.core" {
         # exist code, please 0
         ($exitCode) | Should Be 0
     }
-
-    # # spmeta2 provider runs for O365
-    # It "Can instsall SPMeta2.CI package" {
-
-    #     $args = @("install", 
-    #               "--id  $m2PackageId",
-    #               "--url  $siteUrl"
-    #               "--username", $userName,
-    #               "--userpassword", $userPassword
-    #               "--spversion", "o365",
-    #               "--source", $nugetSource
-    #               "--verbose"
-    #               )
-
-    #     $result = (RunMetaPackCLI $args)
-
-    #     $output = $result.Output
-    #     $exitCode = $result.ExitCode
-        
-    #     # no exception in output
-    #     (OutputHasError $output) | Should Be $false
-        
-    #     # exist code, please 0
-    #     ($exitCode) | Should Be 0
-    # }
-
-    # It "Can instsall SPMeta2.CI package --force" {
-        
-    #     $args = @("install", 
-    #               "--id  $m2PackageId",
-    #               "--url  $siteUrl"
-    #               "--username", $userName,
-    #               "--userpassword", $userPassword
-    #               "--spversion", "o365",
-    #               "--source", $nugetSource
-    #               "--verbose",
-    #               "--force"
-    #               )
-
-    #     $result = (RunMetaPackCLI $args)
-
-    #     $output = $result.Output
-    #     $exitCode = $result.ExitCode
-
-    #     # no exception in output
-    #     (OutputHasError $output) | Should Be $false
-        
-    #     # exist code, please 0
-    #     ($exitCode) | Should Be 0
-    # }
-
-    # # SharePointPno provider runs for O365
-
-    # It "Can instsall SharePointPnP.CI package" {
-
-    #     $args = @("install", 
-    #               "--id  $spPnPPackageId",
-    #               "--url  $siteUrl"
-    #               "--username", $userName,
-    #               "--userpassword", $userPassword
-    #               "--spversion", "o365",
-    #               "--source", $nugetSource
-    #               "--verbose"
-    #               )
-
-    #     $result = (RunMetaPackCLI $args)
-
-    #     $output = $result.Output
-    #     $exitCode = $result.ExitCode
-        
-    #     # no exception in output
-    #     (OutputHasError $output) | Should Be $false
-        
-    #     # exist code, please 0
-    #     ($exitCode) | Should Be 0
-    # }
-
-    # It "Can instsall SharePointPnP.CI package --force" {
-        
-    #     $args = @("install", 
-    #               "--id  $spPnPPackageId",
-    #               "--url  $siteUrl"
-    #               "--username", $userName,
-    #               "--userpassword", $userPassword
-    #               "--spversion", "o365",
-    #               "--source", $nugetSource
-    #               "--verbose",
-    #               "--force"
-    #               )
-
-    #     $result = (RunMetaPackCLI $args)
-
-    #     $output = $result.Output
-    #     $exitCode = $result.ExitCode
-
-    #     # no exception in output
-    #     (OutputHasError $output) | Should Be $false
-        
-    #     # exist code, please 0
-    #     ($exitCode) | Should Be 0
-    # }
 }

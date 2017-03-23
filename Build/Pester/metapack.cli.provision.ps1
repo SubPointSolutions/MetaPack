@@ -1,6 +1,9 @@
 ﻿
 . "Pester\helpers.ps1"
 
+
+Write-Host "Running CLI provisioning tests..." -fore Green
+
 # O365
 Describe "metapack.cli.provision.spmeta2.o365" {
   
@@ -16,7 +19,7 @@ Describe "metapack.cli.provision.spmeta2.o365" {
                   "--verbose"
                   )
 
-        $result = (RunMetaPackCLI $args $true)
+        $result = (RunMetaPackCLI $args $false)
 
         $output = $result.Output
         $exitCode = $result.ExitCode
@@ -24,38 +27,39 @@ Describe "metapack.cli.provision.spmeta2.o365" {
         # no exception in output
         if($result.UseShellExecute -eq $false) {
             (OutputHasError $output) | Should Be $false
+			#Write-Host $output
         }            
         
         # exist code, please 0
         ($exitCode) | Should Be 0
     }
 
-    It "Can install [$m2PackageId] package --force" {
+    #It "Can install [$m2PackageId] package --force" {
         
-        $args = @("install", 
-                  "--id  $m2PackageId",
-                  "--url  $siteUrl"
-                  "--username", $userName,
-                  "--userpassword", $userPassword
-                  "--spversion", "o365",
-                  "--source", $nugetSource
-                  "--verbose",
-                  "--force"
-                  )
+    #    $args = @("install", 
+    #              "--id  $m2PackageId",
+    #              "--url  $siteUrl"
+    #              "--username", $userName,
+    #              "--userpassword", $userPassword
+    #              "--spversion", "o365",
+    #              "--source", $nugetSource
+    #              "--verbose",
+    #              "--force"
+    #              )
 
-        $result = (RunMetaPackCLI $args $true)
+    #    $result = (RunMetaPackCLI $args $true)
 
-        $output = $result.Output
-        $exitCode = $result.ExitCode
+    #    $output = $result.Output
+    #    $exitCode = $result.ExitCode
 
-       # no exception in output
-        if($result.UseShellExecute -eq $false) {
-            (OutputHasError $output) | Should Be $false
-        }     
+    #   # no exception in output
+    #    if($result.UseShellExecute -eq $false) {
+    #        (OutputHasError $output) | Should Be $false
+    #    }     
         
-        # exist code, please 0
-        ($exitCode) | Should Be 0
-    }
+    #    # exist code, please 0
+    #    ($exitCode) | Should Be 0
+    #}
 }
 
 Describe "metapack.cli.provision.pnp.o365" {
@@ -72,7 +76,7 @@ Describe "metapack.cli.provision.pnp.o365" {
                   "--verbose"
                   )
 
-        $result = (RunMetaPackCLI $args $true)
+        $result = (RunMetaPackCLI $args $false)
 
         $output = $result.Output
         $exitCode = $result.ExitCode
@@ -86,32 +90,32 @@ Describe "metapack.cli.provision.pnp.o365" {
         ($exitCode) | Should Be 0
     }
 
-    It "Can install [$spPnPPackageId] package --force" {
+    #It "Can install [$spPnPPackageId] package --force" {
         
-        $args = @("install", 
-                  "--id  $spPnPPackageId",
-                  "--url  $siteUrl"
-                  "--username", $userName,
-                  "--userpassword", $userPassword
-                  "--spversion", "o365",
-                  "--source", $nugetSource
-                  "--verbose",
-                  "--force"
-                  )
+    #    $args = @("install", 
+    #              "--id  $spPnPPackageId",
+    #              "--url  $siteUrl"
+    #              "--username", $userName,
+    #              "--userpassword", $userPassword
+    #              "--spversion", "o365",
+    #              "--source", $nugetSource
+    #              "--verbose",
+    #              "--force"
+    #              )
 
-        $result = (RunMetaPackCLI $args $true)
+    #    $result = (RunMetaPackCLI $args $true)
 
-        $output = $result.Output
-        $exitCode = $result.ExitCode
+    #    $output = $result.Output
+    #    $exitCode = $result.ExitCode
 
-       # no exception in output
-        if($result.UseShellExecute -eq $false) {
-            (OutputHasError $output) | Should Be $false
-        }     
+    #   # no exception in output
+    #    if($result.UseShellExecute -eq $false) {
+    #        (OutputHasError $output) | Should Be $false
+    #    }     
         
-        # exist code, please 0
-        ($exitCode) | Should Be 0
-    }
+    #    # exist code, please 0
+    #    ($exitCode) | Should Be 0
+    #}
 }
 
 # SP2013 CSOM

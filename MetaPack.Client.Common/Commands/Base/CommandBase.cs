@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,6 +13,8 @@ namespace MetaPack.Client.Common.Commands.Base
 
         protected CommandBase()
         {
+            Out = Console.Out;
+
             PackageSources = new List<string>();
 
             SharePointVersion = "O365";
@@ -40,6 +43,8 @@ namespace MetaPack.Client.Common.Commands.Base
         public string SharePointVersion { get; set; }
         public string SharePointEdition { get; set; }
 
+        public TextWriter Out { get; private set; }
+
         #endregion
 
         #region methods
@@ -51,6 +56,8 @@ namespace MetaPack.Client.Common.Commands.Base
                 return SharePointVersion.ToUpper() == "O365";
             }
         }
+
+
 
         public abstract object Execute();
 

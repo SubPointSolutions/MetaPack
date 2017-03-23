@@ -24,10 +24,15 @@ Task("Action-CLI-Regression")
         {
             args.Append("WorkingFolderPath", workingFolderPath);
         });
+		
+        Information("- running CLI core regression...");
+        StartPowershellFile("Pester/pester.cli.core.ps1", args =>
+        {
+            args.Append("WorkingFolderPath", workingFolderPath);
+        });
 
-        Information("- running regression...");
-
-        StartPowershellFile("Pester/pester.run.ps1", args =>
+		Information("- running CLI core provision, SPMeta2/PnP with O365");
+        StartPowershellFile("Pester/pester.cli.provision.ps1", args =>
         {
             args.Append("WorkingFolderPath", workingFolderPath);
         });
@@ -36,8 +41,8 @@ Task("Action-CLI-Regression")
 // add one more for taskDefaultCLIPackaging
 // testing that CLI from chocolatey works
 // https://github.com/SubPointSolutions/CakeBuildTools
-//taskDefaultCI
-//    .IsDependentOn("Action-CLI-Regression");
+taskDefaultCI
+    .IsDependentOn("Action-CLI-Regression");
 
 // default targets
 RunTarget(target);
