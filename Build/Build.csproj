@@ -39,6 +39,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="github-release-notes.chtml" />
     <None Include="Pester\helpers.ps1" />
     <None Include="Pester\metapack.cli.core.ps1" />
     <None Include="Pester\metapack.cli.provision.ps1" />

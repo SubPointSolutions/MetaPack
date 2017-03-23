@@ -40,6 +40,24 @@ namespace MetaPack.Tests.Base
 
         public MetaPackScenarioTestBase()
         {
+            var files2delete = new List<string>();
+
+            files2delete.AddRange(Directory.GetFiles(Directory.GetCurrentDirectory(), "SPMeta2.CSOM**dll"));
+            files2delete.AddRange(Directory.GetFiles(Directory.GetCurrentDirectory(), "Microsoft.SharePoint.Client**dll"));
+
+            foreach (var f in files2delete)
+            {
+                try
+                {
+                    System.IO.File.Delete(f);
+                }
+                catch (Exception e)
+                {
+
+                }
+            }
+
+
             var regressionTraceService = new RegressionTraceService();
 
             SPMeta2SolutionPackagingService = new SPMeta2SolutionPackageService();
