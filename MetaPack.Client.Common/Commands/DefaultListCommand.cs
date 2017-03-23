@@ -65,8 +65,7 @@ namespace MetaPack.Client.Common.Commands
 
                     foreach (var package in packages)
                     {
-                        Console.WriteLine(package.GetFullName());
-                        Trace.WriteLine(package.GetFullName());
+                        Out.WriteLine(package.GetFullName());
                     }
                 });
 
