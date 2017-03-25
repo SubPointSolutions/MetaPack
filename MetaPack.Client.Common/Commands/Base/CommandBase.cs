@@ -43,7 +43,7 @@ namespace MetaPack.Client.Common.Commands.Base
         public string SharePointVersion { get; set; }
         public string SharePointEdition { get; set; }
 
-        public TextWriter Out { get; private set; }
+        public TextWriter Out { get; set; }
 
         #endregion
 

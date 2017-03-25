@@ -8,6 +8,11 @@ using MetaPack.Tests.Scenarios;
 using MetaPack.Tests.Utils;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NuGet;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using System;
+using System.Text;
 
 namespace MetaPack.Client.Common.Tests.Scenarios
 {
@@ -58,7 +63,25 @@ namespace MetaPack.Client.Common.Tests.Scenarios
                 SharePointVersion = "o365"
             };
 
+            command.Out = new TraceWriter();
             command.Execute();
+
+            Assert.IsTrue(command.Packages.Count() > 0);
+        }
+
+        public class TraceWriter : TextWriter
+        {
+            public override Encoding Encoding { get { return Encoding.UTF8; } }
+
+            public override void Write(string value)
+            {
+                WriteLine(value);
+            }
+
+            public override void WriteLine(string value)
+            {
+                Trace.WriteLine(value);
+            }
         }
 
 
