@@ -612,7 +612,12 @@ namespace MetaPack.NuGet.Services
             foreach (var targetPath in targetPaths)
             {
                 var fileName = targetPath;
-                var fileMatch = Regex.IsMatch(fileName.ToLower(), WildCardToRegular(filter).ToLower());
+                var fileMatch = false;
+
+                if (filter.Contains("*"))
+                    fileMatch = Regex.IsMatch(fileName.ToLower(), WildCardToRegular(filter).ToLower());
+                else
+                    fileMatch = Regex.IsMatch(fileName.ToLower(), filter.ToLower());
 
                 if (fileMatch)
                 {

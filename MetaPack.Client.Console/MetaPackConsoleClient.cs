@@ -153,8 +153,8 @@ namespace MetaPack.Client.Console
 
         protected virtual Assembly CurrentDomain_AssemblyResolve(object sender, ResolveEventArgs args)
         {
-            Info(string.Format("Requested assembly: " + args.Name));
-            Info(string.Format("Requested assembly by: " + args.RequestingAssembly));
+            Verbose(string.Format("Requested assembly: " + args.Name));
+            Verbose(string.Format("Requested assembly by: " + args.RequestingAssembly));
 
             if (args.Name.ToLower().Contains(".resources,"))
                 return null;
@@ -193,7 +193,7 @@ namespace MetaPack.Client.Console
 
             var assemblyPath = Path.Combine(so2013CSOMPath, assemblyName);
 
-            Info(string.Format("Metapack console client - Loading assembly [{0}] from [{1}]", assemblyName, assemblyPath));
+            Verbose(string.Format("Metapack console client - Loading assembly [{0}] from [{1}]", assemblyName, assemblyPath));
 
             if (!File.Exists(assemblyPath)) return null;
 
@@ -395,6 +395,11 @@ namespace MetaPack.Client.Console
         protected virtual void ConfigureServices(MetaPackSubOptionsBase option)
         {
             ClientTraceService.IsVerboseEnabled = option.Verbose;
+        }
+
+        protected virtual void Verbose(string msg)
+        {
+            MetaPackTrace.Verbose(msg);
         }
 
         protected virtual void Info(string msg)
