@@ -40,6 +40,9 @@ namespace MetaPack.Tests.Base
 
         public MetaPackScenarioTestBase()
         {
+            var useSPMeta2Provider = true;
+            var useSharePointPnPProvider = true;
+
             var files2delete = new List<string>();
 
             files2delete.AddRange(Directory.GetFiles(Directory.GetCurrentDirectory(), "SPMeta2.CSOM**dll"));
@@ -101,8 +104,11 @@ namespace MetaPack.Tests.Base
             // packaging
             MetaPackService = new List<MetaPackServiceContext>();
 
-            MetaPackService.Add(SPMeta2ServiceContext);
-            MetaPackService.Add(SharePointPnPServiceContext);
+            if (useSPMeta2Provider)
+                MetaPackService.Add(SPMeta2ServiceContext);
+
+            if (useSharePointPnPProvider)
+                MetaPackService.Add(SharePointPnPServiceContext);
 
             var localAssemblyDirectoryPath = Path.GetDirectoryName(GetType().Assembly.Location);
             var localNuGetFolder = Path.GetFullPath(localAssemblyDirectoryPath + @"\..\..\..\Build\local-ci-packages");
@@ -399,8 +405,12 @@ namespace MetaPack.Tests.Base
             {
                 Trace.WriteLine(string.Format("Testing services:"));
 
-                Trace.WriteLine(string.Format(" ToolID:[{0}]", service.ToolPackage.Id));
-                Trace.WriteLine(string.Format(" ToolVersion:[{0}]", service.ToolPackage.Version));
+                if (service.ToolPackage != null)
+                {
+                    Trace.WriteLine(string.Format(" ToolID:[{0}]", service.ToolPackage.Id));
+                    Trace.WriteLine(string.Format(" ToolVersion:[{0}]", service.ToolPackage.Version));
+                }
+
                 Trace.WriteLine(string.Format(" PackagingService:[{0}]", service.PackagingService));
                 Trace.WriteLine(string.Format(" DeploymentService:[{0}]", service.DeploymentService));
 

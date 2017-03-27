@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace MetaPack.Tests.Services
 {
-    public class RegressionTraceService : TraceServiceBase
+    public class RegressionTraceService : EventableTraceServiceBase
     {
         #region consturctors
 
@@ -28,18 +28,6 @@ namespace MetaPack.Tests.Services
 
         #endregion
 
-        #region classes
-
-        protected enum Level
-        {
-            Critical,
-            Error,
-            Warning,
-            Information,
-            Verbose
-        }
-
-        #endregion
 
         #region props
 
@@ -60,7 +48,7 @@ namespace MetaPack.Tests.Services
             return (DateTime.Now).ToString("yyyyMMdd_HHmmssfff");
         }
 
-        protected virtual void InternalWrite(Level level, string message)
+        protected virtual void InternalWrite(TraceEventLevel level, string message)
         {
             var internalMessgae = string.Format("[{0}]: {1}", level, message);
 
@@ -68,36 +56,38 @@ namespace MetaPack.Tests.Services
 
             using (var sw = File.AppendText(LogFilePath))
                 sw.WriteLine(internalMessgae);
+
+            InvokeOnTraceMessage(message, level);
         }
 
         public override void Critical(int id, object message, Exception exception)
         {
             if (IsCriticalEnabled)
-                InternalWrite(Level.Critical, message + ((exception != null) ? exception.ToString() : string.Empty));
+                InternalWrite(TraceEventLevel.Critical, message + ((exception != null) ? exception.ToString() : string.Empty));
         }
 
         public override void Error(int id, object message, Exception exception)
         {
             if (IsErrorEnabled)
-                InternalWrite(Level.Error, message + ((exception != null) ? exception.ToString() : string.Empty));
+                InternalWrite(TraceEventLevel.Error, message + ((exception != null) ? exception.ToString() : string.Empty));
         }
 
         public override void Warning(int id, object message, Exception exception)
         {
             if (IsWarningEnabled)
-                InternalWrite(Level.Warning, message + ((exception != null) ? exception.ToString() : string.Empty));
+                InternalWrite(TraceEventLevel.Warning, message + ((exception != null) ? exception.ToString() : string.Empty));
         }
 
         public override void Information(int id, object message, Exception exception)
         {
             if (IsInformationEnabled)
-                InternalWrite(Level.Information, message + ((exception != null) ? exception.ToString() : string.Empty));
+                InternalWrite(TraceEventLevel.Information, message + ((exception != null) ? exception.ToString() : string.Empty));
         }
 
         public override void Verbose(int id, object message, Exception exception)
         {
             if (IsVerboseEnabled)
-                InternalWrite(Level.Verbose, message + ((exception != null) ? exception.ToString() : string.Empty));
+                InternalWrite(TraceEventLevel.Verbose, message + ((exception != null) ? exception.ToString() : string.Empty));
         }
 
         public override void TraceActivityStart(int id, object message)

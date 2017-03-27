@@ -26,6 +26,7 @@ namespace MetaPack.Client.Common.Tests.Scenarios
         [TestCategory("Metapack.Client.API.SP2013")]
         public void Can_Call_List_Command_OnPremise()
         {
+            var hasOnTraceEvents = false;
             var webSiteUrl = EnvironmentUtils.GetEnvironmentVariable(RegConsts.SP2013.RootWebUrl);
 
             var command = new NuGetListCommand
@@ -40,7 +41,16 @@ namespace MetaPack.Client.Common.Tests.Scenarios
                 UserPassword = SP2013UserPassword,
             };
 
+            command.OnTraceEvent += (s, e) =>
+            {
+                hasOnTraceEvents = true;
+                Trace.WriteLine(e.Message);
+            };
+
             command.Execute();
+
+            Assert.IsTrue(command.Packages.Count() > 0);
+            Assert.IsTrue(hasOnTraceEvents);
         }
 
         [TestMethod]
@@ -48,6 +58,7 @@ namespace MetaPack.Client.Common.Tests.Scenarios
         [TestCategory("Metapack.Client.API.O365")]
         public void Can_Call_List_Command_O365()
         {
+            var hasOnTraceEvents = false;
             var webSiteUrl = EnvironmentUtils.GetEnvironmentVariable(RegConsts.O365.RootWebUrl);
 
             var userName = EnvironmentUtils.GetEnvironmentVariable(RegConsts.O365.UserName);
@@ -63,10 +74,16 @@ namespace MetaPack.Client.Common.Tests.Scenarios
                 SharePointVersion = "o365"
             };
 
-            command.Out = new TraceWriter();
+            command.OnTraceEvent += (s, e) =>
+            {
+                hasOnTraceEvents = true;
+                Trace.WriteLine(e.Message);
+            };
+
             command.Execute();
 
             Assert.IsTrue(command.Packages.Count() > 0);
+            Assert.IsTrue(hasOnTraceEvents);
         }
 
         public class TraceWriter : TextWriter
@@ -95,6 +112,8 @@ namespace MetaPack.Client.Common.Tests.Scenarios
         //[TestCategory("CI.Core")]
         public void Can_Call_Install_Command_O365()
         {
+            var hasOnTraceEvents = false;
+
             var expectedInstallHits = 0;
             var actualInstallHits = 0;
 
@@ -134,6 +153,12 @@ namespace MetaPack.Client.Common.Tests.Scenarios
                         PreRelease = true
                     };
 
+                    command.OnTraceEvent += (s, e) =>
+                    {
+                        hasOnTraceEvents = true;
+                        Trace.WriteLine(e.Message);
+                    };
+
                     command.PackageSources.Add(repoUrl);
 
                     if (UseLocaNuGet)
@@ -147,6 +172,7 @@ namespace MetaPack.Client.Common.Tests.Scenarios
             });
 
             Assert.AreEqual(expectedInstallHits, actualInstallHits);
+            Assert.IsTrue(hasOnTraceEvents);
         }
 
 

@@ -32,6 +32,12 @@ namespace MetaPack.Client.Common.Commands
         #region methods
         public override object Execute()
         {
+            WithEmitingTraceEvents(InternalExecute);
+            return null;
+        }
+
+        private void InternalExecute()
+        {
             if (string.IsNullOrEmpty(Source))
                 throw new ArgumentException("Source");
 
@@ -119,39 +125,14 @@ namespace MetaPack.Client.Common.Commands
                         }
                     }
 
-                    Out.WriteLine("Installing package [{0}] to SharePoint web site...",
-                                    package.GetFullName());
+                    Out.WriteLine("Installing package [{0}] to SharePoint web site...", package.GetFullName());
 
-                    // TODO
-
-                    //// setup provision services
-                    //packageManager.ProvisionService = new StandardCSOMProvisionService();
-                    //packageManager.ProvisionServiceHost = context;
-
-                    //// SPMeta2 provision tracing
-                    //packageManager.ProvisionService.OnModelNodeProcessed += (sender, args) =>
-                    //{
-                    //    var msg = string.Format(" Provisioning: [{0}/{1}] - [{2}%] - [{3}] [{4}]",
-                    //        new object[]
-                    //        {
-                    //            args.ProcessedModelNodeCount,
-                    //            args.TotalModelNodeCount,
-                    //            100d*(double) args.ProcessedModelNodeCount/(double) args.TotalModelNodeCount,
-                    //            args.CurrentNode.Value.GetType().Name,
-                    //            args.CurrentNode.Value
-                    //        });
-
-                    //    Trace.WriteLine(msg);
-                    //    Out.WriteLine(msg);
-                    //};
 
                     // install package
                     packageManager.InstallPackage(package, false, PreRelease);
 
                     Out.WriteLine("Completed installation. All good!");
                 });
-
-            return null;
         }
 
         #endregion
