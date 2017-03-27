@@ -18,7 +18,6 @@ namespace MetaPack.NuGet.Services
                 {
                     TraceString = traceString
                 });
-
         }
 
         public static EventHandler<TraceStringEventAgs> OnTraceEvent;

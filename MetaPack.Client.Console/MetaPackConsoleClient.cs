@@ -17,6 +17,8 @@ using MetaPack.Core;
 using MetaPack.Core.Services;
 using MetaPack.Core.Utils;
 using MetaPack.NuGet.Services;
+using MetaPack.Core.Services.Impl;
+using MetaPack.Client.Console.Services;
 
 namespace MetaPack.Client.Console
 {
@@ -44,6 +46,8 @@ namespace MetaPack.Client.Console
         #endregion
 
         #region properties
+
+        protected bool IsJsonOutput { get; set; }
 
         protected Parser CmdParser { get; set; }
 
@@ -99,6 +103,9 @@ namespace MetaPack.Client.Console
 
             if (!string.IsNullOrEmpty(preDefaultArgs.LogFile))
                 LogFile = preDefaultArgs.LogFile;
+
+            if (!string.IsNullOrEmpty(preDefaultArgs.Output) && preDefaultArgs.Output.ToLower() == "json")
+                IsJsonOutput = true;
 
             if (!CmdParser.ParseArguments(args, options, (verb, subOption) =>
             {
@@ -181,6 +188,9 @@ namespace MetaPack.Client.Console
                 ClientTraceService.LogFilePath = LogFile;
             }
 
+            if (IsJsonOutput)
+                ClientTraceService.TraceEventFormatter = new JSONTraceEventFormatService();
+
             instance.ReplaceService(typeof(TraceServiceBase), ClientTraceService);
         }
 
@@ -231,15 +241,16 @@ namespace MetaPack.Client.Console
             }
             catch (Exception e)
             {
-                Info(string.Format("There was an error reading app.config: [{0}]", e));
-                Info(string.Format("Using default NuGet gallery:[{0}]", DefaultValues.DefaultNuGetRepositories));
+                Error(string.Format("There was an error reading app.config: [{0}]", e));
+                Error(string.Format("Using default NuGet gallery:[{0}]", DefaultValues.DefaultNuGetRepositories));
             }
         }
 
+
+
         protected virtual void HandleWrongArgumentParsing()
         {
-            Info("Cannot find valid arguments. Review command line arguments and run again.");
-            //Environment.Exit(CmdParserExitCodeFail);
+            Error("Cannot find valid arguments. Review command line arguments and run again.");
         }
 
         protected virtual int HandleMissedCommand(DefaultOptions options)
@@ -400,6 +411,11 @@ namespace MetaPack.Client.Console
         protected virtual void Verbose(string msg)
         {
             MetaPackTrace.Verbose(msg);
+        }
+
+        protected virtual void Error(string msg)
+        {
+            MetaPackTrace.Error(msg);
         }
 
         protected virtual void Info(string msg)

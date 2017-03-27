@@ -32,6 +32,11 @@ namespace MetaPack.Core.Utils
 
         #region methods
 
+        public static void Error(string message)
+        {
+            TraceService.Error(0, message);
+        }
+
         public static void Info(string message)
         {
             Info(message, null);
