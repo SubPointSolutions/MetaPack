@@ -1,4 +1,6 @@
-﻿using System;
+﻿using MetaPack.Core;
+using MetaPack.Core.Services;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -9,11 +11,19 @@ namespace MetaPack.Client.Common.Commands.Base
 {
     public abstract class CommandBase
     {
+        #region static
+        static CommandBase()
+        {
+            DefaultOut = Console.Out;
+        }
+
+        #endregion
+
         #region constructros
 
         protected CommandBase()
         {
-            Out = Console.Out;
+            Out = DefaultOut;
 
             PackageSources = new List<string>();
 
@@ -21,6 +31,23 @@ namespace MetaPack.Client.Common.Commands.Base
             SharePointEdition = "Standard";
             SharePointApi = "CSOM";
         }
+
+        #endregion
+
+        #region static
+
+        public static TextWriter DefaultOut { get; set; }
+        protected virtual EventableTraceServiceBase EventableTraceService
+        {
+            get
+            {
+                return MetaPackServiceContainer.Instance
+                                               .GetService<TraceServiceBase>() as EventableTraceServiceBase;
+            }
+        }
+
+
+        public event EventHandler<TraceEventEventArgs> OnTraceEvent;
 
         #endregion
 
@@ -43,7 +70,7 @@ namespace MetaPack.Client.Common.Commands.Base
         public string SharePointVersion { get; set; }
         public string SharePointEdition { get; set; }
 
-        public TextWriter Out { get; private set; }
+        public TextWriter Out { get; set; }
 
         #endregion
 
@@ -57,9 +84,34 @@ namespace MetaPack.Client.Common.Commands.Base
             }
         }
 
-
-
         public abstract object Execute();
+
+        protected virtual void WithEmitingTraceEvents(Action action)
+        {
+            try
+            {
+                if (EventableTraceService != null)
+                    EventableTraceService.OnTraceEvent += CommandBase_OnTraceEvent;
+
+                action();
+            }
+            finally
+            {
+                if (EventableTraceService != null)
+                    EventableTraceService.OnTraceEvent -= CommandBase_OnTraceEvent;
+            }
+        }
+
+        private void CommandBase_OnTraceEvent(object sender, TraceEventEventArgs e)
+        {
+            InvokeOnTraceEvent(sender, e);
+        }
+
+        private void InvokeOnTraceEvent(object sender, TraceEventEventArgs e)
+        {
+            if (OnTraceEvent != null)
+                OnTraceEvent(sender, e);
+        }
 
         #endregion
 

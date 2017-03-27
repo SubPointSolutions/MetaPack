@@ -82,7 +82,9 @@
     <Compile Include="Services\MetaPackClientTraceService.cs" />
     <Compile Include="Services\SharePointService.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Data\" />
+  </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MetaPack.Core\MetaPack.Core.csproj">
       <Project>{262728cf-54e6-44ce-ada9-8ab6934fc4ce}</Project>

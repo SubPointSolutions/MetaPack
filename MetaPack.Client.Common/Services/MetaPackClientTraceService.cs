@@ -5,9 +5,11 @@ using MetaPack.Core.Services;
 
 namespace MetaPack.Client.Common.Services
 {
-    public class MetaPackClientTraceService : TraceServiceBase
+    public class MetaPackClientTraceService : EventableTraceServiceBase
     {
         #region consturctors
+
+
 
         public MetaPackClientTraceService()
         {
@@ -29,19 +31,6 @@ namespace MetaPack.Client.Common.Services
 
         #endregion
 
-        #region classes
-
-        protected enum Level
-        {
-            Critical,
-            Error,
-            Warning,
-            Information,
-            Verbose
-        }
-
-        #endregion
-
         #region props
 
         public bool IsConsoleWriterEnabled { get; set; }
@@ -58,6 +47,8 @@ namespace MetaPack.Client.Common.Services
 
         public string LogFilePath { get; set; }
 
+        public TraceEventFormatServiceBase TraceEventFormatter { get; set; }
+
         #endregion
 
         #region methods
@@ -67,54 +58,71 @@ namespace MetaPack.Client.Common.Services
             return (DateTime.Now).ToString("yyyyMMdd_HHmm_ssfff");
         }
 
-        protected virtual void InternalWrite(Level level, string message)
+        protected virtual void InternalWrite(TraceEventLevel level, string message)
         {
-            var internalMessgae = string.Format("[{0}]: {1}", level, message);
+            var internalMessage = string.Format("[{0}]: {1}", level, message);
+            var internalOutputMessage = internalMessage;
+
+            if (TraceEventFormatter != null)
+            {
+                internalOutputMessage = TraceEventFormatter.FormatEvent(new TraceEventFormatOptions
+                {
+                    Level = level.ToString(),
+                    Message = message,
+                    TimeStamp = DateTime.Now
+                });
+            }
 
             if (IsConsoleWriterEnabled)
-                Out.WriteLine(internalMessgae);
+                Out.WriteLine(internalOutputMessage);
 
             if (IsTraceWriterEnabled)
-                Trace.WriteLine(internalMessgae);
+                Trace.WriteLine(internalOutputMessage);
 
             if (IsDebugWriterEnabled)
-                Trace.WriteLine(internalMessgae);
+                Trace.WriteLine(internalOutputMessage);
 
             if (IsFileWriterEnabled)
             {
                 using (var sw = File.AppendText(LogFilePath))
-                    sw.WriteLine(internalMessgae);
+                    sw.WriteLine(internalOutputMessage);
             }
+
+            InvokeOnTraceMessage(new TraceEventEventArgs
+            {
+                Level = level,
+                Message = message
+            });
         }
 
         public override void Critical(int id, object message, Exception exception)
         {
             if (IsCriticalEnabled)
-                InternalWrite(Level.Critical, message + ((exception != null) ? exception.ToString() : string.Empty));
+                InternalWrite(TraceEventLevel.Critical, message + ((exception != null) ? exception.ToString() : string.Empty));
         }
 
         public override void Error(int id, object message, Exception exception)
         {
             if (IsErrorEnabled)
-                InternalWrite(Level.Error, message + ((exception != null) ? exception.ToString() : string.Empty));
+                InternalWrite(TraceEventLevel.Error, message + ((exception != null) ? exception.ToString() : string.Empty));
         }
 
         public override void Warning(int id, object message, Exception exception)
         {
             if (IsWarningEnabled)
-                InternalWrite(Level.Warning, message + ((exception != null) ? exception.ToString() : string.Empty));
+                InternalWrite(TraceEventLevel.Warning, message + ((exception != null) ? exception.ToString() : string.Empty));
         }
 
         public override void Information(int id, object message, Exception exception)
         {
             if (IsInformationEnabled)
-                InternalWrite(Level.Information, message + ((exception != null) ? exception.ToString() : string.Empty));
+                InternalWrite(TraceEventLevel.Information, message + ((exception != null) ? exception.ToString() : string.Empty));
         }
 
         public override void Verbose(int id, object message, Exception exception)
         {
             if (IsVerboseEnabled)
-                InternalWrite(Level.Verbose, message + ((exception != null) ? exception.ToString() : string.Empty));
+                InternalWrite(TraceEventLevel.Verbose, message + ((exception != null) ? exception.ToString() : string.Empty));
         }
 
         public override void TraceActivityStart(int id, object message)
@@ -151,6 +159,7 @@ namespace MetaPack.Client.Common.Services
         }
 
         public TextWriter Out { get; private set; }
+
         #endregion
     }
 }

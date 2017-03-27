@@ -32,6 +32,12 @@ namespace MetaPack.Client.Common.Commands
         #region methods
         public override object Execute()
         {
+            WithEmitingTraceEvents(InternalExecute);
+            return null;
+        }
+
+        private void InternalExecute()
+        {
             if (string.IsNullOrEmpty(Source))
                 throw new ArgumentException("Source");
 
@@ -43,10 +49,7 @@ namespace MetaPack.Client.Common.Commands
 
             throw new NotImplementedException();
 
-            //var packagingService = new 2SolutionPackageService();
             //packagingService.Push(Package, Source, ApiKey);
-
-            return null;
         }
 
         #endregion

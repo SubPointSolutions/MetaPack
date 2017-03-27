@@ -47,6 +47,13 @@ namespace MetaPack.Client.Common.Commands
         #region methods
         public override object Execute()
         {
+            WithEmitingTraceEvents(InternalExecute);
+
+            return null;
+        }
+
+        private void InternalExecute()
+        {
             _packages.Clear();
 
             if (string.IsNullOrEmpty(Url))
@@ -92,8 +99,6 @@ namespace MetaPack.Client.Common.Commands
                         Out.WriteLine(package.GetFullName());
                     }
                 });
-
-            return null;
         }
 
         #endregion

@@ -17,6 +17,8 @@ using MetaPack.Core;
 using MetaPack.Core.Services;
 using MetaPack.Core.Utils;
 using MetaPack.NuGet.Services;
+using MetaPack.Core.Services.Impl;
+using MetaPack.Client.Console.Services;
 
 namespace MetaPack.Client.Console
 {
@@ -44,6 +46,8 @@ namespace MetaPack.Client.Console
         #endregion
 
         #region properties
+
+        protected bool IsJsonOutput { get; set; }
 
         protected Parser CmdParser { get; set; }
 
@@ -100,6 +104,9 @@ namespace MetaPack.Client.Console
             if (!string.IsNullOrEmpty(preDefaultArgs.LogFile))
                 LogFile = preDefaultArgs.LogFile;
 
+            if (!string.IsNullOrEmpty(preDefaultArgs.Output) && preDefaultArgs.Output.ToLower() == "json")
+                IsJsonOutput = true;
+
             if (!CmdParser.ParseArguments(args, options, (verb, subOption) =>
             {
                 if (!hadFirstRun)
@@ -153,8 +160,8 @@ namespace MetaPack.Client.Console
 
         protected virtual Assembly CurrentDomain_AssemblyResolve(object sender, ResolveEventArgs args)
         {
-            Info(string.Format("Requested assembly: " + args.Name));
-            Info(string.Format("Requested assembly by: " + args.RequestingAssembly));
+            Verbose(string.Format("Requested assembly: " + args.Name));
+            Verbose(string.Format("Requested assembly by: " + args.RequestingAssembly));
 
             if (args.Name.ToLower().Contains(".resources,"))
                 return null;
@@ -181,6 +188,9 @@ namespace MetaPack.Client.Console
                 ClientTraceService.LogFilePath = LogFile;
             }
 
+            if (IsJsonOutput)
+                ClientTraceService.TraceEventFormatter = new JSONTraceEventFormatService();
+
             instance.ReplaceService(typeof(TraceServiceBase), ClientTraceService);
         }
 
@@ -193,7 +203,7 @@ namespace MetaPack.Client.Console
 
             var assemblyPath = Path.Combine(so2013CSOMPath, assemblyName);
 
-            Info(string.Format("Metapack console client - Loading assembly [{0}] from [{1}]", assemblyName, assemblyPath));
+            Verbose(string.Format("Metapack console client - Loading assembly [{0}] from [{1}]", assemblyName, assemblyPath));
 
             if (!File.Exists(assemblyPath)) return null;
 
@@ -231,15 +241,16 @@ namespace MetaPack.Client.Console
             }
             catch (Exception e)
             {
-                Info(string.Format("There was an error reading app.config: [{0}]", e));
-                Info(string.Format("Using default NuGet gallery:[{0}]", DefaultValues.DefaultNuGetRepositories));
+                Error(string.Format("There was an error reading app.config: [{0}]", e));
+                Error(string.Format("Using default NuGet gallery:[{0}]", DefaultValues.DefaultNuGetRepositories));
             }
         }
 
+
+
         protected virtual void HandleWrongArgumentParsing()
         {
-            Info("Cannot find valid arguments. Review command line arguments and run again.");
-            //Environment.Exit(CmdParserExitCodeFail);
+            Error("Cannot find valid arguments. Review command line arguments and run again.");
         }
 
         protected virtual int HandleMissedCommand(DefaultOptions options)
@@ -395,6 +406,16 @@ namespace MetaPack.Client.Console
         protected virtual void ConfigureServices(MetaPackSubOptionsBase option)
         {
             ClientTraceService.IsVerboseEnabled = option.Verbose;
+        }
+
+        protected virtual void Verbose(string msg)
+        {
+            MetaPackTrace.Verbose(msg);
+        }
+
+        protected virtual void Error(string msg)
+        {
+            MetaPackTrace.Error(msg);
         }
 
         protected virtual void Info(string msg)

@@ -8,7 +8,7 @@ using MetaPack.Core.Utils;
 
 namespace MetaPack.Core.Services
 {
-    public class TraceSourceService : TraceServiceBase
+    public class TraceSourceService : EventableTraceServiceBase
     {
         #region properties
 
@@ -94,6 +94,40 @@ namespace MetaPack.Core.Services
 
             TraceSource.TraceEvent(messageType, id, traceString);
             TraceSource.Flush();
+
+            var traceLevel = GetTraceLevel(messageType);
+
+            if (traceLevel != TraceEventLevel.Unknown)
+            {
+                InvokeOnTraceMessage(traceString, traceLevel);
+            }
+        }
+
+        protected TraceEventLevel GetTraceLevel(TraceEventType type)
+        {
+            switch (type)
+            {
+                case TraceEventType.Critical:
+                    return TraceEventLevel.Critical;
+                    break;
+                case TraceEventType.Error:
+                    return TraceEventLevel.Error;
+                    break;
+                case TraceEventType.Warning:
+                    return TraceEventLevel.Warning;
+                    break;
+                case TraceEventType.Information:
+                    return TraceEventLevel.Information;
+                    break;
+                case TraceEventType.Verbose:
+                    return TraceEventLevel.Verbose;
+                    break;
+                default:
+                    return TraceEventLevel.Unknown;
+                    break;
+            }
+
+            return TraceEventLevel.Unknown;
         }
 
         #endregion
