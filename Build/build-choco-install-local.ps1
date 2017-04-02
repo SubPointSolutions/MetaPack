@@ -1,13 +1,7 @@
 Param(
-  [string]$workingFolderPath
+  [Parameter(Mandatory=$true)]
+  [string]$packageName
 )
-
-if([string]::IsNullOrEmpty($workingFolderPath) -eq $true) {
-	Write-Host "Installing the latest choco package globally"
-}
-else {
-	Write-Host "Installing the latest choco package in folder:[$workingFolderPath]"
-}
 
 $PSScriptRoot = ""
 
@@ -30,14 +24,20 @@ if($packages.Count -eq 0) {
     throw "No packages to install"
 }
 
-$latestPackage = $packages | Sort-Object { $_.Name } -Descending | Select-Object -First 1
-$latestPackageVersion = [System.IO.Path]::GetFileNameWithoutExtension($latestPackage).Replace("MetaPack.", "")
+$latestPackage = $packages | Where-Object { $_.Name.StartsWith($packageName) -eq $true } | Sort-Object { $_.Name } -Descending | Select-Object -First 1
+$latestPackageVersion = [System.IO.Path]::GetFileNameWithoutExtension($latestPackage).Replace($packageName + ".", "")
 
+Write-Host "Uninstalling [$packageName] package..." -fore Green    
+choco uninstall $packageName --force
 
-Write-Host "Uninstalling MetaPack CLI..." -fore Green    
-choco uninstall metapack --force
+Write-Host "Updating [$packageName] package to [$latestPackageVersion]" -fore Green
+choco install $packageName --source $packagesFolder --force --pre --version $latestPackageVersion
 
-Write-Host "Updating MetaPack CLI package to [$latestPackageVersion]" -fore Green
-choco install metapack --source $packagesFolder --force --pre --version $latestPackageVersion
+Write-Host "Running [$packageName version] command.." -fore Green
+& $packageName version
 
-metapack version
+if($lastexitcode -ne 0) {
+	throw "Exit code:[$lastexitcode]. Expected [0]"
+} else {
+	Write-Host "Exit code:[$lastexitcode]. All good."
+}

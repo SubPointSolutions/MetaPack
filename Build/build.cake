@@ -19,10 +19,16 @@ Task("Action-CLI-Regression")
              args.Append("WorkingFolderPath", workingFolderPath);
         });
 
-		Information("- installing the latest Chocolatey package...");
+		Information("- installing the latest Chocolatey package [metapack]");
         StartPowershellFile("build-choco-install-local.ps1", args =>
         {
-            args.Append("WorkingFolderPath", workingFolderPath);
+            args.Append("packageName", "metapack");
+        });
+
+		Information("- installing the latest Chocolatey package [metapack-ui]");
+        StartPowershellFile("build-choco-install-local.ps1", args =>
+        {
+            args.Append("packageName", "metapack-ui");
         });
 		
         Information("- running CLI core regression...");

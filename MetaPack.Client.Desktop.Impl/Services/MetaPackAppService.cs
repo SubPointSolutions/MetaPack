@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Diagnostics;
 using System.Windows.Forms;
 using MetaPack.Core;
@@ -8,6 +9,8 @@ using SubPointSolutions.Shelly.Desktop.MetroFramework.Services;
 using SubPointSolutions.Shelly.Desktop.Services;
 using MetroFramework;
 using MetroFramework.Components;
+using System.Reflection;
+using SubPointSolutions.Shelly.Core.Exceptions;
 
 namespace MetaPack.Client.Desktop.Impl.Services
 {
@@ -17,6 +20,50 @@ namespace MetaPack.Client.Desktop.Impl.Services
         public void InitAppServices()
         {
             this.InitInternal();
+        }
+
+        public override void Run()
+        {
+            ProcessArgs();
+
+            base.Run();
+        }
+
+        private void ProcessArgs()
+        {
+            if (Args != null
+               && Args.Any(a => !string.IsNullOrEmpty(a) && a.ToLower() == "version"))
+            {
+                var fileVersionAttribute = GetAssemblyFileVersion(GetType().Assembly);
+
+                Console.WriteLine(fileVersionAttribute.ToString());
+                Environment.Exit(0);
+            }
+        }
+
+        protected virtual Version GetAssemblyFileVersion(Assembly assembly)
+        {
+            var fileVersionAttribute = Attribute.GetCustomAttribute(
+                                            assembly,
+                                            typeof(AssemblyFileVersionAttribute), false) as AssemblyFileVersionAttribute;
+
+            // paranoic about regression caused by MS changes in the future
+            if (fileVersionAttribute == null)
+            {
+                throw new ShAppException(string.Format(
+                        "Cannot find AssemblyFileVersionAttribute in assembly:[{0}]",
+                        assembly.FullName));
+            }
+
+            if (string.IsNullOrEmpty(fileVersionAttribute.Version))
+            {
+                throw new ShAppException(string.Format(
+                        "Found AssemblyFileVersionAttribute but .Version is null or empty. Assembly:[{0}]",
+                        assembly.FullName));
+            }
+
+
+            return new Version(fileVersionAttribute.Version);
         }
 
         protected override Form CreateAppForm()
