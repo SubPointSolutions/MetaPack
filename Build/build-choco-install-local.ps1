@@ -24,7 +24,7 @@ if($packages.Count -eq 0) {
     throw "No packages to install"
 }
 
-$latestPackage = $packages | Where-Object { $_.Name.StartsWith($packageName) -eq $true } | Sort-Object { $_.Name } -Descending | Select-Object -First 1
+$latestPackage = $packages | Where-Object { $_.Name.StartsWith($packageName + ".") -eq $true } | Sort-Object { $_.Name } -Descending | Select-Object -First 1
 $latestPackageVersion = [System.IO.Path]::GetFileNameWithoutExtension($latestPackage).Replace($packageName + ".", "")
 
 Write-Host "Uninstalling [$packageName] package..." -fore Green    
