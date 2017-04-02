@@ -3,6 +3,7 @@ test: off
 clone_folder: c:\prj
 
 build_script: 
+    - ps: c:\prj\shelly\Shelly\Build\build.ps1 -Target "Default-CI" 
     - ps: c:\prj\Build\build.ps1  -Target "Default-CI" 
 
 artifacts:
