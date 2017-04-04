@@ -44,18 +44,6 @@
       <HintPath>..\packages\AppDomainToolkit.1.0.4.3\lib\net\AppDomainToolkit.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="MetaPack.Client.Common, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\MetaPack.Client.Common.0.1.0-beta4\lib\net45\MetaPack.Client.Common.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="MetaPack.Core, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\MetaPack.Core.0.1.0-beta4\lib\net45\MetaPack.Core.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="MetaPack.NuGet, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\MetaPack.NuGet.0.1.0-beta4\lib\net45\MetaPack.NuGet.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="MetroFramework, Version=1.4.0.0, Culture=neutral, PublicKeyToken=5f91a84759bf584a, processorArchitecture=MSIL">
       <HintPath>..\packages\MetroModernUI.1.4.0.0\lib\net\MetroFramework.dll</HintPath>
       <Private>True</Private>
@@ -209,6 +197,18 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
+    <ProjectReference Include="..\MetaPack.Client.Common\MetaPack.Client.Common.csproj">
+      <Project>{9d4ceb39-5b75-46ed-989b-bfa648a9469e}</Project>
+      <Name>MetaPack.Client.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MetaPack.Core\MetaPack.Core.csproj">
+      <Project>{262728cf-54e6-44ce-ada9-8ab6934fc4ce}</Project>
+      <Name>MetaPack.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MetaPack.NuGet\MetaPack.NuGet.csproj">
+      <Project>{a15f8430-15f3-4e25-aa60-221d244ea2fd}</Project>
+      <Name>MetaPack.NuGet</Name>
+    </ProjectReference>
     <ProjectReference Include="..\shelly\Shelly\SubPointSolutions.Shelly.Core\SubPointSolutions.Shelly.Core.csproj">
       <Project>{1cec5a84-bce6-409d-a321-e64d7aad600d}</Project>
       <Name>SubPointSolutions.Shelly.Core</Name>

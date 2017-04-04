@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using MetaPack.Client.Common.Services;
+using MetaPack.Core.Services;
 
 namespace MetaPack.Client.Desktop.Impl.Services
 {
@@ -14,7 +15,7 @@ namespace MetaPack.Client.Desktop.Impl.Services
             this.IsVerboseEnabled = true;
         }
 
-        protected override void InternalWrite(Level level, string message)
+        protected override void InternalWrite(TraceEventLevel level, string message)
         {
             base.InternalWrite(level, message);
 

@@ -29,7 +29,7 @@ function Analyse-Results($results) {
 
     if($failedCount -gt 0) {
         Write-Host "[FAIL] Didn't pass Pester regression. Failed tests count:[$failedCount]"
-        return $false
+		throw "[FAIL] Didn't pass Pester regression. Failed tests count:[$failedCount]"
     }
     else{
         if($passedCount -le 0) {
