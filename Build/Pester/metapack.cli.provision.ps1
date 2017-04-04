@@ -29,7 +29,7 @@ Describe "metapack.cli.provision.spmeta2.o365" {
             (OutputHasError $output) | Should Be $false
 			#Write-Host $output
         }            
-        
+
         # exist code, please 0
         ($exitCode) | Should Be 0
     }

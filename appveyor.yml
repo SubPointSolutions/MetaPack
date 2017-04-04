@@ -13,3 +13,5 @@ artifacts:
     - path: '**\packages\*.nupkg'
     - path: '**\packages\*.zip'
     - path: '**\packages\*.zip.*'
+    - path: '**\*metapacklog'
+	

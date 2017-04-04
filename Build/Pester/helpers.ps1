@@ -116,7 +116,15 @@ function RunMetaPackCLI($processArgs, $useShellExecute)
             $ProcessInfo.RedirectStandardOutput = $true 
             $ProcessInfo.UseShellExecute = $false
         }
+
+		$logFileName = ("metapack.log_" + $(get-date -f MM-dd-yyyy_HH_mm_ss) + ".metapacklog");
         
+		Write-Host "Using log file:[$logFileName]"
+		
+		$processArgs  += @(
+			"--logfile", $logFileName
+		)
+
         $ProcessInfo.Arguments = $processArgs 
         $Process = New-Object System.Diagnostics.Process 
         $Process.StartInfo = $ProcessInfo 
@@ -133,6 +141,9 @@ function RunMetaPackCLI($processArgs, $useShellExecute)
         }
 
 		$Process.WaitForExit() 
+
+		#Write-Host "Output:"
+		#Write-Host (Get-Content $logFileName) -ForegroundColor Gray
 
         return @{
             Output = $output
