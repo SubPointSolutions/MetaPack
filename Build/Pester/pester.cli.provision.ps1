@@ -80,3 +80,5 @@ if($fullRegressionResult -eq $false)
 {
     throw "Failed Pester regression."
 }
+
+return 0

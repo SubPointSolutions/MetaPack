@@ -47,7 +47,7 @@ Describe "metapack.cli.provision.spmeta2.o365" {
                   "--force"
                   )
 
-        $result = (RunMetaPackCLI $args $true)
+        $result = (RunMetaPackCLI $args $false)
 
         $output = $result.Output
         $exitCode = $result.ExitCode
