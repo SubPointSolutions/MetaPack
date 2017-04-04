@@ -14,4 +14,3 @@ artifacts:
     - path: '**\packages\*.zip'
     - path: '**\packages\*.zip.*'
     - path: '**\**.metapacklog'
-	
