@@ -55,7 +55,11 @@ namespace MetaPack.Client.Desktop.Impl.Commands
             ShFormUtilsEx.ShowModal(new ShowModalExOptions
             {
                 Control = editorControl,
-                OnControlSetup = (control) => { control.OkButton.Text = "Deploy"; },
+                OnControlSetup = (control) =>
+                {
+                    control.OkButton.Text = "Deploy";
+                    control.TsEnableOkButton(AppService.ActiveSharePointConnection != null);
+                },
                 OnOk = (s, e) =>
                 {
                     e.Cancel = true;
@@ -89,12 +93,12 @@ namespace MetaPack.Client.Desktop.Impl.Commands
                         e.Control.TsEnableOkButton(true);
                         e.Control.TsEnableCancelButton(true);
 
-                        TraceService.OnTrace += onLogHandler;
+                        TraceService.OnTrace -= onLogHandler;
                     }
                 },
                 OnDone = () =>
                 {
-                    TraceService.OnTrace += onLogHandler;
+
                 }
             });
         }

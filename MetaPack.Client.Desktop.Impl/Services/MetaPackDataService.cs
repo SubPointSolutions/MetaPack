@@ -87,7 +87,7 @@ namespace MetaPack.Client.Desktop.Impl.Services
             SaveSettings();
         }
 
-        
+
 
         private void SaveNuGetConnections()
         {
@@ -240,13 +240,18 @@ namespace MetaPack.Client.Desktop.Impl.Services
             var allPackages = repo.Search(searchPattern, new string[]
             {
             }
-            , incluePrerelease)
-            .Where(p => p.IsLatestVersion)
-            .Take(20)
-            .ToList()
-            .OrderBy(p => p.Title);
+            , incluePrerelease);
 
-            return allPackages.Select(p => new NuGetPackageViewModel(p));
+            if (!incluePrerelease)
+            {
+                allPackages = allPackages
+                                .Where(p => p.IsLatestVersion);
+            }
+
+            return allPackages.OrderBy(p => p.Title)
+                              .Take(20)
+                              .ToList()
+                              .Select(p => new NuGetPackageViewModel(p));
         }
 
         public BindingList<NuGetPackageViewModel> AvailableNuGetPackages { get; set; }

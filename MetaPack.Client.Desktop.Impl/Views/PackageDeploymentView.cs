@@ -15,6 +15,8 @@ namespace MetaPack.Client.Desktop.Impl.Views
         public PackageDeploymentView()
         {
             InitializeComponent();
+
+            pProgress.Visible = false;
         }
 
         protected override void OnBindViewModel()
@@ -23,8 +25,10 @@ namespace MetaPack.Client.Desktop.Impl.Views
 
             var appDataService = ShServiceContainer.Instance.GetAppDataService<MetaPackDataService>();
 
-            BindService.AutoBindProperty(m => m.SharePointConnection, cbConnection, appDataService.SharePointConnections);
-            BindService.AutoBindProperty(m => m.NuGetPackage, cbPackage, new[] { cbPackage });
+            if (ViewModel.SharePointConnection != null)
+                BindService.AutoBindProperty(m => m.SharePointConnection, cbConnection, appDataService.SharePointConnections);
+
+            BindService.AutoBindProperty(m => m.NuGetPackage, cbPackage, new[] { ViewModel.NuGetPackage });
             BindService.AutoBindProperty(m => m.IsForceDeploy, cbForceDeploy);
         }
 

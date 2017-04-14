@@ -187,5 +187,13 @@ namespace MetaPack.Client.Desktop.Impl.ViewModels
 
             return string.Format("{0:n" + decimalPlaces + "} {1}", dValue, SizeSuffixes[i]);
         }
+
+        public override string ToString()
+        {
+            if (this.Package != null)
+                return Package.GetFullName();
+
+            return base.ToString();
+        }
     }
 }

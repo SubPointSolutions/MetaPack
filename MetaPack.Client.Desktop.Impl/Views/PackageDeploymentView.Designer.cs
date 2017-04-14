@@ -37,12 +37,12 @@
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.panel2 = new System.Windows.Forms.Panel();
             this.lbOutput = new System.Windows.Forms.ListBox();
-            this.panel1 = new System.Windows.Forms.Panel();
+            this.pProgress = new System.Windows.Forms.Panel();
             this.pbProgress = new System.Windows.Forms.ProgressBar();
             this.gbConnection.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.panel2.SuspendLayout();
-            this.panel1.SuspendLayout();
+            this.pProgress.SuspendLayout();
             this.SuspendLayout();
             // 
             // gbConnection
@@ -115,7 +115,7 @@
             // groupBox1
             // 
             this.groupBox1.Controls.Add(this.panel2);
-            this.groupBox1.Controls.Add(this.panel1);
+            this.groupBox1.Controls.Add(this.pProgress);
             this.groupBox1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.groupBox1.Location = new System.Drawing.Point(0, 109);
             this.groupBox1.Name = "groupBox1";
@@ -145,15 +145,15 @@
             this.lbOutput.Size = new System.Drawing.Size(634, 264);
             this.lbOutput.TabIndex = 0;
             // 
-            // panel1
+            // pProgress
             // 
-            this.panel1.Controls.Add(this.pbProgress);
-            this.panel1.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panel1.Location = new System.Drawing.Point(3, 309);
-            this.panel1.Name = "panel1";
-            this.panel1.Padding = new System.Windows.Forms.Padding(5);
-            this.panel1.Size = new System.Drawing.Size(644, 29);
-            this.panel1.TabIndex = 0;
+            this.pProgress.Controls.Add(this.pbProgress);
+            this.pProgress.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.pProgress.Location = new System.Drawing.Point(3, 309);
+            this.pProgress.Name = "pProgress";
+            this.pProgress.Padding = new System.Windows.Forms.Padding(5);
+            this.pProgress.Size = new System.Drawing.Size(644, 29);
+            this.pProgress.TabIndex = 0;
             // 
             // pbProgress
             // 
@@ -176,7 +176,7 @@
             this.gbConnection.PerformLayout();
             this.groupBox1.ResumeLayout(false);
             this.panel2.ResumeLayout(false);
-            this.panel1.ResumeLayout(false);
+            this.pProgress.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -191,7 +191,7 @@
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.Panel panel2;
         private System.Windows.Forms.ListBox lbOutput;
-        private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.Panel pProgress;
         private System.Windows.Forms.ProgressBar pbProgress;
         private System.Windows.Forms.CheckBox cbForceDeploy;
     }
