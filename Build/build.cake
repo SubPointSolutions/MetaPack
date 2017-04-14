@@ -19,23 +19,37 @@ Task("Action-CLI-Regression")
              args.Append("WorkingFolderPath", workingFolderPath);
         });
 
-		Information("- installing the latest Chocolatey package...");
+		Information("- installing the latest Chocolatey package [metapack]");
         StartPowershellFile("build-choco-install-local.ps1", args =>
         {
-            args.Append("WorkingFolderPath", workingFolderPath);
+            args.Append("packageName", "metapack");
+        });
+
+		Information("- installing the latest Chocolatey package [metapack-ui]");
+        StartPowershellFile("build-choco-install-local.ps1", args =>
+        {
+            args.Append("packageName", "metapack-ui");
         });
 		
         Information("- running CLI core regression...");
-        StartPowershellFile("Pester/pester.cli.core.ps1", args =>
+        var coreRegressionResult = StartPowershellFile("Pester/pester.cli.core.ps1", args =>
         {
             args.Append("WorkingFolderPath", workingFolderPath);
         });
 
+		var coreRegressionResultCode = int.Parse(coreRegressionResult[0].BaseObject.ToString());
+        if (coreRegressionResultCode != 0) 
+            throw new ApplicationException("Failed CLI core regression");
+
 		Information("- running CLI core provision, SPMeta2/PnP with O365");
-        StartPowershellFile("Pester/pester.cli.provision.ps1", args =>
+        var provisionRegressionResult = StartPowershellFile("Pester/pester.cli.provision.ps1", args =>
         {
             args.Append("WorkingFolderPath", workingFolderPath);
         });
+
+		var provisionRegressionResultCode = int.Parse(provisionRegressionResult[0].BaseObject.ToString());
+        if (provisionRegressionResultCode != 0) 
+            throw new ApplicationException("Failed CLI provision regression");
     });
 
 // add one more for taskDefaultCLIPackaging

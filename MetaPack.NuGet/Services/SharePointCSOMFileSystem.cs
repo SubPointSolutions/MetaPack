@@ -12,6 +12,7 @@ using File = Microsoft.SharePoint.Client.File;
 using System.IO.Compression;
 using System.Text;
 using System.Xml.Linq;
+using MetaPack.Core.Exceptions;
 
 namespace MetaPack.NuGet.Services
 {
@@ -397,7 +398,7 @@ namespace MetaPack.NuGet.Services
 
         public bool ShadowFileExists(string path)
         {
-            var targetFile = _shadowFiles.FirstOrDefault(f => f.Path == "/" + path);
+            var targetFile = _shadowFiles.FirstOrDefault(f => f.Path == path);
 
             if (targetFile != null)
             {
@@ -511,8 +512,9 @@ namespace MetaPack.NuGet.Services
                     var id = (string)file["PackageId"];
                     //var nuspecXml = (string)file["NuspecXml"];
 
-                    filePath = filePath.Replace("/" + LibraryUrl, string.Empty)
-                                       .ToLower();
+                    //filePath = filePath.Replace("/" + LibraryUrl, string.Empty)
+                    //                   .ToLower();
+                    filePath = filePath.ToLower();
 
                     var existingShadowFile = _shadowFiles.FirstOrDefault(f => f.Path == filePath);
 
@@ -577,20 +579,32 @@ namespace MetaPack.NuGet.Services
 
             foreach (var shadowFilePath in _shadowFiles.Select(p => p.Path))
             {
-                if (!shadowFilePath.StartsWith(path))
-                    continue;
+                //if (!shadowFilePath.StartsWith(path))
+                //    continue;
 
-                var localPath = shadowFilePath;
+                //var localPath = shadowFilePath;
 
-                if (!string.IsNullOrEmpty(path))
-                    localPath = shadowFilePath.Replace(path, string.Empty);
+                //if (!string.IsNullOrEmpty(path))
+                //    localPath = shadowFilePath.Replace(path, string.Empty);
 
-                var localFolderPath = localPath.Trim('/')
-                                               .Split('/')
-                                               .FirstOrDefault();
+                //var localFolderPath = localPath.Trim('/')
+                //                               .Split('/')
+                //                               .FirstOrDefault();
 
-                if (!string.IsNullOrEmpty(localFolderPath))
-                    result.Add(localFolderPath);
+                //if (!string.IsNullOrEmpty(localFolderPath))
+                //    result.Add(localFolderPath);
+
+                if (shadowFilePath.Contains('/'))
+                {
+                    var parts = shadowFilePath.Split('/').ToList();
+                    parts.RemoveAt(parts.Count - 1);
+
+                    result.Add(string.Join("/", parts));
+                }
+                else
+                {
+                    result.Add(shadowFilePath);
+                }
             }
 
             result = result.Distinct()
@@ -603,10 +617,13 @@ namespace MetaPack.NuGet.Services
 
         public List<string> GetShadowFiles(string path, string filter, bool recursive)
         {
+            if (!path.StartsWith("/"))
+                path = "/" + path;
+
             var result = new List<string>();
 
             var paths = _shadowFiles.Select(f => f.Path);
-            var targetPaths = paths.Where(p => p.StartsWith('/' + path));
+            var targetPaths = paths.Where(p => p.StartsWith(path));
 
 
             foreach (var targetPath in targetPaths)
@@ -621,7 +638,8 @@ namespace MetaPack.NuGet.Services
 
                 if (fileMatch)
                 {
-                    result.Add(path + "/" + Path.GetFileName(targetPath));
+                    //result.Add(path + "/" + Path.GetFileName(targetPath));
+                    result.Add(targetPath);
                 }
             }
 
@@ -840,22 +858,35 @@ namespace MetaPack.NuGet.Services
                     context.ExecuteQuery();
                 }
 
-                var rootFolderUrl = UrlUtility.CombineUrl(web.ServerRelativeUrl, LibraryUrl);
-                var fileUrl = UrlUtility.CombineUrl(rootFolderUrl, path);
+                var rootFolderUrl = UrlUtility.CombineUrl(web.ServerRelativeUrl, LibraryUrl).ToLower();
+
+                // /sites/ci-121/metapack-gallery/metapack.sharepointpnp.ci.1.2017.0414.0657/metapack.sharepointpnp.ci.1.2017.0414.0657.nupkg
+                var folderRelatedFileUrl = path;
+
+                if (folderRelatedFileUrl.Contains(rootFolderUrl))
+                    folderRelatedFileUrl = folderRelatedFileUrl.Split(new string[] { rootFolderUrl }, StringSplitOptions.None)[1];
+
+                var fileUrl = UrlUtility.CombineUrl(rootFolderUrl, folderRelatedFileUrl);
 
                 // try file item first, shadow this for optimization
 
+                NuGetLogUtils.Verbose("Opening file for path: " + fileUrl);
                 var file = web.GetFileByServerRelativeUrl(fileUrl);
                 var item = file.ListItemAllFields;
 
                 context.Load(item);
                 context.ExecuteQuery();
 
+                if (item == null || (item.ServerObjectIsNull.HasValue && item.ServerObjectIsNull.Value))
+                {
+                    throw new MetaPackException(string.Format(
+                        "Cannot find file by server relative path:[{0}]",
+                        fileUrl));
+                }
+
                 var nuspecXml = (string)item["PackageNuspecXml"];
 
                 var useNuspecXml = true;
-
-
 
                 // faking nuget package here to improve performance
                 // PackageNuspecXml stores nuget package manifest

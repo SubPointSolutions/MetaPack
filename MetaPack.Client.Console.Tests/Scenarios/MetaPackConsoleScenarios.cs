@@ -160,7 +160,7 @@ namespace MetaPack.Client.Console.Tests.Scenarios
                     { "install", string.Empty},
 
                     { "--id", "DefinitelyPacked.jQuery"},
-                    { "--version", "1.12.4"},
+                    { "--version", "0.1.0-beta1"},
 
                     { "--url", siteUrl},
                     { "--username", userName},
@@ -192,7 +192,7 @@ namespace MetaPack.Client.Console.Tests.Scenarios
                     { "install", string.Empty},
 
                     { "--id", "DefinitelyPacked.jQuery"},
-                    { "--version", "1.12.4"},
+                    { "--version", "0.1.0-beta1"},
 
                     { "--url", siteUrl},
                     { "--username", userName},
@@ -271,7 +271,7 @@ namespace MetaPack.Client.Console.Tests.Scenarios
         [TestMethod]
         [TestCategory("Metapack.Client.Console")]
         //[TestCategory("CI.O365")]
-        public void Can_Run_Install_Command_O365_WithCustomToolIdAndVersion_12100()
+        public void Can_Run_Install_Command_O365_WithCustomToolIdAndVersion_010_beta5()
         {
             WithMetaPackServices(service =>
             {
@@ -290,7 +290,7 @@ namespace MetaPack.Client.Console.Tests.Scenarios
                     { "--userpassword", userPassword},
                     { "--spversion", "o365"},
                     { "--toolid", "MetaPack.SPMeta2"},
-                    { "--toolversion", "1.2.100"}
+                    { "--toolversion", "0.1.0-beta5"}
                 });
 
                 Assert.AreEqual(0, result);

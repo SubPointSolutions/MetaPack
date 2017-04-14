@@ -39,6 +39,8 @@ namespace MetaPack.Client.Common.Tests.Scenarios
 
                 UserName = SP2013UserName,
                 UserPassword = SP2013UserPassword,
+
+                PreRelease = true
             };
 
             command.OnTraceEvent += (s, e) =>
@@ -56,10 +58,24 @@ namespace MetaPack.Client.Common.Tests.Scenarios
         [TestMethod]
         [TestCategory("Metapack.Client.API")]
         [TestCategory("Metapack.Client.API.O365")]
-        public void Can_Call_List_Command_O365()
+        public void Can_Call_List_Command_O365_RootWeb()
+        {
+            var webSiteUrl = EnvironmentUtils.GetEnvironmentVariable(RegConsts.O365.RootWebUrl);
+            Can_Call_List_Command_O365_Internal(webSiteUrl);
+        }
+
+        [TestMethod]
+        [TestCategory("Metapack.Client.API")]
+        [TestCategory("Metapack.Client.API.O365")]
+        public void Can_Call_List_Command_O365_SubWeb()
+        {
+            var webSiteUrl = EnvironmentUtils.GetEnvironmentVariable(RegConsts.O365.SubWebUrl);
+            Can_Call_List_Command_O365_Internal(webSiteUrl);
+        }
+
+        private void Can_Call_List_Command_O365_Internal(string webSiteUrl)
         {
             var hasOnTraceEvents = false;
-            var webSiteUrl = EnvironmentUtils.GetEnvironmentVariable(RegConsts.O365.RootWebUrl);
 
             var userName = EnvironmentUtils.GetEnvironmentVariable(RegConsts.O365.UserName);
             var userPassword = EnvironmentUtils.GetEnvironmentVariable(RegConsts.O365.UserPassword);
@@ -71,7 +87,9 @@ namespace MetaPack.Client.Common.Tests.Scenarios
                 UserName = userName,
                 UserPassword = userPassword,
 
-                SharePointVersion = "o365"
+                SharePointVersion = "o365",
+
+                PreRelease = true
             };
 
             command.OnTraceEvent += (s, e) =>
@@ -110,7 +128,47 @@ namespace MetaPack.Client.Common.Tests.Scenarios
         [TestCategory("Metapack.Client.API")]
         [TestCategory("Metapack.Client.API.O365")]
         //[TestCategory("CI.Core")]
-        public void Can_Call_Install_Command_O365()
+        public void Can_Call_Install_Command_O365_RootWeb()
+        {
+            var webSiteUrl = EnvironmentUtils.GetEnvironmentVariable(RegConsts.O365.RootWebUrl);
+
+            Can_Call_Install_Command_O365_Internal(webSiteUrl, false);
+        }
+
+        [TestMethod]
+        [TestCategory("Metapack.Client.API")]
+        [TestCategory("Metapack.Client.API.O365")]
+        //[TestCategory("CI.Core")]
+        public void Can_Call_Install_Command_O365_RootWeb_Force()
+        {
+            var webSiteUrl = EnvironmentUtils.GetEnvironmentVariable(RegConsts.O365.RootWebUrl);
+
+            Can_Call_Install_Command_O365_Internal(webSiteUrl, true);
+        }
+
+        [TestMethod]
+        [TestCategory("Metapack.Client.API")]
+        [TestCategory("Metapack.Client.API.O365")]
+        //[TestCategory("CI.Core")]
+        public void Can_Call_Install_Command_O365_Subweb()
+        {
+            var webSiteUrl = EnvironmentUtils.GetEnvironmentVariable(RegConsts.O365.SubWebUrl);
+
+            Can_Call_Install_Command_O365_Internal(webSiteUrl, false);
+        }
+
+        [TestMethod]
+        [TestCategory("Metapack.Client.API")]
+        [TestCategory("Metapack.Client.API.O365")]
+        //[TestCategory("CI.Core")]
+        public void Can_Call_Install_Command_O365_Subweb_Force()
+        {
+            var webSiteUrl = EnvironmentUtils.GetEnvironmentVariable(RegConsts.O365.SubWebUrl);
+
+            Can_Call_Install_Command_O365_Internal(webSiteUrl, true);
+        }
+
+        private void Can_Call_Install_Command_O365_Internal(string webSiteUrl, bool isForce)
         {
             var hasOnTraceEvents = false;
 
@@ -127,8 +185,6 @@ namespace MetaPack.Client.Common.Tests.Scenarios
                 UpdatePackageVersion(solutionPackage);
 
                 PushPackageToCIRepository(solutionPackage, null, packagingService);
-
-                var webSiteUrl = EnvironmentUtils.GetEnvironmentVariable(RegConsts.O365.RootWebUrl);
 
                 var userName = EnvironmentUtils.GetEnvironmentVariable(RegConsts.O365.UserName);
                 var userPassword = EnvironmentUtils.GetEnvironmentVariable(RegConsts.O365.UserPassword);
@@ -165,8 +221,17 @@ namespace MetaPack.Client.Common.Tests.Scenarios
                         command.PackageSources.Add(LocalNuGetRepositoryFolderPath);
 
                     command.Execute();
-
                     actualInstallHits++;
+
+                    if (isForce)
+                    {
+                        expectedInstallHits++;
+
+                        command.Force = true;
+                        command.Execute();
+
+                        actualInstallHits++;
+                    }
                 });
 
             });

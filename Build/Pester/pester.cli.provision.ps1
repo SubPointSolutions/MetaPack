@@ -21,7 +21,7 @@ $testFiles = @(
         ProfileName = "cli.pnp.csom.o365"
         FileName = "Pester/metapack.cli.provision.ps1"
         TestName = "metapack.cli.provision.pnp.o365"
-        Enable = $true
+        Enable = $false
     }
 
     # SP2013 regresssion
@@ -80,3 +80,5 @@ if($fullRegressionResult -eq $false)
 {
     throw "Failed Pester regression."
 }
+
+return 0
