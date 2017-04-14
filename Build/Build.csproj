@@ -39,10 +39,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="github-release-notes.chtml" />
     <None Include="Pester\helpers.ps1" />
     <None Include="Pester\metapack.cli.core.ps1" />
     <None Include="Pester\metapack.cli.provision.ps1" />
-    <None Include="Pester\pester.run.ps1" />
+    <None Include="Pester\pester.cli.core.ps1" />
+    <None Include="Pester\pester.cli.provision.ps1" />
     <None Include="Pester\_install.ps1" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <None Include="tools\nuget.config" />

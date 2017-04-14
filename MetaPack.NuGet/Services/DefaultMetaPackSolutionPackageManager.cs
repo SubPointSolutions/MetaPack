@@ -65,7 +65,7 @@ namespace MetaPack.NuGet.Services
         #region methods
         private void InitProvisionEvents()
         {
-            MetaPackTrace.Verbose("InitProvisionEvents");
+            MetaPackTrace.Verbose("Initialized provision events");
             PackageInstalling += OnPackageInstalling;
         }
 

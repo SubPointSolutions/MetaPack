@@ -1,0 +1,289 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{BFFE9914-751E-44EC-99CB-A61CDFEC79BD}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>MetaPack.Client.Desktop.Impl</RootNamespace>
+    <AssemblyName>MetaPack.Client.Desktop.Impl</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
+    <UpdateAssemblyVersion>False</UpdateAssemblyVersion>
+    <UpdateAssemblyFileVersion>True</UpdateAssemblyFileVersion>
+    <UpdateAssemblyInfoVersion>False</UpdateAssemblyInfoVersion>
+    <AssemblyFileVersionSettings>None.None.DateStamp.TimeStamp</AssemblyFileVersionSettings>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="AppDomainToolkit, Version=1.0.4.1, Culture=neutral, PublicKeyToken=f2fc7ab5180cf5c4, processorArchitecture=MSIL">
+      <HintPath>..\packages\AppDomainToolkit.1.0.4.3\lib\net\AppDomainToolkit.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="MetroFramework, Version=1.4.0.0, Culture=neutral, PublicKeyToken=5f91a84759bf584a, processorArchitecture=MSIL">
+      <HintPath>..\packages\MetroModernUI.1.4.0.0\lib\net\MetroFramework.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="MetroFramework.Design, Version=1.4.0.0, Culture=neutral, PublicKeyToken=5f91a84759bf584a, processorArchitecture=MSIL">
+      <HintPath>..\packages\MetroModernUI.1.4.0.0\lib\net\MetroFramework.Design.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="MetroFramework.Fonts, Version=1.4.0.0, Culture=neutral, PublicKeyToken=5f91a84759bf584a, processorArchitecture=MSIL">
+      <HintPath>..\packages\MetroModernUI.1.4.0.0\lib\net\MetroFramework.Fonts.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.Web.XmlTransform, Version=2.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Web.Xdt.2.1.1\lib\net40\Microsoft.Web.XmlTransform.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="NuGet.Core, Version=2.12.0.817, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\NuGet.Core.2.12.0\lib\net40-Client\NuGet.Core.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Commands\Base\MetaPackDataCommandBase.cs" />
+    <Compile Include="Commands\Base\MetaPackCommandBase.cs" />
+    <Compile Include="Commands\ProvisionNuGetPackageCommand.cs" />
+    <Compile Include="Commands\DeleteNuGetGalleryConnectionCommand.cs" />
+    <Compile Include="Commands\EditNuGetGalleryConnectionCommand.cs" />
+    <Compile Include="Commands\DeleteSharePointConnectionCommand.cs" />
+    <Compile Include="Commands\FetchAvailableNuGetPackagesCommand.cs" />
+    <Compile Include="Commands\ShowOptionsWindowCommand.cs" />
+    <Compile Include="Commands\ShowAboutWindowCommand.cs" />
+    <Compile Include="Commands\AddNuGetGalleryConnectionCommand.cs" />
+    <Compile Include="Commands\AddSharePointConnectionCommand.cs" />
+    <Compile Include="Commands\ExitAppCommand.cs" />
+    <Compile Include="Commands\ShowNuGetPackageDetailsCommand.cs" />
+    <Compile Include="Commands\EditSharePointConnectionCommand.cs" />
+    <Compile Include="Commands\FetchInstalledNuGetPackagesCommand.cs" />
+    <Compile Include="Commands\MpCommands.cs" />
+    <Compile Include="Common\MetaPackDesktopSettings.cs" />
+    <Compile Include="Common\SharePointConnectionAuthMode.cs" />
+    <Compile Include="Controls\Base\ViewUserControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\Base\ViewUserControl.Designer.cs">
+      <DependentUpon>ViewUserControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\MetroAboutControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\MetroAboutControl.Designer.cs">
+      <DependentUpon>MetroAboutControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\MetroLongOperationControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\MetroLongOperationControl.Designer.cs">
+      <DependentUpon>MetroLongOperationControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Services\MetaPackUITraceService.cs" />
+    <Compile Include="Utils\MetroUtils.cs" />
+    <Compile Include="ViewModels\InstalledPackageViewModel.cs" />
+    <Compile Include="ViewModels\NuGetPackageDeploymentViewModel.cs" />
+    <Compile Include="ViewModels\MetaPackDesktopSettingsViewModel.cs" />
+    <Compile Include="ViewModels\PackageViewModel.cs" />
+    <Compile Include="ViewModels\SharePointConnectionViewModel.cs" />
+    <Compile Include="ViewModels\NuGetGalleryConnectionViewModel.cs" />
+    <Compile Include="ViewModels\ViewModelBase.cs" />
+    <Compile Include="Views\AvailablePackagesViewControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\AvailablePackagesViewControl.Designer.cs">
+      <DependentUpon>AvailablePackagesViewControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\SharePointConnectionEditor.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\SharePointConnectionEditor.Designer.cs">
+      <DependentUpon>SharePointConnectionEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\InstalledPackagesViewControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\InstalledPackagesViewControl.Designer.cs">
+      <DependentUpon>InstalledPackagesViewControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\MetaPackControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\MetaPackControl.Designer.cs">
+      <DependentUpon>MetaPackControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\NuGetConnectionEditor.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\NuGetConnectionEditor.Designer.cs">
+      <DependentUpon>NuGetConnectionEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\OptionsViewControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\OptionsViewControl.Designer.cs">
+      <DependentUpon>OptionsViewControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\PackageDeploymentView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\PackageDeploymentView.Designer.cs">
+      <DependentUpon>PackageDeploymentView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\PackageDetailsView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\PackageDetailsView.Designer.cs">
+      <DependentUpon>PackageDetailsView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\SharePointConnectionViewControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\SharePointConnectionViewControl.Designer.cs">
+      <DependentUpon>SharePointConnectionViewControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\StartPageViewControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\StartPageViewControl.Designer.cs">
+      <DependentUpon>StartPageViewControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Data\MetaPackOptions.cs" />
+    <Compile Include="Data\MetaPackSolution.cs" />
+    <Compile Include="Common\NuGetGalleryConnection.cs" />
+    <Compile Include="Common\SharePointConnection.cs" />
+    <Compile Include="Events\SharePointConnectionEvent.cs" />
+    <Compile Include="Events\SolutionEvent.cs" />
+    <Compile Include="Events\TraceEvent.cs" />
+    <Compile Include="Plugins\DefaultAppStartPageMenuPlugin.cs" />
+    <Compile Include="Plugins\DefaultAppViewsPlugin.cs" />
+    <Compile Include="Plugins\DefaultTopMenuPlugin.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\MetaPackAppService.cs" />
+    <Compile Include="Services\MetaPackDataService.cs" />
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\MetaPack.Client.Common\MetaPack.Client.Common.csproj">
+      <Project>{9d4ceb39-5b75-46ed-989b-bfa648a9469e}</Project>
+      <Name>MetaPack.Client.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MetaPack.Core\MetaPack.Core.csproj">
+      <Project>{262728cf-54e6-44ce-ada9-8ab6934fc4ce}</Project>
+      <Name>MetaPack.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MetaPack.NuGet\MetaPack.NuGet.csproj">
+      <Project>{a15f8430-15f3-4e25-aa60-221d244ea2fd}</Project>
+      <Name>MetaPack.NuGet</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\shelly\Shelly\SubPointSolutions.Shelly.Core\SubPointSolutions.Shelly.Core.csproj">
+      <Project>{1cec5a84-bce6-409d-a321-e64d7aad600d}</Project>
+      <Name>SubPointSolutions.Shelly.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\shelly\Shelly\SubPointSolutions.Shelly.Desktop.MetroFramework\SubPointSolutions.Shelly.Desktop.MetroFramework.csproj">
+      <Project>{ebaef43f-0f1f-41e2-8c71-5dfdde4f8718}</Project>
+      <Name>SubPointSolutions.Shelly.Desktop.MetroFramework</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\shelly\Shelly\SubPointSolutions.Shelly.Desktop\SubPointSolutions.Shelly.Desktop.csproj">
+      <Project>{E9F7D2FC-D31E-4869-87D7-403F1FF22347}</Project>
+      <Name>SubPointSolutions.Shelly.Desktop</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Controls\MetroAboutControl.resx">
+      <DependentUpon>MetroAboutControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\MetroLongOperationControl.resx">
+      <DependentUpon>MetroLongOperationControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\NuGetConnectionEditor.resx">
+      <DependentUpon>NuGetConnectionEditor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\AvailablePackagesViewControl.resx">
+      <DependentUpon>AvailablePackagesViewControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\SharePointConnectionEditor.resx">
+      <DependentUpon>SharePointConnectionEditor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\InstalledPackagesViewControl.resx">
+      <DependentUpon>InstalledPackagesViewControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\MetaPackControl.resx">
+      <DependentUpon>MetaPackControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\OptionsViewControl.resx">
+      <DependentUpon>OptionsViewControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\PackageDeploymentView.resx">
+      <DependentUpon>PackageDeploymentView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\PackageDetailsView.resx">
+      <DependentUpon>PackageDetailsView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\SharePointConnectionViewControl.resx">
+      <DependentUpon>SharePointConnectionViewControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\StartPageViewControl.resx">
+      <DependentUpon>StartPageViewControl.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="deps\sp2013-csom\Microsoft.SharePoint.Client.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="deps\sp2013-csom\Microsoft.SharePoint.Client.ServerRuntime.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('$(SolutionDir)\.nuget\NuGet.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\.nuget\NuGet.targets'))" />
+  </Target>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

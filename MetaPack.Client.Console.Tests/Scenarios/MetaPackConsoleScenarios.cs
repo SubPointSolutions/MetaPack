@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using MetaPack.Core.Exceptions;
 using MetaPack.Tests.Base;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.IO;
 
 namespace MetaPack.Client.Console.Tests.Scenarios
 {
@@ -35,6 +36,84 @@ namespace MetaPack.Client.Console.Tests.Scenarios
 
             Assert.AreEqual(1, result);
         }
+
+        [TestMethod]
+        [TestCategory("Metapack.Client.Console")]
+        //[TestCategory("CI.O365")]
+        public void Can_Run_Help_Option()
+        {
+            WithMetaPackServices(service =>
+            {
+                var result = ExecuteClientWithArgs(new Dictionary<string, string>()
+                {
+                    { "--help", string.Empty}
+                });
+
+                Assert.AreEqual(0, result);
+            });
+        }
+
+        [TestMethod]
+        [TestCategory("Metapack.Client.Console")]
+        //[TestCategory("CI.O365")]
+        public void Can_Run_LogFile_Option_FileName()
+        {
+            var fileName = string.Format("custom_log_{0}.log", Guid.NewGuid().ToString("N"));
+
+            WithMetaPackServices(service =>
+            {
+                var result = ExecuteClientWithArgs(new Dictionary<string, string>()
+                {
+                    { "help", string.Empty},
+                    { "--logfile", fileName},
+                });
+
+                Assert.AreEqual(0, result);
+                Assert.IsTrue(File.Exists(fileName));
+
+            });
+        }
+
+
+        [TestMethod]
+        [TestCategory("Metapack.Client.Console")]
+        //[TestCategory("CI.O365")]
+        public void Can_Run_LogFile_Option_FilePath()
+        {
+            var tmpPath = Path.GetTempPath();
+            var filePath = Path.Combine(tmpPath, string.Format("custom_log_{0}.log", Guid.NewGuid().ToString("N")));
+
+            WithMetaPackServices(service =>
+            {
+                var result = ExecuteClientWithArgs(new Dictionary<string, string>()
+                {
+                    { "help", string.Empty},
+                    { "--logfile", filePath},
+                });
+
+                Assert.AreEqual(0, result);
+                Assert.IsTrue(File.Exists(filePath));
+
+            });
+        }
+
+        [TestMethod]
+        [TestCategory("Metapack.Client.Console")]
+        //[TestCategory("CI.O365")]
+        public void Can_Run_Help_With_Quiet_Option()
+        {
+            WithMetaPackServices(service =>
+            {
+                var result = ExecuteClientWithArgs(new Dictionary<string, string>()
+                {
+                    { "--help", string.Empty},
+                    { "--quiet", string.Empty},
+                });
+
+                Assert.AreEqual(0, result);
+            });
+        }
+
 
         [TestMethod]
         [TestCategory("Metapack.Client.Console")]
@@ -79,9 +158,9 @@ namespace MetaPack.Client.Console.Tests.Scenarios
                 var result = ExecuteClientWithArgs(new Dictionary<string, string>()
                 {
                     { "install", string.Empty},
-                    
+
                     { "--id", "DefinitelyPacked.jQuery"},
-                    { "--version", "1.12.4"},
+                    { "--version", "0.1.0-beta1"},
 
                     { "--url", siteUrl},
                     { "--username", userName},
@@ -111,9 +190,9 @@ namespace MetaPack.Client.Console.Tests.Scenarios
                 var result = ExecuteClientWithArgs(new Dictionary<string, string>()
                 {
                     { "install", string.Empty},
-                    
+
                     { "--id", "DefinitelyPacked.jQuery"},
-                    { "--version", "1.12.4"},
+                    { "--version", "0.1.0-beta1"},
 
                     { "--url", siteUrl},
                     { "--username", userName},
@@ -192,7 +271,7 @@ namespace MetaPack.Client.Console.Tests.Scenarios
         [TestMethod]
         [TestCategory("Metapack.Client.Console")]
         //[TestCategory("CI.O365")]
-        public void Can_Run_Install_Command_O365_WithCustomToolIdAndVersion_12100()
+        public void Can_Run_Install_Command_O365_WithCustomToolIdAndVersion_010_beta5()
         {
             WithMetaPackServices(service =>
             {
@@ -211,7 +290,7 @@ namespace MetaPack.Client.Console.Tests.Scenarios
                     { "--userpassword", userPassword},
                     { "--spversion", "o365"},
                     { "--toolid", "MetaPack.SPMeta2"},
-                    { "--toolversion", "1.2.100"}
+                    { "--toolversion", "0.1.0-beta5"}
                 });
 
                 Assert.AreEqual(0, result);

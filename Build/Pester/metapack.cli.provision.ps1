@@ -1,6 +1,9 @@
 ﻿
 . "Pester\helpers.ps1"
 
+
+Write-Host "Running CLI provisioning tests..." -fore Green
+
 # O365
 Describe "metapack.cli.provision.spmeta2.o365" {
   
@@ -16,7 +19,7 @@ Describe "metapack.cli.provision.spmeta2.o365" {
                   "--verbose"
                   )
 
-        $result = (RunMetaPackCLI $args $true)
+        $result = (RunMetaPackCLI $args $false)
 
         $output = $result.Output
         $exitCode = $result.ExitCode
@@ -24,8 +27,9 @@ Describe "metapack.cli.provision.spmeta2.o365" {
         # no exception in output
         if($result.UseShellExecute -eq $false) {
             (OutputHasError $output) | Should Be $false
+			#Write-Host $output
         }            
-        
+
         # exist code, please 0
         ($exitCode) | Should Be 0
     }
@@ -43,7 +47,7 @@ Describe "metapack.cli.provision.spmeta2.o365" {
                   "--force"
                   )
 
-        $result = (RunMetaPackCLI $args $true)
+        $result = (RunMetaPackCLI $args $false)
 
         $output = $result.Output
         $exitCode = $result.ExitCode
@@ -72,7 +76,7 @@ Describe "metapack.cli.provision.pnp.o365" {
                   "--verbose"
                   )
 
-        $result = (RunMetaPackCLI $args $true)
+        $result = (RunMetaPackCLI $args $false)
 
         $output = $result.Output
         $exitCode = $result.ExitCode

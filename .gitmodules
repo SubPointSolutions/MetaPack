@@ -1,0 +1,3 @@
+[submodule "shelly"]
+	path = shelly
+	url = https://github.com/SubPointSolutions/Shelly.git

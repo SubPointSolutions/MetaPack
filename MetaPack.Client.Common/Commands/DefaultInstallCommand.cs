@@ -36,6 +36,12 @@ namespace MetaPack.Client.Common.Commands
         #region methods
         public override object Execute()
         {
+            WithEmitingTraceEvents(InternalExecute);
+            return null;
+        }
+
+        protected virtual void InternalExecute()
+        {
             if (PackageSources.Count == 0)
                 throw new ArgumentException("Source");
 
@@ -150,8 +156,6 @@ namespace MetaPack.Client.Common.Commands
                     packageManager.InstallPackage(package, false, PreRelease);
                     MetaPackTrace.Info("Completed installation. All good!");
                 });
-
-            return null;
         }
 
         protected virtual MetaPackSolutionPackageManagerBase CreatePackageManager(IPackageRepository repo, ClientContext context)

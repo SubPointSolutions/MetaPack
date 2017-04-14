@@ -6,11 +6,21 @@ using MetaPack.Client.Common.Services;
 using MetaPack.NuGet.Services;
 using Microsoft.SharePoint.Client;
 using NuGet;
+using System.Collections.Generic;
 
 namespace MetaPack.Client.Common.Commands
 {
     public class NuGetListCommand : CommandBase
     {
+        #region constructors
+
+        public NuGetListCommand()
+        {
+
+        }
+
+        #endregion
+
 
         #region properties
         public override string Name
@@ -21,11 +31,31 @@ namespace MetaPack.Client.Common.Commands
 
             }
         }
+
+        private List<IPackage> _packages = new List<IPackage>();
+
+        public IEnumerable<IPackage> Packages
+        {
+            get
+            {
+                return _packages;
+            }
+        }
+
         #endregion
 
         #region methods
         public override object Execute()
         {
+            WithEmitingTraceEvents(InternalExecute);
+
+            return null;
+        }
+
+        private void InternalExecute()
+        {
+            _packages.Clear();
+
             if (string.IsNullOrEmpty(Url))
                 throw new ArgumentException("Url");
 
@@ -56,7 +86,7 @@ namespace MetaPack.Client.Common.Commands
                     var packages = packageManager.LocalRepository.Search(
                             string.Empty,
                             Enumerable.Empty<string>(),
-                            false);
+                            this.PreRelease);
 
                     packages = packages.GroupBy(p => p.Id)
                         .Select(g => g.OrderByDescending(p => p.Version).FirstOrDefault());
@@ -65,12 +95,10 @@ namespace MetaPack.Client.Common.Commands
 
                     foreach (var package in packages)
                     {
-                        Console.WriteLine(package.GetFullName());
-                        Trace.WriteLine(package.GetFullName());
+                        _packages.Add(package);
+                        Out.WriteLine(package.GetFullName());
                     }
                 });
-
-            return null;
         }
 
         #endregion

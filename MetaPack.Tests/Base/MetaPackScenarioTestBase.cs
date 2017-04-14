@@ -40,6 +40,27 @@ namespace MetaPack.Tests.Base
 
         public MetaPackScenarioTestBase()
         {
+            var useSPMeta2Provider = true;
+            var useSharePointPnPProvider = false;
+
+            var files2delete = new List<string>();
+
+            files2delete.AddRange(Directory.GetFiles(Directory.GetCurrentDirectory(), "SPMeta2.CSOM**dll"));
+            files2delete.AddRange(Directory.GetFiles(Directory.GetCurrentDirectory(), "Microsoft.SharePoint.Client**dll"));
+
+            foreach (var f in files2delete)
+            {
+                try
+                {
+                    System.IO.File.Delete(f);
+                }
+                catch (Exception e)
+                {
+
+                }
+            }
+
+
             var regressionTraceService = new RegressionTraceService();
 
             SPMeta2SolutionPackagingService = new SPMeta2SolutionPackageService();
@@ -83,8 +104,11 @@ namespace MetaPack.Tests.Base
             // packaging
             MetaPackService = new List<MetaPackServiceContext>();
 
-            MetaPackService.Add(SPMeta2ServiceContext);
-            MetaPackService.Add(SharePointPnPServiceContext);
+            if (useSPMeta2Provider)
+                MetaPackService.Add(SPMeta2ServiceContext);
+
+            if (useSharePointPnPProvider)
+                MetaPackService.Add(SharePointPnPServiceContext);
 
             var localAssemblyDirectoryPath = Path.GetDirectoryName(GetType().Assembly.Location);
             var localNuGetFolder = Path.GetFullPath(localAssemblyDirectoryPath + @"\..\..\..\Build\local-ci-packages");
@@ -98,10 +122,12 @@ namespace MetaPack.Tests.Base
                 var toolResolutionService = new ToolResolutionService();
                 toolResolutionService.PackageSources.Add(LocalNuGetRepositoryFolderPath);
 
-                toolResolutionService.InitPackageSourcesFromString(ConfigurationManager.AppSettings["NuGet.Galleries"]);
+                // environment varioable must go first so that we can override stuff
                 toolResolutionService.InitPackageSourcesFromGetEnvironmentVariable("MetaPack.NuGet.Galleries", EnvironmentVariableTarget.Machine);
                 toolResolutionService.InitPackageSourcesFromGetEnvironmentVariable("MetaPack.NuGet.Galleries", EnvironmentVariableTarget.User);
                 toolResolutionService.InitPackageSourcesFromGetEnvironmentVariable("MetaPack.NuGet.Galleries", EnvironmentVariableTarget.Process);
+
+                toolResolutionService.InitPackageSourcesFromString(ConfigurationManager.AppSettings["NuGet.Galleries"]);
 
                 toolResolutionService.RefreshPackageManager();
 
@@ -315,10 +341,13 @@ namespace MetaPack.Tests.Base
         protected static void UpdatePackageVersion(SolutionPackageBase package)
         {
             var date = DateTime.UtcNow;
-            package.Version = string.Format("1.{0}.{1}.{2}",
+            package.Version = string.Format("1.{0}.{1}.{2}-alpha{3}",
+                new string[] {
                 date.ToString("yyyy"),
                 date.ToString("MMdd"),
-                date.ToString("HHHmm"));
+                date.ToString("HHHmmss"),
+                date.ToString("fff")
+                });
         }
 
         protected void WithCIO365ClientContext(string url,
@@ -326,6 +355,18 @@ namespace MetaPack.Tests.Base
            string userPassword,
            Action<ClientContext> action)
         {
+            if (string.IsNullOrEmpty(url))
+                throw new ArgumentNullException("url");
+
+            if (string.IsNullOrEmpty(userName))
+                throw new ArgumentNullException("userName");
+
+            if (string.IsNullOrEmpty(userPassword))
+                throw new ArgumentNullException("userPassword");
+
+            if (action == null)
+                throw new ArgumentNullException("action");
+
             using (var context = new ClientContext(url))
             {
                 var securePassword = new SecureString();
@@ -351,6 +392,8 @@ namespace MetaPack.Tests.Base
            string userPassword,
            Action<ClientContext> action)
         {
+            Trace.WriteLine(string.Format("Running in web:[{0}]", url));
+
             using (var context = new ClientContext(url))
             {
                 if (!string.IsNullOrEmpty(userName) && !string.IsNullOrEmpty(userPassword))
@@ -379,8 +422,12 @@ namespace MetaPack.Tests.Base
             {
                 Trace.WriteLine(string.Format("Testing services:"));
 
-                Trace.WriteLine(string.Format(" ToolID:[{0}]", service.ToolPackage.Id));
-                Trace.WriteLine(string.Format(" ToolVersion:[{0}]", service.ToolPackage.Version));
+                if (service.ToolPackage != null)
+                {
+                    Trace.WriteLine(string.Format(" ToolID:[{0}]", service.ToolPackage.Id));
+                    Trace.WriteLine(string.Format(" ToolVersion:[{0}]", service.ToolPackage.Version));
+                }
+
                 Trace.WriteLine(string.Format(" PackagingService:[{0}]", service.PackagingService));
                 Trace.WriteLine(string.Format(" DeploymentService:[{0}]", service.DeploymentService));
 
@@ -457,6 +504,10 @@ namespace MetaPack.Tests.Base
                         break;
 
                     case RegressinModelLevel.Web:
+                        models.Add(SPMeta2Model.NewWebModel(web => { }));
+                        break;
+
+                    case RegressinModelLevel.Subweb:
                         models.Add(SPMeta2Model.NewWebModel(web => { }));
                         break;
 

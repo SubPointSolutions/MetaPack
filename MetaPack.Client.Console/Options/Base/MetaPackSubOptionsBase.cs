@@ -15,6 +15,15 @@ namespace MetaPack.Client.Console.Options.Base
 
         [Option("debug", HelpText = "Use debug trace")]
         public bool Debug { get; set; }
+
+        [Option("quiet", HelpText = "Use no trace")]
+        public bool Quiet { get; set; }
+
+        [Option("logfile", HelpText = "Location for the log file")]
+        public string LogFile { get; set; }
+
+        [Option("output", HelpText = "Type of the output. None -> text, and json -> machine-readable json")]
+        public string Output { get; set; }
     }
 
     public class MetaPackSubOptionsBase : EmptySubOptionsBase
