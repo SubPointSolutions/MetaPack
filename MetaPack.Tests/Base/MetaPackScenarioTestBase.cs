@@ -41,7 +41,7 @@ namespace MetaPack.Tests.Base
         public MetaPackScenarioTestBase()
         {
             var useSPMeta2Provider = true;
-            var useSharePointPnPProvider = true;
+            var useSharePointPnPProvider = false;
 
             var files2delete = new List<string>();
 
@@ -341,10 +341,13 @@ namespace MetaPack.Tests.Base
         protected static void UpdatePackageVersion(SolutionPackageBase package)
         {
             var date = DateTime.UtcNow;
-            package.Version = string.Format("1.{0}.{1}.{2}",
+            package.Version = string.Format("1.{0}.{1}.{2}-alpha{3}",
+                new string[] {
                 date.ToString("yyyy"),
                 date.ToString("MMdd"),
-                date.ToString("HHHmm"));
+                date.ToString("HHHmmss"),
+                date.ToString("fff")
+                });
         }
 
         protected void WithCIO365ClientContext(string url,
@@ -352,6 +355,18 @@ namespace MetaPack.Tests.Base
            string userPassword,
            Action<ClientContext> action)
         {
+            if (string.IsNullOrEmpty(url))
+                throw new ArgumentNullException("url");
+
+            if (string.IsNullOrEmpty(userName))
+                throw new ArgumentNullException("userName");
+
+            if (string.IsNullOrEmpty(userPassword))
+                throw new ArgumentNullException("userPassword");
+
+            if (action == null)
+                throw new ArgumentNullException("action");
+
             using (var context = new ClientContext(url))
             {
                 var securePassword = new SecureString();
@@ -377,6 +392,8 @@ namespace MetaPack.Tests.Base
            string userPassword,
            Action<ClientContext> action)
         {
+            Trace.WriteLine(string.Format("Running in web:[{0}]", url));
+
             using (var context = new ClientContext(url))
             {
                 if (!string.IsNullOrEmpty(userName) && !string.IsNullOrEmpty(userPassword))
@@ -487,6 +504,10 @@ namespace MetaPack.Tests.Base
                         break;
 
                     case RegressinModelLevel.Web:
+                        models.Add(SPMeta2Model.NewWebModel(web => { }));
+                        break;
+
+                    case RegressinModelLevel.Subweb:
                         models.Add(SPMeta2Model.NewWebModel(web => { }));
                         break;
 

@@ -86,7 +86,7 @@ namespace MetaPack.Client.Common.Commands
                     var packages = packageManager.LocalRepository.Search(
                             string.Empty,
                             Enumerable.Empty<string>(),
-                            false);
+                            this.PreRelease);
 
                     packages = packages.GroupBy(p => p.Id)
                         .Select(g => g.OrderByDescending(p => p.Version).FirstOrDefault());

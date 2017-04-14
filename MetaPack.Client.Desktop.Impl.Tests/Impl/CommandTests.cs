@@ -24,6 +24,7 @@ namespace MetaPack.Client.Desktop.Impl.Tests.Impl
         }
 
         [TestMethod]
+        [TestCategory("Metapack.Client.UI")]
         public void Can_Execute_ShowOptionsWindowCommand()
         {
             var cmd = new ShowOptionsWindowCommand();
@@ -33,6 +34,7 @@ namespace MetaPack.Client.Desktop.Impl.Tests.Impl
         }
 
         [TestMethod]
+        [TestCategory("Metapack.Client.UI")]
         public void Can_Execute_ProvisionNuGetPackageCommand()
         {
             var cmd = new ProvisionNuGetPackageCommand();

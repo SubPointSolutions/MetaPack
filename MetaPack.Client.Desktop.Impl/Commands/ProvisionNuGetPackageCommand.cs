@@ -125,7 +125,6 @@ namespace MetaPack.Client.Desktop.Impl.Commands
                 {
                     command.UserName = connection.UserName;
                     command.UserPassword = connection.UserPassword;
-
                 }
             }
 
