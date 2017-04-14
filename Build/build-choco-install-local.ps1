@@ -30,10 +30,10 @@ $latestPackageVersion = [System.IO.Path]::GetFileNameWithoutExtension($latestPac
 Write-Host "Uninstalling [$packageName] package..." -fore Green    
 choco uninstall $packageName --force
 
-Write-Host "Updating [$packageName] package to [$latestPackageVersion]" -fore Green
+Write-Host "Updating [$packageName] package to [$latestPackageVersion] from source:[$packagesFolder]" -fore Green
 choco install $packageName --source $packagesFolder --force --pre --version $latestPackageVersion
 
-Write-Host "Running [$packageName version] command.." -fore Green
+Write-Host "Running [$packageName version] command..." -fore Green
 & $packageName version
 
 if($lastexitcode -ne 0) {
