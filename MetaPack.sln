@@ -87,6 +87,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SubPointSolutions.Shelly.De
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SubPointSolutions.Shelly.Desktop.Wf", "shelly\Shelly\SubPointSolutions.Shelly.Desktop.Wf\SubPointSolutions.Shelly.Desktop.Wf.csproj", "{20D4F815-F2F8-45D9-A01F-5DE55ECB0054}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MetaPack.Docs", "MetaPack.Docs\MetaPack.Docs.csproj", "{EDA81747-CB5B-42CE-90B6-4287C44B1245}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -167,6 +169,10 @@ Global
 		{20D4F815-F2F8-45D9-A01F-5DE55ECB0054}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{20D4F815-F2F8-45D9-A01F-5DE55ECB0054}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{20D4F815-F2F8-45D9-A01F-5DE55ECB0054}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EDA81747-CB5B-42CE-90B6-4287C44B1245}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EDA81747-CB5B-42CE-90B6-4287C44B1245}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EDA81747-CB5B-42CE-90B6-4287C44B1245}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EDA81747-CB5B-42CE-90B6-4287C44B1245}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -191,5 +197,6 @@ Global
 		{E9F7D2FC-D31E-4869-87D7-403F1FF22347} = {D562575F-B759-4572-A4A0-1FC847B1FCFD}
 		{EBAEF43F-0F1F-41E2-8C71-5DFDDE4F8718} = {D562575F-B759-4572-A4A0-1FC847B1FCFD}
 		{20D4F815-F2F8-45D9-A01F-5DE55ECB0054} = {D562575F-B759-4572-A4A0-1FC847B1FCFD}
+		{EDA81747-CB5B-42CE-90B6-4287C44B1245} = {4F769F89-E461-49F6-B05D-C3DBB7C773BC}
 	EndGlobalSection
 EndGlobal

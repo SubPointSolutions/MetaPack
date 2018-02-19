@@ -6,15 +6,30 @@
   "defaultNuspecVersion": "0.1.0",
 
   "defaultDocsBuildEnabled": true,
-  "defaultDocsViewFolder": "SubPointSolutions.Docs/Views/metapack",
-  "defaultDocsSampleFilesFolder": "SubPointSolutions.Docs/SampleFiles",
-  "defaultDocsRepoFolder": "m2-mp",
-  "defaultDocsBranch": "wyam-dev",
+  "defaultDocsViewFolder": "MetaPack.Docs/input",
+  "defaultDocsSamplesFolder": "",
+  "defaultDocsRepoFolder": "sps-metapack",
+  "defaultDocsBranch": "wyam-latest",
   "defaultDocsFileExtensions": [
-    "*.md",
-    "*.cs",
-    "*.cshtml",
-    "*.xml"
+    "*.md"
+  ],
+
+  "defaultWyamProjectName" : "MetaPack.Docs", 
+  "defaultWyamTheme"       : "SubPointSolutions.Docs.Bootstrap4",
+  "defaultWyamRecipe"      : "",
+  "defaultWyamPreviewPort" : "5071",
+  "defaultWyamConfigFile"  : "sps.docs.wyam",
+   
+  "defaultWyamNuGetPackages": [
+    {
+      "Id": "SubPointSolutions.Docs.Bootstrap4",
+      "Version": "",
+      "Source": [
+        "https://www.nuget.org/api/v2/",
+        "https://www.myget.org/F/subpointsolutions-staging/api/v2",
+        "https://ci.appveyor.com/nuget/subpointsolutions-cakebuildtools"
+      ]
+    }
   ],
 
   "defaultTestCategories": [
