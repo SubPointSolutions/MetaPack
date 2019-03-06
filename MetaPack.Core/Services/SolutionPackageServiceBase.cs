@@ -10,9 +10,11 @@ namespace MetaPack.Core.Services
     {
         #region methods
 
-        public abstract Stream Pack(SolutionPackageBase package, SolutionPackageOptions options);
-        public abstract SolutionPackageBase Unpack(Stream package, SolutionPackageOptions options);
+        public abstract Stream Pack(SolutionPackageBase package);
+        public abstract SolutionPackageBase Unpack(Stream package);
 
         #endregion
     }
+
+    
 }

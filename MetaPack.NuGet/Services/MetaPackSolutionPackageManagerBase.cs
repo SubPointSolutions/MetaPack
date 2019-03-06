@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using MetaPack.Core;
-using MetaPack.Core.Common;
+using MetaPack.Core.Data;
 using MetaPack.Core.Packaging;
 using MetaPack.Core.Services;
-using MetaPack.NuGet.Common;
+using MetaPack.NuGet.Data;
 using Microsoft.SharePoint.Client;
 using NuGet;
 

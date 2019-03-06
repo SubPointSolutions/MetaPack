@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using MetaPack.Core.Common;
+using MetaPack.Core.Data;
 using MetaPack.NuGet.Services;
 using MetaPack.SPMeta2.Services;
 using MetaPack.Tests.Base;
@@ -19,7 +19,6 @@ using SPMeta2.CSOM.Standard.Services;
 using SPMeta2.Services;
 using MetaPack.Core.Packaging;
 using MetaPack.Core.Services;
-using MetaPack.NuGet.Common;
 
 namespace MetaPack.Tests.Scenarios
 {
@@ -494,18 +493,23 @@ namespace MetaPack.Tests.Scenarios
             var ciPackage = FindPackageInCIRepository(packageId, packageVersion);
             Assert.IsNotNull(ciPackage, "Solution package");
 
-            var solutionOptions = new List<OptionValue>();
+            var solutionOptions = new Dictionary<string, string>();
 
             WithCIRepositoryContext(ciNuGetRepository =>
             {
                 // actual deployment callback
-                Action<ClientContext, IPackage, List<OptionValue>> metapackDeployment =
+                Action<ClientContext, IPackage, IDictionary<string, string>> metapackDeployment =
                     (clientContext, package, options) =>
                     {
                         var packageManager = new DefaultMetaPackSolutionPackageManager(ciNuGetRepository, clientContext);
 
                         // configura options
-                        packageManager.SolutionOptions.AddRange(options);
+                        foreach (var key in options.Keys)
+                            packageManager.SolutionOptions.Add(new OptionValue
+                            {
+                                Name = key,
+                                Value = options[key]
+                            });
 
                         // install package
                         packageManager.InstallPackage(package, false, false);
@@ -532,27 +536,14 @@ namespace MetaPack.Tests.Scenarios
                     }
 
                     // csom related options
-                    solutionOptions.Add(DefaultOptions.SharePoint.Api.CSOM);
-                    solutionOptions.Add(DefaultOptions.SharePoint.Edition.Standard);
-                    solutionOptions.Add(DefaultOptions.SharePoint.Version.O365);
+                    solutionOptions.Add(DefaultOptions.SharePointApi, "CSOM");
+                    solutionOptions.Add(DefaultOptions.SharePointEdition, "Standard");
+                    solutionOptions.Add(DefaultOptions.SharePointVersion, "O365");
 
-                    solutionOptions.Add(new OptionValue
-                    {
-                        Name = DefaultOptions.Site.Url.Id,
-                        Value = siteUrl
-                    });
+                    solutionOptions.Add(DefaultOptions.SharePointSiteUrl, siteUrl);
 
-                    solutionOptions.Add(new OptionValue
-                    {
-                        Name = DefaultOptions.User.Name.Id,
-                        Value = userName
-                    });
-
-                    solutionOptions.Add(new OptionValue
-                    {
-                        Name = DefaultOptions.User.Password.Id,
-                        Value = userPassword
-                    });
+                    solutionOptions.Add(DefaultOptions.UserName, userName);
+                    solutionOptions.Add(DefaultOptions.UserPassword, userPassword);
 
                     WithCIO365ClientContext(siteUrl, userName, userPassword, context =>
                     {
@@ -564,9 +555,9 @@ namespace MetaPack.Tests.Scenarios
                     if (regressionProfile.API == RegressionAPI.CSOM)
                     {
                         // csom related options
-                        solutionOptions.Add(DefaultOptions.SharePoint.Api.CSOM);
-                        solutionOptions.Add(DefaultOptions.SharePoint.Edition.Standard);
-                        solutionOptions.Add(DefaultOptions.SharePoint.Version.SP2013);
+                        solutionOptions.Add(DefaultOptions.SharePointApi, "CSOM");
+                        solutionOptions.Add(DefaultOptions.SharePointEdition, "Standard");
+                        solutionOptions.Add(DefaultOptions.SharePointVersion, "SP2013");
 
                         var siteUrl = SP2013RootWebUrl;
 
@@ -584,11 +575,7 @@ namespace MetaPack.Tests.Scenarios
                                    regressionProfile.ModelLevel));
                         }
 
-                        solutionOptions.Add(new OptionValue
-                        {
-                            Name = DefaultOptions.Site.Url.Id,
-                            Value = siteUrl
-                        });
+                        solutionOptions.Add(DefaultOptions.SharePointSiteUrl, siteUrl);
 
                         WithCISharePointClientContext(siteUrl, context =>
                         {
@@ -599,9 +586,9 @@ namespace MetaPack.Tests.Scenarios
                     else if (regressionProfile.API == RegressionAPI.SSOM)
                     {
                         // csom related options
-                        solutionOptions.Add(DefaultOptions.SharePoint.Api.SSOM);
-                        solutionOptions.Add(DefaultOptions.SharePoint.Edition.Standard);
-                        solutionOptions.Add(DefaultOptions.SharePoint.Version.SP2013);
+                        solutionOptions.Add(DefaultOptions.SharePointApi, "SSOM");
+                        solutionOptions.Add(DefaultOptions.SharePointEdition, "Standard");
+                        solutionOptions.Add(DefaultOptions.SharePointVersion, "SP2013");
 
                         var siteUrl = SP2013RootWebUrl;
 
@@ -619,11 +606,7 @@ namespace MetaPack.Tests.Scenarios
                                    regressionProfile.ModelLevel));
                         }
 
-                        solutionOptions.Add(new OptionValue
-                        {
-                            Name = DefaultOptions.Site.Url.Id,
-                            Value = siteUrl
-                        });
+                        solutionOptions.Add(DefaultOptions.SharePointSiteUrl, siteUrl);
 
                         WithCISharePointClientContext(siteUrl, context =>
                         {

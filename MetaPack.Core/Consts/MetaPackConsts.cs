@@ -9,7 +9,7 @@ namespace MetaPack.Core.Consts
     public static class MetaPackConsts
     {
         public const string SolutionFileName = "MetaPackSolution.xml";
-        public const string ModelsContainerFolder = "ModelsContainer";
+        public const string ModelContainerFolder = "ModelsContainer";
 
         public const string SharePointLibraryTitle = "MetaPack Gallery";
         public const string SharePointLibraryUrl = "metapack-gallery";

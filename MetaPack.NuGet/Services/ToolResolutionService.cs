@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 using AppDomainToolkit;
 using MetaPack.Core.Exceptions;
 using MetaPack.Core.Utils;
-using MetaPack.NuGet.Common;
+using MetaPack.NuGet.Data;
 using MetaPack.NuGet.Utils;
 using NuGet;
 
@@ -161,14 +162,18 @@ namespace MetaPack.NuGet.Services
                 {
                     var tmp = new List<SolutionToolPackage>();
 
-                    var allTypes = AppDomain.CurrentDomain.GetAssemblies().SelectMany(a => a.GetTypes());
-                    var toolResolutioNServiceBaseType = allTypes.FirstOrDefault(t => t.Name == "ToolResolutionServiceBase");
+                    var metaPackAssemblies = AppDomain.CurrentDomain.GetAssemblies()
+                        .Where(a => a.FullName.Contains("MetaPack."))
+                        .ToList();
+
+                    var allTypes = metaPackAssemblies.SelectMany(a => a.GetTypes());
+                    var toolResolutionServiceBaseType = allTypes.FirstOrDefault(t => t.Name == "ToolResolutionServiceBase");
 
                     var assembly = AppDomain.CurrentDomain.GetAssemblies()
                                             .FirstOrDefault(a => a.Location.Contains(ops.AssemblyName));
 
                     var toolResolutionType = assembly.GetTypes()
-                        .FirstOrDefault(t => toolResolutioNServiceBaseType.IsAssignableFrom(t));
+                        .FirstOrDefault(t => toolResolutionServiceBaseType.IsAssignableFrom(t));
 
                     if (toolResolutionType != null)
                     {
@@ -268,7 +273,7 @@ namespace MetaPack.NuGet.Services
                 {
                     MetaPackTrace.Verbose(string.Format("Tool package does not exist locally. Installing..."));
 
-                    IntallToolPackage(toolPackage, toolPackageVersion);
+                    InstallToolPackage(toolPackage, toolPackageVersion);
                 }
                 else
                 {
@@ -284,20 +289,20 @@ namespace MetaPack.NuGet.Services
                         ToolPackageManager.UninstallPackage(localPackage, true);
 
                         MetaPackTrace.Verbose(string.Format("Installing..."));
-                        IntallToolPackage(toolPackage, toolPackageVersion);
+                        InstallToolPackage(toolPackage, toolPackageVersion);
                     }
                 }
             }
         }
 
-        private void IntallToolPackage(string toolPackage, string toolPackageVersion)
+        private void InstallToolPackage(string toolPackage, string toolPackageVersion)
         {
             IPackage package;
 
             if (!string.IsNullOrEmpty(toolPackageVersion))
-                package = ToolPackageManager.SourceRepository.FindPackage(toolPackage, new SemanticVersion(toolPackageVersion));
+                package = ToolPackageManager.SourceRepository.FindPackage(toolPackage, new SemanticVersion(toolPackageVersion), null, true, false);
             else
-                package = ToolPackageManager.SourceRepository.FindPackage(toolPackage);
+                package = ToolPackageManager.SourceRepository.FindPackage(toolPackage, (SemanticVersion)null, null, true, false);
 
             if (package == null)
             {

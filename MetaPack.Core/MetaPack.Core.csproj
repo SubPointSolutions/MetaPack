@@ -25,6 +25,9 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>bin\Debug\MetaPack.Core.XML</DocumentationFile>
+    <CodeAnalysisIgnoreGeneratedCode>false</CodeAnalysisIgnoreGeneratedCode>
+    <CodeAnalysisRuleSet>ManagedMinimumRules.ruleset</CodeAnalysisRuleSet>
+    <RunCodeAnalysis>false</RunCodeAnalysis>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -45,33 +48,29 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Common\DefaultOptions.cs" />
-    <Compile Include="Common\OptionValue.cs" />
+    <Compile Include="Data\DefaultOptions.cs" />
     <Compile Include="Consts\MetaPackConsts.cs" />
+    <Compile Include="Data\OptionValue.cs" />
     <Compile Include="Exceptions\MetaPackException.cs" />
+    <Compile Include="Extensions\IDictionaryExtensions.cs" />
     <Compile Include="Packaging\ModelContainerBase.cs" />
-    <Compile Include="Packaging\SolutionPackageBaseExtensions.cs" />
     <Compile Include="Packaging\SolutionPackageDependency.cs" />
     <Compile Include="MetaPackServiceContainer.cs" />
-    <Compile Include="Packaging\SolutionPackageProvisionOptions.cs" />
-    <Compile Include="Packaging\SolutionPackageProvisionOptionsExtensions.cs" />
-    <Compile Include="Services\DefaultXMLSerializationService.cs" />
-    <Compile Include="Services\EventableTraceServiceBase.cs" />
+    <Compile Include="Services\Impl\DefaultXMLSerializationService.cs" />
+    <Compile Include="Services\Trace\EventableTraceServiceBase.cs" />
     <Compile Include="Services\Impl\DefaultTraceEventFormatService.cs" />
-    <Compile Include="Services\SolutionRepositoryServiceBase.cs" />
     <Compile Include="Services\SerializationServiceBase.cs" />
     <Compile Include="Services\SolutionPackageDeploymentServiceBase.cs" />
     <Compile Include="Services\SolutionPackageServiceBase.cs" />
-    <Compile Include="Services\SolutionPackageServiceBaseExtensions.cs" />
     <Compile Include="Packaging\SolutionPackageBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Packaging\SolutionPackageOptions.cs" />
-    <Compile Include="Services\TraceEventFormatServiceBase.cs" />
-    <Compile Include="Services\TraceEventLevel.cs" />
-    <Compile Include="Services\TraceServiceBase.cs" />
-    <Compile Include="Services\TraceServiceBaseExtensions.cs" />
-    <Compile Include="Services\TraceEventEventArgs.cs" />
-    <Compile Include="Services\TraceSourceService.cs" />
+    <Compile Include="Services\SolutionPackageServiceBaseExtensions.cs" />
+    <Compile Include="Services\Trace\TraceEventFormatServiceBase.cs" />
+    <Compile Include="Services\Trace\TraceEventLevel.cs" />
+    <Compile Include="Services\Trace\TraceServiceBase.cs" />
+    <Compile Include="Services\Trace\TraceServiceBaseExtensions.cs" />
+    <Compile Include="Services\Trace\TraceEventEventArgs.cs" />
+    <Compile Include="Services\Trace\TraceSourceService.cs" />
     <Compile Include="Utils\ConvertUtils.cs" />
     <Compile Include="Utils\MetaPackTrace.cs" />
     <Compile Include="Utils\ReflectionUtils.cs" />

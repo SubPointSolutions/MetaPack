@@ -19,6 +19,7 @@ using MetaPack.Core.Utils;
 using MetaPack.NuGet.Services;
 using MetaPack.Core.Services.Impl;
 using MetaPack.Client.Console.Services;
+using MetaPack.Core.Services.Trace;
 
 namespace MetaPack.Client.Console
 {

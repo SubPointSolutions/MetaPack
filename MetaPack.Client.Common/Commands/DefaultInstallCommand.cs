@@ -4,12 +4,12 @@ using System.Diagnostics;
 using System.Linq;
 using MetaPack.Client.Common.Commands.Base;
 using MetaPack.Client.Common.Services;
-using MetaPack.Core.Common;
+using MetaPack.Core.Data;
 using MetaPack.NuGet.Services;
 using Microsoft.SharePoint.Client;
 using NuGet;
 using MetaPack.Core.Utils;
-using MetaPack.NuGet.Common;
+using MetaPack.NuGet.Data;
 
 namespace MetaPack.Client.Common.Commands
 {
@@ -165,37 +165,37 @@ namespace MetaPack.Client.Common.Commands
             // add options
             packageManager.SolutionOptions.Add(new OptionValue
             {
-                Name = DefaultOptions.SharePoint.Api.Id,
+                Name = DefaultOptions.SharePointApi,
                 Value = this.SharePointApi
             });
 
             packageManager.SolutionOptions.Add(new OptionValue
             {
-                Name = DefaultOptions.SharePoint.Edition.Id,
+                Name = DefaultOptions.SharePointEdition,
                 Value = this.SharePointEdition
             });
 
             packageManager.SolutionOptions.Add(new OptionValue
             {
-                Name = DefaultOptions.SharePoint.Version.Id,
+                Name = DefaultOptions.SharePointVersion,
                 Value = this.SharePointVersion
             });
 
             packageManager.SolutionOptions.Add(new OptionValue
             {
-                Name = DefaultOptions.Site.Url.Id,
+                Name = DefaultOptions.SharePointSiteUrl,
                 Value = context.Url
             });
 
             packageManager.SolutionOptions.Add(new OptionValue
             {
-                Name = DefaultOptions.User.Name.Id,
+                Name = DefaultOptions.UserName,
                 Value = UserName
             });
 
             packageManager.SolutionOptions.Add(new OptionValue
             {
-                Name = DefaultOptions.User.Password.Id,
+                Name = DefaultOptions.UserPassword,
                 Value = UserPassword
             });
 

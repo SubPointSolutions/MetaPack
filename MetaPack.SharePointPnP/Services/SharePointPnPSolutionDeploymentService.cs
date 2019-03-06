@@ -1,5 +1,4 @@
 ﻿using MetaPack.Core.Packaging;
-using MetaPack.NuGet.Common;
 using MetaPack.NuGet.Services;
 using System;
 using System.Collections.Generic;
@@ -7,7 +6,6 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using MetaPack.Core.Common;
 using System.IO;
 using System.Reflection;
 using System.Globalization;
@@ -18,6 +16,9 @@ using MetaPack.Core.Exceptions;
 using NuGet;
 using MetaPack.Core.Utils;
 using System.Net;
+using MetaPack.Core.Data;
+using MetaPack.Core.Extensions;
+using MetaPack.NuGet.Data;
 
 namespace MetaPack.SharePointPnP.Services
 {
@@ -36,20 +37,20 @@ namespace MetaPack.SharePointPnP.Services
         }
 
 
-        public override IEnumerable<SolutionToolPackage> GetAdditionalToolPackages(SolutionPackageProvisionOptions options)
+        public override IEnumerable<SolutionToolPackage> GetAdditionalToolPackages(SolutionPackageBase solutionPackage, IDictionary<string, string> options)
         {
             var result = new List<SolutionToolPackage>();
 
             var mainToolPackageId = string.Empty;
 
-            var spVersion = options.GetOptionValue(DefaultOptions.SharePoint.Version.Id);
-            var spEdition = options.GetOptionValue(DefaultOptions.SharePoint.Edition.Id);
-            var spApi = options.GetOptionValue(DefaultOptions.SharePoint.Api.Id);
+            var spVersion = options.GetOptionValue(DefaultOptions.SharePointVersion);
+            var spEdition = options.GetOptionValue(DefaultOptions.SharePointEdition);
+            var spApi = options.GetOptionValue(DefaultOptions.SharePointApi);
 
-            if (!Compare(spApi, DefaultOptions.SharePoint.Api.CSOM.Value, true))
+            if (!Compare(spApi, "CSOM", true))
                 throw new MetaPackException(String.Format("Unsupported SharePoint Api:[{0}]", spApi));
 
-            if (Compare(spVersion, DefaultOptions.SharePoint.Version.O365.Value))
+            if (Compare(spVersion, "O365"))
             {
                 mainToolPackageId = "SharePointPnPCoreOnline";
 
@@ -65,7 +66,7 @@ namespace MetaPack.SharePointPnP.Services
                     AssemblyNameHint = "Microsoft.SharePoint.Client.Runtime.dll"
                 });
             }
-            else if (Compare(spVersion, DefaultOptions.SharePoint.Version.SP2013.Value))
+            else if (Compare(spVersion, "SP2013"))
             {
                 mainToolPackageId = "SharePointPnPCore2013";
 
@@ -84,7 +85,7 @@ namespace MetaPack.SharePointPnP.Services
                     AssemblyNameHint = "Microsoft.SharePoint.Client.Runtime.dll"
                 });
             }
-            else if (Compare(spVersion, DefaultOptions.SharePoint.Version.SP2016.Value))
+            else if (Compare(spVersion, "SP2016"))
             {
                 throw new NotImplementedException();
             }
@@ -102,17 +103,17 @@ namespace MetaPack.SharePointPnP.Services
         }
 
 
-        public override void Deploy(SolutionPackageProvisionOptions options)
+        public override void Deploy(SolutionPackageBase solutionPackage, IDictionary<string, string> options)
         {
-            var spVersion = options.GetOptionValue(DefaultOptions.SharePoint.Version.Id);
-            var spEdition = options.GetOptionValue(DefaultOptions.SharePoint.Edition.Id);
-            var spApi = options.GetOptionValue(DefaultOptions.SharePoint.Api.Id);
+            var spVersion = options.GetOptionValue(DefaultOptions.SharePointVersion);
+            var spEdition = options.GetOptionValue(DefaultOptions.SharePointEdition);
+            var spApi = options.GetOptionValue(DefaultOptions.SharePointApi);
 
             MetaPackTrace.Verbose(string.Format("spVersion:[{0}]", spVersion));
             MetaPackTrace.Verbose(string.Format("spEdition:[{0}]", spEdition));
             MetaPackTrace.Verbose(string.Format("spApi:[{0}]", spApi));
 
-            if (!Compare(spApi, DefaultOptions.SharePoint.Api.CSOM.Value, true))
+            if (!Compare(spApi, "CSOM", true))
                 throw new NotSupportedException(string.Format("SharePoint API [{0}] is not supported yet", spApi));
 
             var allAssemblies = ReflectionUtils.GetAllAssembliesFromCurrentAppDomain();
@@ -128,7 +129,6 @@ namespace MetaPack.SharePointPnP.Services
 
             MetaPackTrace.Verbose("Resolving provision class...");
 
-            var solutionPackage = options.SolutionPackage as SolutionPackageBase;
             var solutionModels = solutionPackage.GetModels();
 
             MetaPackTrace.Verbose(string.Format("Found [{0}] models", solutionModels.Count()));
@@ -153,7 +153,7 @@ namespace MetaPack.SharePointPnP.Services
 
                 var modelType = "SharePointPnP.OpenXml";
                 var modelTypeOption = modelContainer.AdditionalOptions
-                                                    .FirstOrDefault(o => o.Name.ToUpper() == DefaultOptions.Model.Type.Id);
+                                                    .FirstOrDefault(o => o.Name.ToUpper() == DefaultOptions.ModelType);
 
                 if (modelTypeOption != null)
                     modelType = modelTypeOption.Value;
@@ -162,10 +162,10 @@ namespace MetaPack.SharePointPnP.Services
 
                 MetaPackTrace.Verbose(string.Format("Detected CSOM provision."));
 
-                var userName = options.GetOptionValue(DefaultOptions.User.Name.Id);
-                var userPassword = options.GetOptionValue(DefaultOptions.User.Password.Id);
+                var userName = options.GetOptionValue(DefaultOptions.UserName);
+                var userPassword = options.GetOptionValue(DefaultOptions.UserPassword);
 
-                var siteUrl = options.GetOptionValue(DefaultOptions.Site.Url.Id);
+                var siteUrl = options.GetOptionValue(DefaultOptions.SharePointSiteUrl);
 
                 MetaPackTrace.Verbose(string.Format("Creating ClientContext for web site:[{0}]", siteUrl));
                 var clientContexClass = ReflectionUtils.FindTypeByName(allSharePointClasses, "ClientContext");
@@ -181,15 +181,15 @@ namespace MetaPack.SharePointPnP.Services
 
                 var web = ReflectionUtils.GetPropertyValue(clientContextInstance, "Web");
 
-                if (Compare(spVersion, DefaultOptions.SharePoint.Version.O365.Value, true))
+                if (Compare(spVersion, "O365", true))
                 {
                     MetaPackTrace.Verbose(string.Format("O365 API detected"));
 
                     if (!string.IsNullOrEmpty(userName) && !string.IsNullOrEmpty(userPassword))
                     {
                         MetaPackTrace.Verbose(string.Format("[{0}] and [{1}] aren't null.",
-                                DefaultOptions.User.Name.Id,
-                                DefaultOptions.User.Password.Id
+                                DefaultOptions.UserName,
+                                DefaultOptions.UserPassword
                             ));
 
                         MetaPackTrace.Verbose(string.Format("Creating Credentials for web site:[{0}]", siteUrl));
@@ -214,8 +214,8 @@ namespace MetaPack.SharePointPnP.Services
                     else
                     {
                         throw new MetaPackException(string.Format("O365 provision requires [{0}] and [{1}] to be set.",
-                            DefaultOptions.User.Name.Id,
-                            DefaultOptions.User.Password.Id
+                            DefaultOptions.UserName,
+                            DefaultOptions.UserPassword
                         ));
                     }
                 }
@@ -227,8 +227,8 @@ namespace MetaPack.SharePointPnP.Services
                     if (!string.IsNullOrEmpty(userName) && !string.IsNullOrEmpty(userPassword))
                     {
                         MetaPackTrace.Verbose(string.Format("[{0}] and [{1}] aren't null.",
-                                DefaultOptions.User.Name.Id,
-                                DefaultOptions.User.Password.Id
+                                DefaultOptions.UserName,
+                                DefaultOptions.UserPassword
                             ));
 
                         MetaPackTrace.Verbose(string.Format("Creating NetworkCredential for web site:[{0}]", siteUrl));

@@ -70,9 +70,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Common\DeploymentOption.cs" />
-    <Compile Include="Common\DeploymentOptions.cs" />
-    <Compile Include="Common\SolutionToolPackage.cs" />
+    <Compile Include="Data\AppDomainDeploymentOptionsExtensions.cs" />
+    <Compile Include="Data\DeploymentOption.cs" />
+    <Compile Include="Data\AppDomainDeploymentOptions.cs" />
+    <Compile Include="Data\SolutionToolPackage.cs" />
     <Compile Include="Extensions\WebExtensions.cs" />
     <Compile Include="Services\DefaultMetaPackSolutionPackageManager.cs" />
     <Compile Include="Services\IToolResolutionService.cs" />

@@ -9,7 +9,7 @@ namespace MetaPack.Core.Packaging
 {
     /// <summary>
     /// A high level abstraction for solution package dependency.
-    /// Follows NuGet spec design - https://docs.nuget.org/ndocs/schema/nuspec
+    /// Follows NuGet spec design - https://docs.microsoft.com/en-gb/nuget/reference/nuspec
     /// </summary>
     [Serializable]
     [DataContract]

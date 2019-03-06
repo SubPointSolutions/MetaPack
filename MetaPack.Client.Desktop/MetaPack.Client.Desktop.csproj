@@ -78,22 +78,6 @@
       <Project>{BFFE9914-751E-44EC-99CB-A61CDFEC79BD}</Project>
       <Name>MetaPack.Client.Desktop.Impl</Name>
     </ProjectReference>
-    <ProjectReference Include="..\shelly\Shelly\SubPointSolutions.Shelly.Core\SubPointSolutions.Shelly.Core.csproj">
-      <Project>{1CEC5A84-BCE6-409D-A321-E64D7AAD600D}</Project>
-      <Name>SubPointSolutions.Shelly.Core</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\shelly\Shelly\SubPointSolutions.Shelly.Desktop.MetroFramework\SubPointSolutions.Shelly.Desktop.MetroFramework.csproj">
-      <Project>{ebaef43f-0f1f-41e2-8c71-5dfdde4f8718}</Project>
-      <Name>SubPointSolutions.Shelly.Desktop.MetroFramework</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\shelly\Shelly\SubPointSolutions.Shelly.Desktop.Wf\SubPointSolutions.Shelly.Desktop.Wf.csproj">
-      <Project>{20d4f815-f2f8-45d9-a01f-5de55ecb0054}</Project>
-      <Name>SubPointSolutions.Shelly.Desktop.Wf</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\shelly\Shelly\SubPointSolutions.Shelly.Desktop\SubPointSolutions.Shelly.Desktop.csproj">
-      <Project>{e9f7d2fc-d31e-4869-87d7-403f1ff22347}</Project>
-      <Name>SubPointSolutions.Shelly.Desktop</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

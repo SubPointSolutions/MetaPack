@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using MetaPack.Core.Services.Trace;
 
 namespace MetaPack.Client.Common.Commands.Base
 {

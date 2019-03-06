@@ -62,14 +62,6 @@
       <Project>{BFFE9914-751E-44EC-99CB-A61CDFEC79BD}</Project>
       <Name>MetaPack.Client.Desktop.Impl</Name>
     </ProjectReference>
-    <ProjectReference Include="..\shelly\Shelly\SubPointSolutions.Shelly.Core\SubPointSolutions.Shelly.Core.csproj">
-      <Project>{1cec5a84-bce6-409d-a321-e64d7aad600d}</Project>
-      <Name>SubPointSolutions.Shelly.Core</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\shelly\Shelly\SubPointSolutions.Shelly.Desktop\SubPointSolutions.Shelly.Desktop.csproj">
-      <Project>{e9f7d2fc-d31e-4869-87d7-403f1ff22347}</Project>
-      <Name>SubPointSolutions.Shelly.Desktop</Name>
-    </ProjectReference>
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">

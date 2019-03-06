@@ -923,7 +923,7 @@ namespace MetaPack.NuGet.Services
 
                             // TODO, dependencies
 
-                            result = packagingService.Pack(fakeSolutionPackageBase, null);
+                            result = packagingService.Pack(fakeSolutionPackageBase);
                         }
                     }
 

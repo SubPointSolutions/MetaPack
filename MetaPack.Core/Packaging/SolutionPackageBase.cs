@@ -1,18 +1,17 @@
-﻿using MetaPack.Core.Common;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
+using MetaPack.Core.Data;
 using MetaPack.Core.Utils;
 
 namespace MetaPack.Core.Packaging
 {
     /// <summary>
-    /// A high level abstraction for solution package.
-    /// Follows NuGet spec design - https://docs.nuget.org/ndocs/schema/nuspec
+    /// Abstraction for a solution package.
+    /// Follows NuGet spec design - https://docs.microsoft.com/en-gb/nuget/reference/nuspec
     /// 
-    /// Solution package is a container for SERIALIZED models.
-    /// It means that solution package does not depend on a particular API/assembly preferring adding / finding models in serialazable, platform and api independent way.
+    /// This object houses serizlized models to be packageg, unpackages and deployed via metapack.
     /// </summary>
     [Serializable]
     [DataContract]
@@ -147,7 +146,7 @@ namespace MetaPack.Core.Packaging
         #region additional props
 
         /// <summary>
-        /// Additional data accosiated with the solution package
+        /// Additional data associated with the solution package
         /// </summary>
         [DataMember]
         public List<OptionValue> AdditionalOptions { get; set; }
@@ -183,7 +182,7 @@ namespace MetaPack.Core.Packaging
                 var result = -1;
 
                 var orderOption =
-                    m.AdditionalOptions.FirstOrDefault(v => v.Name.ToUpper() == DefaultOptions.Model.Order.Id.ToUpper());
+                    m.AdditionalOptions.FirstOrDefault(v => v.Name.ToUpper() == DefaultOptions.ModelOrder.ToUpper());
 
                 if (orderOption != null)
                 {

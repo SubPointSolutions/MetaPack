@@ -17,15 +17,16 @@ using System.Diagnostics;
 using System.IO;
 using System.Text;
 using MetaPack.Core;
-using MetaPack.NuGet.Common;
-using MetaPack.SharePointPnP;
-using MetaPack.SharePointPnP.Services;
-using MetaPack.Core.Common;
+
 using MetaPack.Tests.Extensions;
 using MetaPack.Tests.Services;
 using NuGet;
 using System.IO.Compression;
 using System.Net;
+using MetaPack.Core.Data;
+using MetaPack.Core.Services.Trace;
+using MetaPack.NuGet.Data;
+using MetaPack.SharePointPnP.Services;
 using MetaPack.Tests.Scenarios;
 
 namespace MetaPack.Tests.Base
@@ -98,8 +99,8 @@ namespace MetaPack.Tests.Base
                 CIPackageId = "MetaPack.SharePointPnP.CI"
             };
 
-            //if (!Environment.Is64BitProcess)
-            //    throw new Exception("x64 process is requred. VS -> Test -> Test Settings -> Default process architecture -> x64");
+            if (!Environment.Is64BitProcess)
+                throw new Exception("x64 process is requred. VS -> Test -> Test Settings -> Default process architecture -> x64");
 
             // packaging
             MetaPackService = new List<MetaPackServiceContext>();
@@ -532,7 +533,7 @@ namespace MetaPack.Tests.Base
 
                     modelContainer.AdditionalOptions.Add(new OptionValue
                     {
-                        Name = DefaultOptions.Model.Order.Id,
+                        Name = DefaultOptions.ModelOrder,
                         Value = index.ToString()
                     });
 
@@ -541,7 +542,7 @@ namespace MetaPack.Tests.Base
 
                 m2package.AdditionalOptions.Add(new OptionValue
                 {
-                    Name = DefaultOptions.SolutionToolPackage.PackageId.Id,
+                    Name = DefaultOptions.ToolPackageId,
                     Value = "MetaPack.SPMeta2"
                 });
 
@@ -592,7 +593,7 @@ namespace MetaPack.Tests.Base
 
                     modelContainer.AdditionalOptions.Add(new OptionValue
                     {
-                        Name = DefaultOptions.Model.Type.Id,
+                        Name = DefaultOptions.ModelType,
                         Value = "SharePointPnP.FolderZip"
                     });
 
@@ -613,7 +614,7 @@ namespace MetaPack.Tests.Base
 
                     modelContainer.AdditionalOptions.Add(new OptionValue
                     {
-                        Name = DefaultOptions.Model.Type.Id,
+                        Name = DefaultOptions.ModelType,
                         Value = "SharePointPnP.OpenXml"
                     });
 
@@ -622,7 +623,7 @@ namespace MetaPack.Tests.Base
 
                 pnpPackage.AdditionalOptions.Add(new OptionValue
                 {
-                    Name = DefaultOptions.SolutionToolPackage.PackageId.Id,
+                    Name = DefaultOptions.ToolPackageId,
                     Value = "MetaPack.SharePointPnP"
                 });
 

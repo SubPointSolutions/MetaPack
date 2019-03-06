@@ -209,18 +209,6 @@
       <Project>{a15f8430-15f3-4e25-aa60-221d244ea2fd}</Project>
       <Name>MetaPack.NuGet</Name>
     </ProjectReference>
-    <ProjectReference Include="..\shelly\Shelly\SubPointSolutions.Shelly.Core\SubPointSolutions.Shelly.Core.csproj">
-      <Project>{1cec5a84-bce6-409d-a321-e64d7aad600d}</Project>
-      <Name>SubPointSolutions.Shelly.Core</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\shelly\Shelly\SubPointSolutions.Shelly.Desktop.MetroFramework\SubPointSolutions.Shelly.Desktop.MetroFramework.csproj">
-      <Project>{ebaef43f-0f1f-41e2-8c71-5dfdde4f8718}</Project>
-      <Name>SubPointSolutions.Shelly.Desktop.MetroFramework</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\shelly\Shelly\SubPointSolutions.Shelly.Desktop\SubPointSolutions.Shelly.Desktop.csproj">
-      <Project>{E9F7D2FC-D31E-4869-87D7-403F1FF22347}</Project>
-      <Name>SubPointSolutions.Shelly.Desktop</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

@@ -123,10 +123,6 @@
     <Compile Include="Scenarios\SolutionPackagingTests.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\MetaPack.Client.Common\MetaPack.Client.Common.csproj">
-      <Project>{9D4CEB39-5B75-46ED-989B-BFA648A9469E}</Project>
-      <Name>MetaPack.Client.Common</Name>
-    </ProjectReference>
     <ProjectReference Include="..\MetaPack.Core\MetaPack.Core.csproj">
       <Project>{262728CF-54E6-44CE-ADA9-8AB6934FC4CE}</Project>
       <Name>MetaPack.Core</Name>
@@ -136,7 +132,7 @@
       <Name>MetaPack.NuGet</Name>
     </ProjectReference>
     <ProjectReference Include="..\MetaPack.SharePointPnP\MetaPack.SharePointPnP.csproj">
-      <Project>{02FD93D0-B74C-4571-8AF4-4E7A849DB8D1}</Project>
+      <Project>{02fd93d0-b74c-4571-8af4-4e7a849db8d1}</Project>
       <Name>MetaPack.SharePointPnP</Name>
     </ProjectReference>
     <ProjectReference Include="..\MetaPack.SPMeta2\MetaPack.SPMeta2.csproj">

@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics;
 using MetaPack.Core;
 using MetaPack.Core.Services;
+using MetaPack.Core.Services.Trace;
 
 namespace MetaPack.NuGet.Utils
 {

@@ -2,6 +2,7 @@
 using System;
 using System.Diagnostics;
 using System.IO;
+using MetaPack.Core.Services.Trace;
 
 namespace MetaPack.NuGet.Services
 {

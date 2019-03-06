@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web.Script.Serialization;
+using MetaPack.Core.Services.Trace;
 
 namespace MetaPack.Client.Console.Services
 {

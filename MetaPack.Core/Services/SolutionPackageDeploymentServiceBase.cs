@@ -9,7 +9,7 @@ namespace MetaPack.Core.Services
     public abstract class SolutionPackageDeploymentServiceBase
     {
         #region methods
-        public abstract void Deploy(SolutionPackageProvisionOptions options);
+        public abstract void Deploy(SolutionPackageBase solution, IDictionary<string, string> options);
 
         #endregion
     }

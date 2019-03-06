@@ -3,11 +3,12 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using MetaPack.Core;
-using MetaPack.Core.Common;
 using MetaPack.Core.Packaging;
 using MetaPack.Core.Services;
 using NuGet;
 using MetaPack.Core.Consts;
+using MetaPack.Core.Data;
+using MetaPack.Core.Services.Impl;
 using MetaPack.Core.Utils;
 
 namespace MetaPack.NuGet.Services
@@ -251,7 +252,7 @@ namespace MetaPack.NuGet.Services
             var filePath = GetTempXmlFilePath();
 
             result.Source = filePath;
-            result.Target = MetaPackConsts.ModelsContainerFolder + "/" + Path.GetFileName(filePath);
+            result.Target = MetaPackConsts.ModelContainerFolder + "/" + Path.GetFileName(filePath);
 
             File.WriteAllText(filePath, fileContent);
 
@@ -272,7 +273,7 @@ namespace MetaPack.NuGet.Services
 
         #region pacjing
 
-        public override Stream Pack(SolutionPackageBase package, SolutionPackageOptions options)
+        public override Stream Pack(SolutionPackageBase package)
         {
             var typedPackage = package;
 
@@ -311,7 +312,7 @@ namespace MetaPack.NuGet.Services
             return resultStream;
         }
 
-        public override SolutionPackageBase Unpack(Stream package, SolutionPackageOptions options)
+        public override SolutionPackageBase Unpack(Stream package)
         {
             package.Position = 0;
 
@@ -326,7 +327,7 @@ namespace MetaPack.NuGet.Services
                 var solutionFileContent = streamReader.ReadToEnd();
 
                 var solutionPackage = SerializationService.Deserialize(typeof(SolutionPackageBase), solutionFileContent) as SolutionPackageBase;
-                var modelContainerFiles = zipPackage.GetFiles(MetaPackConsts.ModelsContainerFolder);
+                var modelContainerFiles = zipPackage.GetFiles(MetaPackConsts.ModelContainerFolder);
 
                 foreach (var modelContainerFile in modelContainerFiles)
                 {

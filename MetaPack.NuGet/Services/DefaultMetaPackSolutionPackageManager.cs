@@ -10,14 +10,15 @@ using AppDomainToolkit;
 using MetaPack.Core;
 using MetaPack.Core.Packaging;
 using MetaPack.Core.Services;
-using MetaPack.NuGet.Common;
 using MetaPack.NuGet.Utils;
 using Microsoft.SharePoint.Client;
 using NuGet;
 using System.Xml.Linq;
-using MetaPack.Core.Common;
+using MetaPack.Core.Data;
 using MetaPack.Core.Exceptions;
+using MetaPack.Core.Services.Impl;
 using MetaPack.Core.Utils;
+using MetaPack.NuGet.Data;
 
 namespace MetaPack.NuGet.Services
 {
@@ -28,12 +29,12 @@ namespace MetaPack.NuGet.Services
     internal class DefaultNuGetSolutionPackageService : NuGetSolutionPackageService
     {
 
-        public override Stream Pack(SolutionPackageBase package, SolutionPackageOptions options)
+        public override Stream Pack(SolutionPackageBase package)
         {
             throw new NotImplementedException();
         }
 
-        public override SolutionPackageBase Unpack(Stream package, SolutionPackageOptions options)
+        public override SolutionPackageBase Unpack(Stream package)
         {
             throw new NotImplementedException();
         }
@@ -151,8 +152,8 @@ namespace MetaPack.NuGet.Services
                                             typeof(SolutionPackageBase), genericXmlDoc)
                                             as SolutionPackageBase;
 
-                        var packageIdFromPackage = ExtractAdditionalOption(typedPackage.AdditionalOptions, DefaultOptions.SolutionToolPackage.PackageId.Id);
-                        var packageVersionFromPackage = ExtractAdditionalOption(typedPackage.AdditionalOptions, DefaultOptions.SolutionToolPackage.PackageVersion.Id);
+                        var packageIdFromPackage = ExtractAdditionalOption(typedPackage.AdditionalOptions, DefaultOptions.ToolPackageId);
+                        var packageVersionFromPackage = ExtractAdditionalOption(typedPackage.AdditionalOptions, DefaultOptions.ToolPackageVersion);
 
                         if (!string.IsNullOrEmpty(packageIdFromPackage))
                         {
@@ -377,14 +378,16 @@ namespace MetaPack.NuGet.Services
                             MetaPackTrace.Verbose(string.Format("Succesfully unpacked package."));
 
                         // deployment options
-                        var solutionDeploymentOptions = new SolutionPackageProvisionOptions
-                        {
-                            SolutionPackage = solutionPackage,
-                        };
+                        //var solutionDeploymentOptions = new SolutionPackageProvisionOptions
+                        //{
+                        //    SolutionPackage = solutionPackage,
+                        //};
+
+                        var options = new Dictionary<string, string>();
 
                         // fill out deployment options
                         foreach (var option in ops.AdditionalOptions)
-                            solutionDeploymentOptions.SetOptionValue(option.Name, option.Value);
+                            options.Add(option.Name, option.Value);
 
                         // check for additional tools
                         MetaPackTrace.Verbose(string.Format("Checking additional tools for unpacked package..."));
@@ -394,7 +397,7 @@ namespace MetaPack.NuGet.Services
 
                             var toolableDeploymentService = deploymentService as SolutionPackageDeploymentService;
                             var additonalTool2s =
-                                toolableDeploymentService.GetAdditionalToolPackages(solutionDeploymentOptions);
+                                toolableDeploymentService.GetAdditionalToolPackages(solutionPackage, options);
 
                             if (additonalTool2s.Count() > 0)
                             {
@@ -427,9 +430,9 @@ namespace MetaPack.NuGet.Services
                 // checking detected additional tools
                 var detecedAdditionalTools = result.ToolAdditionalPackages;
 
-                if (detecedAdditionalTools.Count > 0)
+                if (detecedAdditionalTools.Count() > 0)
                 {
-                    MetaPackTrace.Info(string.Format("Solution package requires [{0}] additional tools", detecedAdditionalTools.Count));
+                    MetaPackTrace.Info(string.Format("Solution package requires [{0}] additional tools", detecedAdditionalTools.Count()));
 
                     foreach (var additionalTool in detecedAdditionalTools)
                     {
@@ -592,22 +595,19 @@ namespace MetaPack.NuGet.Services
                         var solutionPackage = packagingService.Unpack(packageStream);
 
                         if (solutionPackage != null)
-                            MetaPackTrace.Verbose(string.Format("Succesfully unpacked package."));
+                            MetaPackTrace.Verbose(string.Format("Successfully unpacked package."));
 
                         // deployment options
-                        var solutionDeploymentOptions = new SolutionPackageProvisionOptions
-                        {
-                            SolutionPackage = solutionPackage,
-                        };
+                        var options = new Dictionary<string, string>();
 
                         // fill out deployment options
                         foreach (var option in ops.AdditionalOptions)
-                            solutionDeploymentOptions.SetOptionValue(option.Name, option.Value);
+                            options.Add(option.Name, option.Value);
 
                         MetaPackTrace.Info(string.Format("Deploying package..."));
-                        deploymentService.Deploy(solutionDeploymentOptions);
+                        deploymentService.Deploy(solutionPackage, options);
 
-                        MetaPackTrace.Info(string.Format("Package deployment cimpleted"));
+                        MetaPackTrace.Info(string.Format("Package deployment completed"));
                     }
 
                     return ops;

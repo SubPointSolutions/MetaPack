@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using MetaPack.Core;
 using MetaPack.Core.Services;
+using MetaPack.Core.Services.Trace;
 using MetaPack.Core.Utils;
 using MetaPack.NuGet.Services;
 

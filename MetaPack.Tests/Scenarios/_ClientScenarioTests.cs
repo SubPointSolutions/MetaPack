@@ -6,7 +6,6 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using MetaPack.Client.Common.Commands;
 using MetaPack.Core;
 using MetaPack.NuGet.Services;
 using MetaPack.SPMeta2.Services;
@@ -22,7 +21,7 @@ using MetaPack.Core.Packaging;
 using MetaPack.Core.Services;
 using MetaPack.Tests.Consts;
 using MetaPack.Tests.Utils;
-using TraceServiceBase = MetaPack.Core.Services.TraceServiceBase;
+using TraceServiceBase = MetaPack.Core.Services.Trace.TraceServiceBase;
 
 namespace MetaPack.Tests.Scenarios
 {

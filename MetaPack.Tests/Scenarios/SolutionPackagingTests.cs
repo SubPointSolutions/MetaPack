@@ -17,11 +17,9 @@ using MetaPack.Tests.Consts;
 using MetaPack.Tests.Extensions;
 using MetaPack.Tests.Utils;
 using NuGet;
-
 using File = System.IO.File;
 using System.Diagnostics;
-using MetaPack.Core.Common;
-using MetaPack.SharePointPnP;
+using MetaPack.Core.Data;
 using MetaPack.SharePointPnP.Services;
 
 namespace MetaPack.Tests.Scenarios
@@ -33,7 +31,7 @@ namespace MetaPack.Tests.Scenarios
 
         [TestMethod]
         [TestCategory("CI.Core")]
-        [TestCategory("Metapack.API.Packaging")]
+        [TestCategory("MetaPack.API.Packaging")]
         public void Can_Pack_Solution_Package()
         {
             WithMetaPackServices(service =>
@@ -44,7 +42,7 @@ namespace MetaPack.Tests.Scenarios
 
         [TestMethod]
         [TestCategory("CI.Core")]
-        [TestCategory("Metapack.API.Packaging")]
+        [TestCategory("MetaPack.API.Packaging")]
         public void Can_Unpack_Solution_Package()
         {
             WithMetaPackServices(service =>
@@ -55,7 +53,7 @@ namespace MetaPack.Tests.Scenarios
 
         [TestMethod]
         [TestCategory("CI.Core")]
-        [TestCategory("Metapack.API.Packaging")]
+        [TestCategory("MetaPack.API.Packaging")]
         public void Can_Push_Solution_Package()
         {
             WithMetaPackServices(service =>
@@ -66,7 +64,7 @@ namespace MetaPack.Tests.Scenarios
 
         [TestMethod]
         [TestCategory("CI.Core")]
-        [TestCategory("Metapack.API.Packaging")]
+        [TestCategory("MetaPack.API.Packaging")]
         public void Can_Unpack_Solution_Package_WithOrderedModels()
         {
             WithMetaPackServices(service =>
@@ -81,7 +79,7 @@ namespace MetaPack.Tests.Scenarios
         #region spmeta2
 
         [TestMethod]
-        [TestCategory("Metapack.API.Packaging.SPMeta2")]
+        [TestCategory("MetaPack.API.Packaging.SPMeta2")]
         public void Can_Pack_Solution_Package_With_SPMeta2()
         {
             var service = SPMeta2SolutionPackagingService;
@@ -90,7 +88,7 @@ namespace MetaPack.Tests.Scenarios
         }
 
         [TestMethod]
-        [TestCategory("Metapack.API.Packaging.SPMeta2")]
+        [TestCategory("MetaPack.API.Packaging.SPMeta2")]
         public void Can_Unpack_Solution_Package_With_SPMeta2()
         {
             var service = SPMeta2SolutionPackagingService;
@@ -99,7 +97,7 @@ namespace MetaPack.Tests.Scenarios
         }
 
         [TestMethod]
-        [TestCategory("Metapack.API.Packaging.SPMeta2")]
+        [TestCategory("MetaPack.API.Packaging.SPMeta2")]
         public void Can_Push_Solution_Package_With_SPMeta2()
         {
             var service = SPMeta2SolutionPackagingService;
@@ -108,7 +106,7 @@ namespace MetaPack.Tests.Scenarios
         }
 
         [TestMethod]
-        [TestCategory("Metapack.API.Packaging.SPMeta2")]
+        [TestCategory("MetaPack.API.Packaging.SPMeta2")]
         public void Can_Unpack_Solution_Package_WithOrderedModels_With_SPMeta2()
         {
             var service = SPMeta2SolutionPackagingService;
@@ -121,7 +119,7 @@ namespace MetaPack.Tests.Scenarios
         #region sharepoint pnp
 
         [TestMethod]
-        [TestCategory("Metapack.API.Packaging.SharePointPnP")]
+        [TestCategory("MetaPack.API.Packaging.SharePointPnP")]
         public void Can_Pack_Solution_Package_With_SharePointPnP()
         {
             var service = SharePointPnPSolutionPackagingService;
@@ -130,7 +128,7 @@ namespace MetaPack.Tests.Scenarios
         }
 
         [TestMethod]
-        [TestCategory("Metapack.API.Packaging.SharePointPnP")]
+        [TestCategory("MetaPack.API.Packaging.SharePointPnP")]
         public void Can_Unpack_Solution_Package_With_SharePointPnP()
         {
             var service = SharePointPnPSolutionPackagingService;
@@ -139,7 +137,7 @@ namespace MetaPack.Tests.Scenarios
         }
 
         [TestMethod]
-        [TestCategory("Metapack.API.Packaging.SharePointPnP")]
+        [TestCategory("MetaPack.API.Packaging.SharePointPnP")]
         public void Can_Push_Solution_Package_With_SharePointPnP()
         {
             var service = SharePointPnPSolutionPackagingService;
@@ -148,7 +146,7 @@ namespace MetaPack.Tests.Scenarios
         }
 
         [TestMethod]
-        [TestCategory("Metapack.API.Packaging.SharePointPnP")]
+        [TestCategory("MetaPack.API.Packaging.SharePointPnP")]
         public void Can_Unpack_Solution_Package_WithOrderedModels_With_SharePointPnP()
         {
             var service = SharePointPnPSolutionPackagingService;
@@ -175,21 +173,21 @@ namespace MetaPack.Tests.Scenarios
                         var firstModel = new ModelContainerBase();
                         firstModel.AdditionalOptions.Add(new OptionValue
                         {
-                            Name = DefaultOptions.Model.Order.Id,
+                            Name = DefaultOptions.ModelOrder,
                             Value = "100"
                         });
 
                         var secondModel = new ModelContainerBase();
                         secondModel.AdditionalOptions.Add(new OptionValue
                         {
-                            Name = DefaultOptions.Model.Order.Id,
+                            Name = DefaultOptions.ModelOrder,
                             Value = "200"
                         });
 
                         var thirdModel = new ModelContainerBase();
                         thirdModel.AdditionalOptions.Add(new OptionValue
                         {
-                            Name = DefaultOptions.Model.Order.Id,
+                            Name = DefaultOptions.ModelOrder,
                             Value = "300"
                         });
 
@@ -211,7 +209,7 @@ namespace MetaPack.Tests.Scenarios
                         var orderValues = models.Select(m =>
                         {
                             var orderValue = m.AdditionalOptions
-                                .FirstOrDefault(o => o.Name == DefaultOptions.Model.Order.Id);
+                                .FirstOrDefault(o => o.Name == DefaultOptions.ModelOrder);
 
                             return int.Parse(orderValue.Value);
                         }).ToArray();

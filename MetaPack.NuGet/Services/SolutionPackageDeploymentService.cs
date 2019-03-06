@@ -10,7 +10,7 @@ using AppDomainToolkit;
 using MetaPack.Core.Services;
 using NuGet;
 using MetaPack.Core.Packaging;
-using MetaPack.NuGet.Common;
+using MetaPack.NuGet.Data;
 
 namespace MetaPack.NuGet.Services
 {
@@ -38,7 +38,7 @@ namespace MetaPack.NuGet.Services
         }
         #endregion
 
-        public virtual IEnumerable<SolutionToolPackage> GetAdditionalToolPackages(SolutionPackageProvisionOptions options)
+        public virtual IEnumerable<SolutionToolPackage> GetAdditionalToolPackages(SolutionPackageBase solutionPackage, IDictionary<string, string> options)
         {
             return Enumerable.Empty<SolutionToolPackage>();
         }
